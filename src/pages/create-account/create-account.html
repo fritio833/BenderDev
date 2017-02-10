@@ -7,11 +7,9 @@
 
 <ion-header>
   <ion-navbar  color="primary">
-  	<!----
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    ---->
     <ion-title>Bender - Sign Up or Log In</ion-title>
   </ion-navbar>
 </ion-header>
@@ -28,15 +26,15 @@
         	<ion-list no-lines>
         		<ion-item>
         			<div align="center">
-        				<button ion-button icon-left round (click)="showCreateAccountFinal()">
+        				<button ion-button icon-left round (click)="login()">
         					<ion-icon name="people"></ion-icon>Connect with Facebook
         				</button>
         			</div>
         		</ion-item>
         		<ion-item>
         			<div align="center">
-        	    		<button ion-button color="danger" icon-left round (click)="showCreateAccountFinal()">
-        	    			<ion-icon name="people"></ion-icon>Connect with Google
+        	    		<button ion-button icon-left round (click)="logout()">
+        	    			<ion-icon name="people"></ion-icon>Logout of Facebook
         	    		</button>
         	    	</div>
         	    </ion-item>
@@ -77,5 +75,21 @@
         </ion-col>
 	</ion-row>
 </ion-grid>
+
+
+<ion-card>
+<ion-card-header>
+  Facebook Info
+</ion-card-header>
+<ion-card-content>
+  <ion-card padding [hidden]="id == ''">
+    <p>Name: {{name}}</p>
+    <p>Email: {{email}}</p>
+    <p>id: {{id}}</p>
+    <p>gender: {{gender}}</p>
+    <img [src]="picture" />
+  </ion-card>
+</ion-card-content>
+</ion-card>
 
 </ion-content>

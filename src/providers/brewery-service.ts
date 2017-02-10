@@ -25,7 +25,6 @@ export class BreweryService {
   constructor(public http: Http) {
   	this.http = http;
   	this.data = null;
-  	console.log('Hello BreweryService Provider');
   }
 
   

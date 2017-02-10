@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, AlertController } from 'ionic-angular';
+
+import {FbProvider} from '../../providers/fb-provider';
+
 
 import { CreateAccountFinalPage }from '../create-account-final/create-account-final';
 
@@ -15,7 +18,13 @@ import { CreateAccountFinalPage }from '../create-account-final/create-account-fi
 })
 export class CreateAccountPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {}
+  public email:any;
+  public name:any;
+  public id:any;
+  public picture:any;
+  public gender:any;
+
+  constructor(public navCtrl: NavController, public navParams: NavParams, public fb: FbProvider,public alertCtrl: AlertController) {}
 
 
   showCreateAccountFinal() {
@@ -25,5 +34,35 @@ export class CreateAccountPage {
   ionViewDidLoad() {
     console.log('ionViewDidLoad CreateAccountPage');
   }
+
+  login() {
+    this.fb.login().then(() => {
+      this.fb.getCurrentUserProfile().then(
+        (profileData) => {
+          this.email = profileData.email;
+          this.name = profileData.name;
+          this.id = profileData.id;
+          this.gender = profileData.gender;
+          this.picture = "https://graph.facebook.com/" + profileData.id + "/picture?type=large";
+      });
+    });
+  }
+
+  logout() {
+    
+    this.fb.logout();
+
+  }
+
+    showAlert(msg) {
+
+      let alert = this.alertCtrl.create({
+        title: "wtf" + msg,
+        subTitle: "*" + msg + "*",
+        buttons: ['Dismiss']
+      });
+      alert.present();
+
+    }  
 
 }

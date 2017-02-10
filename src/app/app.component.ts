@@ -32,7 +32,7 @@ export class MyApp {
       { title: 'My Pub', component: HelloIonicPage },
       { title: 'Favorite Drinks', component: CreateAccountPage },
       { title: 'Search', component: ChooseCategoryPage },
-      { title: 'Swipe', component: SwipePage }
+      { title: 'Login', component: CreateAccountPage }
     ];
   }
 

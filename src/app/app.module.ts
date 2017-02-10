@@ -16,6 +16,10 @@ import { SearchPage } from '../pages/search/search';
 import { BreweryService } from '../providers/brewery-service';
 import { BeerDetailPage } from '../pages/beer-detail/beer-detail';
 
+import {FbProvider} from '../providers/fb-provider';
+
+
+
 
 @NgModule({
   declarations: [
@@ -53,6 +57,6 @@ import { BeerDetailPage } from '../pages/beer-detail/beer-detail';
     SwipePage,
     SearchPage
   ],
-  providers: [{provide: ErrorHandler, useClass: IonicErrorHandler},BreweryService,Storage]
+  providers: [{provide: ErrorHandler, useClass: IonicErrorHandler},BreweryService,Storage,FbProvider]
 })
 export class AppModule {}
