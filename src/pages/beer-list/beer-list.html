@@ -1,0 +1,40 @@
+<!--
+  Generated template for the BeerList page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-navbar  color="primary">
+    <ion-title>Beer List Selection</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+
+<ion-grid>
+  	<ion-row center>
+    	<ion-col width-100>
+		<b>
+		  Listed are popular beers in your area.  Swipe right if you love this beer.  If you never heard of this beer or dissatified with the taste, swipe left.
+		</b>
+    	</ion-col>
+	</ion-row>
+	<ion-row>
+		<ion-col width-100>
+			<ion-card (swipe)="swipeEvent($event)">
+			  <img src="images/beers/tampa-style-lager.jpg"/>
+			  <ion-card-content>
+			    <ion-card-title>
+			      Tampa-Style Lager
+			      </ion-card-title>
+			    <p>
+                  This Tampa-style Lager is inspired by the traditional German-style Helles, which translates to "light colored." Perfect for the Florida heat, it’s a beer that’s made for drinkin’ when it’s truly hotter than helles outside.
+			    </p>
+			  </ion-card-content>
+			</ion-card>		
+		</ion-col>
+	</ion-row>
+</ion-grid> 
+</ion-content>

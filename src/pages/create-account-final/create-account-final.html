@@ -1,0 +1,55 @@
+<!--
+  Generated template for the CreateAccount page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+
+<ion-header>
+  <ion-navbar  color="primary">
+  	<!----
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    ---->
+    <ion-title>Finalize Bender Account</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content padding>
+
+<ion-grid>
+	<ion-row center>
+        <ion-col width-100>
+        	<ion-list inset>
+				<ion-item>
+				    <ion-label floating>Create a username</ion-label>
+				    <ion-input type="text"></ion-input>
+				</ion-item>
+				<ion-item>
+				    <ion-label floating>Your date of birth</ion-label>
+				    <ion-datetime displayFormat="MM/DD/YYYY" [(ngModel)]="myDate"></ion-datetime>
+				</ion-item>
+				<ion-item text-wrap>
+					<ion-label id="agree">
+						By signing up you indicate that you have read and agree to the Terms 
+						of Service and Privacy Policy.
+					</ion-label>
+					<ion-checkbox [(ngModel)]="agree"></ion-checkbox>
+				</ion-item>				
+				<ion-item>
+                    <ion-row>
+                        <ion-col width-100>
+                            <div align="center">
+            					<button ion-button icon-left round (click)="presentLoading()">
+            						<ion-icon name="log-in"></ion-icon>Join Bender
+            					</button>
+                            </div>
+                        </ion-col>
+                    </ion-row>
+				</ion-item>				        		
+        	</ion-list>
+        </ion-col>
+	</ion-row>
+</ion-grid>
+
+</ion-content>

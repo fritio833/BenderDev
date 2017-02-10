@@ -1,0 +1,37 @@
+<!--
+  Generated template for the Success page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-navbar  color="primary">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Welcome to Bender</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+
+	<ion-grid>
+  		<ion-row center>
+  			<ion-col width-50>
+  				<div align="right">
+					<img class="beer-wench" src="images/beer-wench.jpg" />
+				</div>
+			</ion-col>
+			<ion-col width-50>
+				<h2>Login was successful!</h2>
+
+				<button id="get-started" ion-button round icon-left (click)="showChooseCategory()">
+					<ion-icon name="beer"></ion-icon>Let's Get Started
+				</button>
+			</ion-col>
+		</ion-row>
+	</ion-grid>
+
+
+</ion-content>

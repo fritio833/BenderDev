@@ -1,0 +1,62 @@
+<ion-header>
+  <ion-navbar  color="primary">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Bender</ion-title>
+       <ion-buttons end>
+           <button ion-button end icon-only (click)="showCreateAccount()">
+               <ion-icon name="log-in"></ion-icon>
+           </button>
+        </ion-buttons>  
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-card>
+  	<ion-card-content>
+	  <ion-grid>
+	    <ion-row>
+		  <ion-col width-50>
+		    <ion-card-title>
+		      {{beer?.name}}
+		    </ion-card-title>
+		    <div>
+		        <p id="beer-info-head"><b id="bold-info">Beer Info</b></p>
+		      	<p><b class="info-label">Style:</b> {{beer?.style.category.name}}</p>
+		      	<p><b class="info-label">Alchohol by Volume (ABV):</b> {{beer?.abv}}%</p>
+		      	<p><b class="info-label">Availability:</b> {{beer?.available.name}}</p>
+		      	<p><b class="info-label">Is Organic:</b> {{beer?.isOrganic}}</p>
+		      	<p><b class="info-label">In Production:</b> {{beer?.statusDisplay}}</p>
+		     </div>
+		     <div>
+		     	<button ion-button icon-left color="danger">
+                   <ion-icon name="thumbs-down"></ion-icon>
+                </button>                
+		     	<button ion-button icon-left color="secondary">
+                   <ion-icon name="thumbs-up"></ion-icon>
+                </button>
+		     	<button ion-button icon-left>
+                   <ion-icon name="create"></ion-icon>
+                      Rate
+                </button>
+		     	<button ion-button icon-left>
+                   <ion-icon name="heart"></ion-icon>
+                      save
+                </button>                                                              
+		     </div>
+		  </ion-col>
+	      <ion-col width-50>
+			  <img [src]="beer?.labels.large" />
+		  </ion-col>	  
+		</ion-row>
+		<ion-row>
+			<ion-col>
+			   <p id="beer-info-head"><b id="bold-info">Description</b></p>
+			   {{beer?.description || "No descrition entered."}}
+			</ion-col>
+		</ion-row>
+	  </ion-grid>
+	</ion-card-content>
+  </ion-card>  
+</ion-content>

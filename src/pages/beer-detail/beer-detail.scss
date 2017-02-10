@@ -1,0 +1,37 @@
+page-beer-detail {
+
+	.card-title {        
+	    border-bottom: 2px solid #999;
+	}
+
+	h3 {
+	  border-bottom: 2px solid #999;
+	  padding-bottom: 5px;
+	  font-weight:16px;
+	}
+
+	p {
+	   padding-top:3px;
+	}
+
+	.info-label {
+	   color:#666;
+	}
+
+	#beer-info-head {
+	  padding-top:5px;
+	  padding-top:5px;
+	  margin-bottom:10px;
+	  margin-top:10px;
+	  font-weight:16px;
+	  color: #fff;
+	  background-color: #387ef5;
+	  text-align: center;
+	}
+
+	#bold-info {
+	  margin-top:5px;
+	  margin-bottom:5px;
+	}
+
+}

@@ -1,0 +1,65 @@
+page-hello-ionic {
+
+	.intro {
+	   padding-top: 20px;
+	   padding-bottom: 20px;
+	   color: #ffffff;
+	   text-shadow: black 0 0 0.4em;
+
+	}
+
+	#motto {
+		padding-top: 20px;
+		font-size:12pt;
+		font-color: #ffffff;
+		text-align:center;
+	}
+
+	#home-content {
+	  background-image: url('../images/bar2.jpg');
+	  background-repeat: no-repeat;
+	  background-size: 100%;
+	  background-color: #000000;
+	}
+	
+	.bender-logo{
+ 		position: absolute;
+    	right: 0px;
+	}
+
+	.full-image-logo {
+	  width: 100%;
+	  height: 100%;
+	}
+
+	#logo {
+		text-align:center;
+		max-height: 50%;
+	}
+
+	.row {
+      width: 500px;
+	  overflow: hidden;
+	  height: 100%;
+	}	
+
+	.col-50 {
+	  width: 50%;
+	  float:left;
+	}
+
+    .ion-grid {
+      font-color:#ffffff;
+    }
+
+	input[type="text"], textarea {
+	  font-size: 25px;
+	  background-color : #ffffff;
+	}
+
+	#search {
+		float: right;
+	}
+
+
+}
