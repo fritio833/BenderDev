@@ -1,7 +1,8 @@
 import { Component, ViewChild } from '@angular/core';
+
 import { Platform, MenuController, Nav } from 'ionic-angular';
+
 import { StatusBar, Splashscreen } from 'ionic-native';
-import { Storage } from '@ionic/storage';
 
 import { HelloIonicPage } from '../pages/hello-ionic/hello-ionic';
 import { ListPage } from '../pages/list/list';
@@ -17,13 +18,12 @@ export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
   // make HelloIonicPage the root (or first) page
-  // rootPage: any = HelloIonicPage;
+  rootPage: any = HelloIonicPage;
   pages: Array<{title: string, component: any}>;
 
   constructor(
     public platform: Platform,
-    public menu: MenuController,
-    public storage: Storage
+    public menu: MenuController
   ) {
     this.initializeApp();
 
@@ -40,36 +40,6 @@ export class MyApp {
     this.platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
-
-      
-      // Here we will check if the user is already logged in
-      // because we don't want to ask users to log in each time they open the app      
-
-
-      let env = this;
-
-      this.storage.ready().then(() => {
-        
-        //this.storage.set('user','mr anderson');
-        //console.log('yolo',this.storage.get('user'));
-
-        this.storage.get('user')
-        .then( function (data) {
-          // user is previously logged and we have his data
-          // we will let him access the app
-          env.nav.push(HelloIonicPage);
-
-        }, function (error) {
-          //we don't have the user data so we will ask him to log in
-          env.nav.setRoot(CreateAccountPage);
-
-        });
-
-       },function(error){
-          console.log('failed to load storage.');
-       });
-      
-
       StatusBar.styleDefault();
       Splashscreen.hide();
     });
@@ -81,6 +51,4 @@ export class MyApp {
     // navigate to the new page if it is not the current page
     this.nav.setRoot(page.component);
   }
-
-
 }
