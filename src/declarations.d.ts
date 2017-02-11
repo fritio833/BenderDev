@@ -12,5 +12,4 @@
   https://www.typescriptlang.org/docs/handbook/declaration-files/introduction.html
 */
 declare module '*';
-
-declare const facebookConnectPlugin: any;
+declare module 'angular2-swing';

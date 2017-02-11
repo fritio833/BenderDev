@@ -17,10 +17,13 @@ import { BreweryService } from '../providers/brewery-service';
 import { BeerDetailPage } from '../pages/beer-detail/beer-detail';
 import { MyPubPage } from '../pages/my-pub/my-pub';
 
+<<<<<<< HEAD
 import {FbProvider} from '../providers/fb-provider';
 import { SingletonService } from '../providers/singleton';
 import { ValidationService } from '../providers/validation-service';
 
+=======
+>>>>>>> parent of 7c48660... Facebook Login
 
 @NgModule({
   declarations: [
@@ -60,6 +63,7 @@ import { ValidationService } from '../providers/validation-service';
     SearchPage,
     MyPubPage
   ],
+<<<<<<< HEAD
   providers: [{provide: ErrorHandler, 
               useClass: IonicErrorHandler},
               BreweryService,
@@ -67,5 +71,8 @@ import { ValidationService } from '../providers/validation-service';
               FbProvider,
               SingletonService,
               ValidationService]
+=======
+  providers: [{provide: ErrorHandler, useClass: IonicErrorHandler},BreweryService,Storage]
+>>>>>>> parent of 7c48660... Facebook Login
 })
 export class AppModule {}

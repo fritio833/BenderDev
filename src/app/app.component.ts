@@ -34,8 +34,13 @@ export class MyApp {
     this.pages = [
       { title: 'My Pub', component: MyPubPage },
       { title: 'Favorite Drinks', component: CreateAccountPage },
+<<<<<<< HEAD
       { title: 'Search', component: HelloIonicPage },
       { title: 'Login', component: CreateAccountPage }
+=======
+      { title: 'Search', component: ChooseCategoryPage },
+      { title: 'Swipe', component: SwipePage }
+>>>>>>> parent of 7c48660... Facebook Login
     ];
   }
 

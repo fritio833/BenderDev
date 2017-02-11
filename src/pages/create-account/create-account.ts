@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+<<<<<<< HEAD
 import { NavController, NavParams, AlertController,LoadingController } from 'ionic-angular';
 import { Validators, FormBuilder } from '@angular/forms';
 import { Storage } from '@ionic/storage';
@@ -6,6 +7,9 @@ import { Storage } from '@ionic/storage';
 import { FbProvider } from '../../providers/fb-provider';
 import { SingletonService } from '../../providers/singleton';
 import { ValidationService } from '../../providers/validation-service';
+=======
+import { NavController, NavParams } from 'ionic-angular';
+>>>>>>> parent of 7c48660... Facebook Login
 
 import { CreateAccountFinalPage }from '../create-account-final/create-account-final';
 import { MyPubPage } from '../my-pub/my-pub';
@@ -17,6 +21,7 @@ import { MyPubPage } from '../my-pub/my-pub';
 })
 export class CreateAccountPage {
 
+<<<<<<< HEAD
   public email:any;
   public emailForm:any;
   public name:any;
@@ -36,6 +41,9 @@ export class CreateAccountPage {
     });
 
   }
+=======
+  constructor(public navCtrl: NavController, public navParams: NavParams) {}
+>>>>>>> parent of 7c48660... Facebook Login
 
 
   showCreateAccountFinal() {
@@ -46,6 +54,7 @@ export class CreateAccountPage {
     console.log('ionViewDidLoad CreateAccountPage');
   }
 
+<<<<<<< HEAD
   login(logType) {
 
     this.fb.loginAndroid().then(() => {
@@ -115,3 +124,6 @@ export class CreateAccountPage {
     }
   }
 }
+=======
+}
+>>>>>>> parent of 7c48660... Facebook Login
