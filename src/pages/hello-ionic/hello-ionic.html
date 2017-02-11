@@ -5,14 +5,16 @@
     </button>
     <ion-title>Bender</ion-title>
        <ion-buttons end>
-           <button ion-button end icon-only (click)="showCreateAccount()">
+           <button [hidden]="sing.loginStatus" ion-button icon-only (click)="showCreateAccount()">
                <ion-icon name="log-in"></ion-icon>
            </button>
-        </ion-buttons>  
+           <button [hidden]="!sing.loginStatus" ion-button icon-only (click)="showCreateAccount()">
+               <ion-icon name="contact"></ion-icon>
+           </button>           
+        </ion-buttons>
   </ion-navbar>
 </ion-header>
 <ion-content id="home-content" padding>
-
 <ion-grid>
   <ion-row>
     <ion-col width-10></ion-col>

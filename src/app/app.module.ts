@@ -15,10 +15,11 @@ import { SwipePage } from '../pages/swipe/swipe';
 import { SearchPage } from '../pages/search/search';
 import { BreweryService } from '../providers/brewery-service';
 import { BeerDetailPage } from '../pages/beer-detail/beer-detail';
+import { MyPubPage } from '../pages/my-pub/my-pub';
 
 import {FbProvider} from '../providers/fb-provider';
-
-
+import { SingletonService } from '../providers/singleton';
+import { ValidationService } from '../providers/validation-service';
 
 
 @NgModule({
@@ -35,7 +36,8 @@ import {FbProvider} from '../providers/fb-provider';
     BeerListPage,
     BeerDetailPage,
     SwipePage,
-    SearchPage
+    SearchPage,
+    MyPubPage
 
   ],
   imports: [
@@ -55,8 +57,15 @@ import {FbProvider} from '../providers/fb-provider';
     BeerListPage,
     BeerDetailPage,
     SwipePage,
-    SearchPage
+    SearchPage,
+    MyPubPage
   ],
-  providers: [{provide: ErrorHandler, useClass: IonicErrorHandler},BreweryService,Storage,FbProvider]
+  providers: [{provide: ErrorHandler, 
+              useClass: IonicErrorHandler},
+              BreweryService,
+              Storage,
+              FbProvider,
+              SingletonService,
+              ValidationService]
 })
 export class AppModule {}

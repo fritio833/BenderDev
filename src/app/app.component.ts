@@ -9,6 +9,8 @@ import { ListPage } from '../pages/list/list';
 import { CreateAccountPage } from '../pages/create-account/create-account';
 import { ChooseCategoryPage } from '../pages/choose-category/choose-category';
 import { SwipePage } from '../pages/swipe/swipe';
+import { SingletonService } from '../providers/singleton';
+import { MyPubPage } from '../pages/my-pub/my-pub';
 
 
 @Component({
@@ -23,15 +25,16 @@ export class MyApp {
 
   constructor(
     public platform: Platform,
-    public menu: MenuController
+    public menu: MenuController,
+    public sing: SingletonService
   ) {
     this.initializeApp();
 
     // set our app's pages
     this.pages = [
-      { title: 'My Pub', component: HelloIonicPage },
+      { title: 'My Pub', component: MyPubPage },
       { title: 'Favorite Drinks', component: CreateAccountPage },
-      { title: 'Search', component: ChooseCategoryPage },
+      { title: 'Search', component: HelloIonicPage },
       { title: 'Login', component: CreateAccountPage }
     ];
   }
@@ -40,6 +43,7 @@ export class MyApp {
     this.platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
+
       StatusBar.styleDefault();
       Splashscreen.hide();
     });

@@ -5,6 +5,7 @@ import {Validators, FormBuilder } from '@angular/forms';
 
 import { CreateAccountPage } from '../create-account/create-account';
 import { BreweryService } from '../../providers/brewery-service';
+import { SingletonService } from '../../providers/singleton';
 import { SearchPage } from '../search/search';
 
 import { Beer } from '../../models/beer';
@@ -12,8 +13,7 @@ import { Beer } from '../../models/beer';
 
 @Component({
   selector: 'page-hello-ionic',
-  templateUrl: 'hello-ionic.html',
-  providers: [BreweryService]
+  templateUrl: 'hello-ionic.html'
 })
 
 export class HelloIonicPage {
@@ -21,13 +21,12 @@ export class HelloIonicPage {
   public qSearch:any;
   public qSearchForm:any;
   public alert:string;
-  // public beers:Array<string>;
   public totalResults:number;
   public numberOfPages:number;
   public currentPage:number;
   public beers:Beer[];
 
-  constructor(public navCtrl: NavController,public params:NavParams,public _form: FormBuilder,private alertCtrl: AlertController,public beerAPI: BreweryService) {
+  constructor(public navCtrl: NavController,public params:NavParams,public _form: FormBuilder,private alertCtrl: AlertController,public beerAPI: BreweryService, public sing:SingletonService) {
 
   	this.qSearch = params.get("qSearch");
   	this.alert = params.get("alert");
@@ -54,6 +53,7 @@ export class HelloIonicPage {
 
   	 }
   }
+
 
 
   loadBeers(data) {

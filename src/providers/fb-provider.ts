@@ -1,48 +1,58 @@
 import {Page} from 'ionic/ionic';
 import { Injectable } from '@angular/core';
 
-import { AlertController } from 'ionic-angular';
-
-
-import { Platform } from 'ionic-angular';
+import { AlertController,Platform } from 'ionic-angular';
+import { SingletonService } from './singleton';
 
 @Injectable()
 export class FbProvider {
 
     public p:any;
 
-    constructor( public platform: Platform, public alertCtrl: AlertController) {}
+    constructor( public platform: Platform, public alertCtrl: AlertController,public sing:SingletonService) {}
 
-    login() {
+    loginAndroid() {
         this.p = new Promise((resolve, reject) => {
-        if(this.platform.is('cordova')) {
-            facebookConnectPlugin.login([ 'email' ], (success) => {
+            if(this.platform.is('cordova')) {
+                facebookConnectPlugin.login([ 'email' ], (success) => {
                     console.log(JSON.stringify(success));
+                    this.sing.loginStatus = true;
                     resolve(success);
                 },(err) => {
                     console.log(JSON.stringify(err));
                     reject(err);
-                });
-            
+                });          
             } else {
                 console.log("Please run me on a device");
                 reject('Please run me on a device');
             }
         });
+
         return this.p;
     }
 
-    logout() {
+    logoutAndroid() {
 
-        facebookConnectPlugin.logout((success) =>{
-           console.log(JSON.stringify(success));
-        },(err) => {
-           console.log(JSON.stringify(err));
-        });
+      this.p = new Promise((resolve, reject) => {
+	        if(this.platform.is('cordova')) {      
+	          facebookConnectPlugin.logout((success) =>{
+	             console.log(JSON.stringify(success));
+	             resolve("OK");
+	          },(err) => {
+	           console.log(JSON.stringify(err));
+	           reject(err);
+	        });
+        } else {
+          console.log("Please run me on a device");
+          reject('Please run me on a device');
+        }
+      });
+
+      return this.p;        
 
     }
    
-    getCurrentUserProfile() {
+    getCurrentUserProfileAndroid() {
         this.p = new Promise((resolve, reject) => {
             facebookConnectPlugin.api('me?fields=email,name,gender', null,
             (profileData) => {
@@ -59,8 +69,8 @@ export class FbProvider {
     showAlert(msg) {
 
 	    let alert = this.alertCtrl.create({
-	      title: "wtf" + msg,
-	      subTitle: "*" + msg + "*",
+	      title: "Error",
+	      subTitle: msg,
 	      buttons: ['Dismiss']
 	    });
 	    alert.present();

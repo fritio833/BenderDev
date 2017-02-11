@@ -1,17 +1,16 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, AlertController } from 'ionic-angular';
+import { NavController, NavParams, AlertController,LoadingController } from 'ionic-angular';
+import { Validators, FormBuilder } from '@angular/forms';
+import { Storage } from '@ionic/storage';
 
-import {FbProvider} from '../../providers/fb-provider';
-
+import { FbProvider } from '../../providers/fb-provider';
+import { SingletonService } from '../../providers/singleton';
+import { ValidationService } from '../../providers/validation-service';
 
 import { CreateAccountFinalPage }from '../create-account-final/create-account-final';
+import { MyPubPage } from '../my-pub/my-pub';
 
-/*
-  Generated class for the CreateAccount page.
 
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
-*/
 @Component({
   selector: 'page-create-account',
   templateUrl: 'create-account.html'
@@ -19,12 +18,24 @@ import { CreateAccountFinalPage }from '../create-account-final/create-account-fi
 export class CreateAccountPage {
 
   public email:any;
+  public emailForm:any;
   public name:any;
   public id:any;
   public picture:any;
   public gender:any;
+  public password:any;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public fb: FbProvider,public alertCtrl: AlertController) {}
+  constructor(public navCtrl: NavController, public params: NavParams,public alertCtrl: AlertController,public sing:SingletonService,public form: FormBuilder,public fb:FbProvider, public storage: Storage, public loadingCtrl: LoadingController) {
+
+    this.email = params.get("email");
+    this.password = params.get("password");
+    
+    this.emailForm = this.form.group({
+      email : ['',Validators.compose([Validators.required,Validators.maxLength(30),ValidationService.emailValidator])],
+      password : ['',Validators.compose([Validators.required,Validators.maxLength(30)])]
+    });
+
+  }
 
 
   showCreateAccountFinal() {
@@ -35,9 +46,10 @@ export class CreateAccountPage {
     console.log('ionViewDidLoad CreateAccountPage');
   }
 
-  login() {
-    this.fb.login().then(() => {
-      this.fb.getCurrentUserProfile().then(
+  login(logType) {
+
+    this.fb.loginAndroid().then(() => {
+      this.fb.getCurrentUserProfileAndroid().then(
         (profileData) => {
           this.email = profileData.email;
           this.name = profileData.name;
@@ -50,19 +62,56 @@ export class CreateAccountPage {
 
   logout() {
     
-    this.fb.logout();
+    this.fb.logoutAndroid();
 
   }
 
-    showAlert(msg) {
+  goPub() {
+     this.navCtrl.push('CreateAccountFinalPage');
+  }
+
+  showAlert(title,msg) {
 
       let alert = this.alertCtrl.create({
-        title: "wtf" + msg,
-        subTitle: "*" + msg + "*",
+        title: msg,
+        subTitle: msg,
         buttons: ['Dismiss']
       });
       alert.present();
 
-    }  
+  }
 
+  showLoading() {
+    let loader = this.loadingCtrl.create({
+      content: "Verifying. Please wait...",
+      duration: 2500
+    });
+
+    loader.present();
+
+    setTimeout(() => {
+      this.navCtrl.push('CreateAccountFinalPage');
+    }, 2000);
+  
+  }
+
+  // TODO:  Firebase email confirmation
+  signupEmail() {
+
+    if (this.emailForm.valid) {
+      
+       this.storage.ready().then(()=>{
+
+         this.storage.set('user',this.emailForm.value.email);
+         this.storage.set('userType','email');
+
+         this.sing.loginStatus = true;
+
+         //this.navCtrl.push('MyPubPage');
+         this.showLoading();
+         //this.showAlert("YOLO","WTF");
+
+       });       
+    }
+  }
 }
