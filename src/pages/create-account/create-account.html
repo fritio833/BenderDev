@@ -1,23 +1,17 @@
 <ion-header>
   <ion-navbar  color="primary">
-  	<!----
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-<<<<<<< HEAD
     <ion-title>Bender</ion-title>
        <ion-buttons end>
            <button ion-button icon-only>
                <ion-icon name="search"></ion-icon>
            </button>       
-           <button [hidden]="!sing.loginStatus" ion-button icon-only (click)="showCreateAccount()">
+           <button [hidden]="false" ion-button icon-only (click)="showCreateAccount()">
                <ion-icon name="contact"></ion-icon>
            </button>           
         </ion-buttons>
-=======
-    ---->
-    <ion-title>Bender - Sign Up or Log In</ion-title>
->>>>>>> parent of 7c48660... Facebook Login
   </ion-navbar>
 </ion-header>
 
@@ -28,28 +22,11 @@
         	<ion-list no-lines>
         		<ion-item>
         			<div align="center">
-<<<<<<< HEAD
         				<button large ion-button icon-left round (click)="login()">
-=======
-        				<button ion-button icon-left round (click)="showCreateAccountFinal()">
->>>>>>> parent of 7c48660... Facebook Login
         					<ion-icon name="people"></ion-icon>Connect with Facebook
         				</button>
-                        <button large ion-button icon-left round (click)="goPub()">
-                            <ion-icon name="people"></ion-icon>Go Pub
-                        </button>
         			</div>
         		</ion-item>
-<<<<<<< HEAD
-=======
-        		<ion-item>
-        			<div align="center">
-        	    		<button ion-button color="danger" icon-left round (click)="showCreateAccountFinal()">
-        	    			<ion-icon name="people"></ion-icon>Connect with Google
-        	    		</button>
-        	    	</div>
-        	    </ion-item>
->>>>>>> parent of 7c48660... Facebook Login
         	</ion-list>
         </ion-col>
     </ion-row>
@@ -98,5 +75,21 @@
         </ion-col>
 	</ion-row>
 </ion-grid>
+
+
+<ion-card>
+<ion-card-header>
+  Facebook Info
+</ion-card-header>
+<ion-card-content>
+  <ion-card padding [hidden]="id == ''">
+    <p>Name: {{name}}</p>
+    <p>Email: {{email}}</p>
+    <p>id: {{id}}</p>
+    <p>gender: {{gender}}</p>
+    <img [src]="picture" />
+  </ion-card>
+</ion-card-content>
+</ion-card>
 
 </ion-content>

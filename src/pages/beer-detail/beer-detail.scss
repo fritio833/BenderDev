@@ -34,4 +34,12 @@ page-beer-detail {
 	  margin-bottom:5px;
 	}
 
+	ion-navbar.show-back-button .back-button {
+	    display: inline-block;
+	}
+
+    .pad-detail {
+      margin-top:20px;
+    }
+
 }

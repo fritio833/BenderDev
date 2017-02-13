@@ -1,15 +1,21 @@
-<ion-header>
+<ion-header [hidden]='isFavorites'>
   <ion-navbar  color="primary">
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>Bender</ion-title>
+    <ion-title>Bender {{isFavorites}}</ion-title>
        <ion-buttons end>
-           <button ion-button end icon-only (click)="showCreateAccount()">
+           <button ion-button end icon-only (click)="doLogin()">
                <ion-icon name="log-in"></ion-icon>
            </button>
         </ion-buttons>  
   </ion-navbar>
+</ion-header>
+
+<ion-header [hidden]='!isFavorites'>
+  <ion-navbar class="show-back-button">
+    <ion-title>{{sing.userName}}'s Beer List</ion-title>
+  </ion-navbar>      
 </ion-header>
 
 <ion-content padding>
@@ -18,8 +24,9 @@
 	  <ion-grid>
 	    <ion-row>
 		  <ion-col width-50>
+		    <div class="pad-detail" [hidden]='!isFavorites'></div>
 		    <ion-card-title>
-		      {{beer?.name}}
+		      {{beer?.name}} <ion-badge item-right [hidden]='!beerLikes'>{{beerLikes}} Likes</ion-badge>
 		    </ion-card-title>
 		    <div>
 		        <p id="beer-info-head"><b id="bold-info">Beer Info</b></p>
@@ -31,27 +38,33 @@
 		      	<p><b class="info-label">In Production:</b> {{beer?.statusDisplay}}</p>
 		     </div>
 		     <div>
+		        <!----
 		     	<button ion-button icon-left color="danger">
                    <ion-icon name="thumbs-down"></ion-icon>
-                </button>                
-		     	<button ion-button icon-left color="secondary">
+                </button>
+                ---->                
+		     	<button ion-button icon-left color="secondary" (click)='setLikeBeer(beer?.id)'>
                    <ion-icon name="thumbs-up"></ion-icon>
                 </button>
 		     	<button ion-button icon-left>
                    <ion-icon name="create"></ion-icon>
                       Rate
                 </button>
-		     	<button ion-button icon-left>
+		     	<button ion-button icon-left (click)='saveBeerToFavorites(beer?.id)' [hidden]='hideSave'>
                    <ion-icon name="heart"></ion-icon>
                       save
-                </button>                                                              
+                </button>           
+		     	<button ion-button icon-left (click)='removeBeerFromFavorites(beer?.id)' [hidden]='!hideSave'>
+                   <ion-icon name="remove-circle"></ion-icon>
+                      delete
+                </button>                                                                              
 		     </div>
 		  </ion-col>
 	      <ion-col width-50>
 			  <img [src]="beer?.labels.large" />
 		  </ion-col>	  
 		</ion-row>
-		<ion-row>
+		<ion-row [hidden]="beer?.description == null">
 			<ion-col>
 			   <p id="beer-info-head"><b id="bold-info">Description</b></p>
 			   {{beer?.description || "No descrition entered."}}

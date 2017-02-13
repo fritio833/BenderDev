@@ -2,21 +2,19 @@ import {Page} from 'ionic/ionic';
 import { Injectable } from '@angular/core';
 
 import { AlertController,Platform } from 'ionic-angular';
-import { SingletonService } from './singleton';
 
 @Injectable()
 export class FbProvider {
 
     public p:any;
 
-    constructor( public platform: Platform, public alertCtrl: AlertController,public sing:SingletonService) {}
+    constructor( public platform: Platform, public alertCtrl: AlertController) {}
 
     loginAndroid() {
         this.p = new Promise((resolve, reject) => {
             if(this.platform.is('cordova')) {
                 facebookConnectPlugin.login([ 'email' ], (success) => {
                     console.log(JSON.stringify(success));
-                    this.sing.loginStatus = true;
                     resolve(success);
                 },(err) => {
                     console.log(JSON.stringify(err));

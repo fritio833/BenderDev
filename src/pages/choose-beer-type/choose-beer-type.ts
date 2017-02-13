@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
-import { LoadingController } from 'ionic-angular';
 
 import { BeerListPage } from '../beer-list/beer-list';
 
@@ -16,21 +15,8 @@ import { BeerListPage } from '../beer-list/beer-list';
 })
 export class ChooseBeerTypePage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public loadingCtrl: LoadingController) {}
+  constructor(public navCtrl: NavController, public navParams: NavParams) {}
 
-  presentLoading() {
-    let loader = this.loadingCtrl.create({
-      content: "Retrieving your beer list...",
-      duration: 3500
-    });
-
-    loader.present();
-
-	  setTimeout(() => {
-	    this.navCtrl.push(BeerListPage);
-	  }, 3000);
-  
-  }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad ChooseBeerTypePage');

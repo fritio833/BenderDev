@@ -1,13 +1,15 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, AlertController } from 'ionic-angular';
+import { NavController, NavParams, AlertController, ToastController} from 'ionic-angular';
 
 import {Validators, FormBuilder } from '@angular/forms';
 
-import { CreateAccountPage } from '../create-account/create-account';
+import { LoginPage } from '../login/login';
 import { BreweryService } from '../../providers/brewery-service';
-import { SingletonService } from '../../providers/singleton';
-import { SearchPage } from '../search/search';
+import { SingletonService } from '../../providers/singleton-service';
+import { AuthService } from '../../providers/auth-service';
 
+import { SearchPage } from '../search/search';
+import { MyPubPage } from '../my-pub/my-pub';
 import { Beer } from '../../models/beer';
 
 
@@ -26,20 +28,19 @@ export class HelloIonicPage {
   public currentPage:number;
   public beers:Beer[];
 
-  constructor(public navCtrl: NavController,public params:NavParams,public _form: FormBuilder,private alertCtrl: AlertController,public beerAPI: BreweryService, public sing:SingletonService) {
+  constructor(public navCtrl: NavController,public params:NavParams,public _form: FormBuilder,private alertCtrl: AlertController,public beerAPI: BreweryService, public sing: SingletonService, public auth: AuthService, public toastCtrl:ToastController) {
 
   	this.qSearch = params.get("qSearch");
   	this.alert = params.get("alert");
-
   	this.qSearchForm = this._form.group({
   		qSearch : ['',Validators.required]
   	});
 
   }
 
-  showCreateAccount() {
+  doLogin() {
 
-  	this.navCtrl.push(CreateAccountPage);
+  	this.navCtrl.push(LoginPage);
   }
 
   doSearch() {
@@ -68,7 +69,7 @@ export class HelloIonicPage {
     
     if ( !this.totalResults ) {
 
-    	this.presentAlert();
+    	this.presentToast('No Beers Found. Please check your spelling.');
     	return;
     }
     
@@ -105,6 +106,30 @@ export class HelloIonicPage {
       buttons: ['Dismiss']
     });
     alert.present();
+  }
+
+
+  doLogout() {
+  
+    this.auth.logout().subscribe(allowed => {
+      if (allowed) {
+        this.navCtrl.setRoot(HelloIonicPage);
+        this.presentToast('Log out was successful');      
+      }
+    });
+  }
+
+  doMyPub() {
+    this.navCtrl.setRoot(MyPubPage);
+  }
+
+  presentToast(msg) {
+    let toast = this.toastCtrl.create({
+      message: msg,
+      position: 'top',
+      duration: 3000
+    });
+    toast.present();
   }  
 
   ionViewDidLoad() {
@@ -114,6 +139,6 @@ export class HelloIonicPage {
     if (this.alert != null) {
       this.presentAlert();    
     }
-  }
+  } 
 
 }

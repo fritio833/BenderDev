@@ -2,6 +2,13 @@ import { NgModule, ErrorHandler } from '@angular/core';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { MyApp } from './app.component';
+
+import { FbProvider } from '../providers/fb-provider';
+import { BreweryService } from '../providers/brewery-service';
+import { SingletonService } from '../providers/singleton-service';
+import { AuthService } from '../providers/auth-service';
+import { DbService } from '../providers/db-service';
+
 import { HelloIonicPage } from '../pages/hello-ionic/hello-ionic';
 import { ItemDetailsPage } from '../pages/item-details/item-details';
 import { ListPage } from '../pages/list/list';
@@ -13,17 +20,14 @@ import { ChooseBeerTypePage } from '../pages/choose-beer-type/choose-beer-type';
 import { BeerListPage } from '../pages/beer-list/beer-list';
 import { SwipePage } from '../pages/swipe/swipe';
 import { SearchPage } from '../pages/search/search';
-import { BreweryService } from '../providers/brewery-service';
 import { BeerDetailPage } from '../pages/beer-detail/beer-detail';
 import { MyPubPage } from '../pages/my-pub/my-pub';
+import { LoginPage } from '../pages/login/login';
+import { FavoritesPage } from '../pages/favorites/favorites';
+import { ProfilePage } from '../pages/profile/profile';
+import { ReviewsPage } from '../pages/reviews/reviews';
+import { FriendsPage } from '../pages/friends/friends';
 
-<<<<<<< HEAD
-import {FbProvider} from '../providers/fb-provider';
-import { SingletonService } from '../providers/singleton';
-import { ValidationService } from '../providers/validation-service';
-
-=======
->>>>>>> parent of 7c48660... Facebook Login
 
 @NgModule({
   declarations: [
@@ -40,7 +44,12 @@ import { ValidationService } from '../providers/validation-service';
     BeerDetailPage,
     SwipePage,
     SearchPage,
-    MyPubPage
+    MyPubPage,
+    LoginPage,
+    FavoritesPage,
+    ProfilePage,
+    ReviewsPage,
+    FriendsPage
 
   ],
   imports: [
@@ -61,18 +70,20 @@ import { ValidationService } from '../providers/validation-service';
     BeerDetailPage,
     SwipePage,
     SearchPage,
-    MyPubPage
+    MyPubPage,
+    LoginPage,
+    FavoritesPage,
+    ProfilePage,
+    ReviewsPage,
+    FriendsPage  
   ],
-<<<<<<< HEAD
   providers: [{provide: ErrorHandler, 
               useClass: IonicErrorHandler},
               BreweryService,
               Storage,
               FbProvider,
               SingletonService,
-              ValidationService]
-=======
-  providers: [{provide: ErrorHandler, useClass: IonicErrorHandler},BreweryService,Storage]
->>>>>>> parent of 7c48660... Facebook Login
+              AuthService,
+              DbService]
 })
 export class AppModule {}

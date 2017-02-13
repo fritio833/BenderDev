@@ -1,0 +1,99 @@
+<ion-header>
+  <ion-navbar  color="primary">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Bender</ion-title>
+       <ion-buttons end>
+           <button [hidden]="sing.loggedIn" ion-button icon-only (click)="showCreateAccount()">
+               <ion-icon name="log-in"></ion-icon>
+           </button>
+           <button [hidden]="!sing.loggedIn" ion-button icon-only (click)="showCreateAccount()">
+               <ion-icon name="contact"></ion-icon>{{sing.userName}}
+           </button>
+           <button [hidden]="!sing.loggedIn" ion-button icon-only (click)="doLogout()">
+               <ion-icon name="log-out"></ion-icon>
+           </button> 
+        </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+<ion-grid>
+  <ion-row center>
+        <ion-col width-100>
+          <ion-list no-lines>
+            <ion-item>
+              <div align="center">
+                <button large ion-button icon-left round (click)="loginFB()">
+                  <ion-icon name="people"></ion-icon>Connect with Facebook
+                </button>
+              </div>
+            </ion-item>
+          </ion-list>
+        </ion-col>
+    </ion-row>
+    <ion-row>
+        <ion-col width-100>
+            <ion-card>
+              <ion-card-content>
+                  <ion-card-title>
+                  <b>Login with email:</b>
+                  </ion-card-title>
+
+                    <form [formGroup] = "emailForm" (submit)="loginEmail()">
+
+                        <ion-list inset>
+                    <ion-item>
+                        <ion-label floating>Email</ion-label>
+                        <ion-input formControlName="email" required type="text"></ion-input>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label  floating>Password</ion-label>
+                        <ion-input formControlName="password" required type="password" type="password"></ion-input>
+                    </ion-item>
+                    <ion-item>
+                    <ion-grid>
+                      <ion-row>
+                          <ion-col width-100>
+                              <div align="center">
+                        <button type="submit" ion-button round icon-left [disabled]="!emailForm.valid">
+                          <ion-icon name="log-in"></ion-icon>Log In
+                        </button>
+                              </div>
+                          </ion-col>
+                      </ion-row>
+                      <ion-row>
+                          <ion-col width-100>
+                              <div align="center">
+                                  <a href="">Create New Account</a>
+                              </div>
+                          </ion-col>
+                      </ion-row>
+                    </ion-grid>
+                    </ion-item>                   
+                   </ion-list>
+                  </form>
+              </ion-card-content>
+            </ion-card>
+        </ion-col>
+  </ion-row>
+</ion-grid>
+
+
+<ion-card>
+<ion-card-header>
+  Facebook Info
+</ion-card-header>
+<ion-card-content>
+  <ion-card padding [hidden]="id == ''">
+    <p>Name: {{name}}</p>
+    <p>Email: {{email}}</p>
+    <p>id: {{id}}</p>
+    <p>gender: {{gender}}</p>
+    <img [src]="picture" />
+  </ion-card>
+</ion-card-content>
+</ion-card>
+
+</ion-content>

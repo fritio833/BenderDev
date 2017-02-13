@@ -5,12 +5,15 @@
     </button>
     <ion-title>Bender</ion-title>
        <ion-buttons end>
-           <button [hidden]="sing.loginStatus" ion-button icon-only (click)="showCreateAccount()">
+           <button [hidden]="sing.loggedIn" ion-button icon-only (click)="doLogin()">
                <ion-icon name="log-in"></ion-icon>
+           </button>        
+           <button [hidden]="!sing.loggedIn" ion-button icon-only (click)="doMyPub()">
+               <ion-icon name="contact"></ion-icon>{{sing.userName}}
            </button>
-           <button [hidden]="!sing.loginStatus" ion-button icon-only (click)="showCreateAccount()">
-               <ion-icon name="contact"></ion-icon>
-           </button>           
+           <button [hidden]="!sing.loggedIn" ion-button icon-only (click)="doLogout()">
+               <ion-icon name="log-out"></ion-icon>
+           </button>              
         </ion-buttons>
   </ion-navbar>
 </ion-header>

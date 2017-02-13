@@ -1,20 +1,22 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, AlertController } from 'ionic-angular';
+import { NavController, NavParams, AlertController, LoadingController } from 'ionic-angular';
 import { Validators, FormBuilder } from '@angular/forms';
 import { Storage } from '@ionic/storage';
 
 import { FbProvider } from '../../providers/fb-provider';
 import { ValidationService } from '../../providers/validation-service';
+import { SingletonService } from '../../providers/singleton-service';
+import { AuthService } from '../../providers/auth-service';
 
 import { CreateAccountFinalPage }from '../create-account-final/create-account-final';
 import { MyPubPage } from '../my-pub/my-pub';
 
 
 @Component({
-  selector: 'page-create-account',
-  templateUrl: 'create-account.html'
+  selector: 'page-login',
+  templateUrl: 'login.html'
 })
-export class CreateAccountPage {
+export class LoginPage {
 
   public email:any;
   public emailForm:any;
@@ -23,8 +25,10 @@ export class CreateAccountPage {
   public picture:any;
   public gender:any;
   public password:any;
+  public loginCredentials = {email: '', password: ''};
+  public loading:any;
 
-  constructor(public navCtrl: NavController, public params: NavParams,public alertCtrl: AlertController,public form: FormBuilder,public fb:FbProvider, public storage: Storage) {
+  constructor(public navCtrl: NavController, public params: NavParams,public alertCtrl: AlertController,public form: FormBuilder,public fb:FbProvider, public storage: Storage,public sing: SingletonService,public auth:AuthService, public loadingCtrl: LoadingController) {
 
     this.email = params.get("email");
     this.password = params.get("password");
@@ -42,14 +46,14 @@ export class CreateAccountPage {
   }
 
   showCreateAccountFinal() {
-  	this.navCtrl.push(CreateAccountFinalPage);
+    this.navCtrl.push(CreateAccountFinalPage);
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad CreateAccountPage');
+    console.log('ionViewDidLoad LoginPage');
   }
 
-  login(logType) {
+  loginFB(logType) {
 
     this.fb.loginAndroid().then(() => {
       this.fb.getCurrentUserProfileAndroid().then(
@@ -63,7 +67,7 @@ export class CreateAccountPage {
     });
   }
 
-  logout() {
+  logoutFB() {
     
     this.fb.logoutAndroid();
 
@@ -80,19 +84,54 @@ export class CreateAccountPage {
 
   }
 
+
+  loginEmail() {
+
+    this.loginCredentials = {email:this.emailForm.value.email,password:this.emailForm.value.password};
+
+    if (this.emailForm.valid) {
+        this.showLoading();
+        this.auth.login(this.loginCredentials).subscribe(allowed => {
+          if (allowed) {
+            setTimeout(() => {
+            this.loading.dismiss();
+            this.navCtrl.setRoot(MyPubPage)
+            });
+          } else {
+            this.showError("Access Denied");
+          }
+        },
+        error => {
+          this.showError(error);
+        });    
+      }
+  }
+
   // TODO:  Firebase email confirmation
   signupEmail() {
 
-    if (this.emailForm.valid) {
-      
-       this.storage.ready().then(()=>{
 
-         this.storage.set('user',this.emailForm.value.email);
-         this.storage.set('userType','email');
-
-         this.navCtrl.setRoot(MyPubPage);
-
-       });       
-    }
   }
+
+  showLoading() {
+    this.loading = this.loadingCtrl.create({
+      content: 'Please wait...'
+    });
+    this.loading.present();
+  }
+ 
+  showError(text) {
+    setTimeout(() => {
+      this.loading.dismiss();
+    });
+ 
+    let alert = this.alertCtrl.create({
+      title: 'Fail',
+      subTitle: text,
+      buttons: ['OK']
+    });
+    alert.present(prompt);
+  }
+
+
 }

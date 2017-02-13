@@ -1,16 +1,15 @@
 import { Component, ViewChild } from '@angular/core';
 
 import { Platform, MenuController, Nav } from 'ionic-angular';
-
+import { Storage } from '@ionic/storage';
 import { StatusBar, Splashscreen } from 'ionic-native';
 
 import { HelloIonicPage } from '../pages/hello-ionic/hello-ionic';
-import { ListPage } from '../pages/list/list';
-import { CreateAccountPage } from '../pages/create-account/create-account';
-import { ChooseCategoryPage } from '../pages/choose-category/choose-category';
+import { SingletonService } from '../providers/singleton-service';
+
 import { SwipePage } from '../pages/swipe/swipe';
-import { SingletonService } from '../providers/singleton';
 import { MyPubPage } from '../pages/my-pub/my-pub';
+import { LoginPage } from '../pages/login/login';
 
 
 @Component({
@@ -20,27 +19,48 @@ export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
   // make HelloIonicPage the root (or first) page
-  rootPage: any = HelloIonicPage;
+  rootPage: any;
   pages: Array<{title: string, component: any}>;
+  login:any;
+  comp:any;
+
 
   constructor(
     public platform: Platform,
     public menu: MenuController,
-    public sing: SingletonService
+    public sing: SingletonService,
+    public storage: Storage
   ) {
     this.initializeApp();
 
+    storage.ready().then(()=>{
+
+      storage.get("loggedIn").then((status)=>{
+        //console.log("loggedIn!:",status);
+        if (status == null) {
+          sing.loggedIn = false;
+          this.rootPage = HelloIonicPage
+        } else {
+          sing.loggedIn = true;
+          this.rootPage = MyPubPage;
+        }
+      });
+
+      storage.get("userName").then((uName) =>{
+        if ( uName != null )
+          sing.userName = uName;
+      });
+
+    });
+
+
+    console.log('loginstatus', sing.loggedIn);
     // set our app's pages
     this.pages = [
       { title: 'My Pub', component: MyPubPage },
-      { title: 'Favorite Drinks', component: CreateAccountPage },
-<<<<<<< HEAD
-      { title: 'Search', component: HelloIonicPage },
-      { title: 'Login', component: CreateAccountPage }
-=======
-      { title: 'Search', component: ChooseCategoryPage },
-      { title: 'Swipe', component: SwipePage }
->>>>>>> parent of 7c48660... Facebook Login
+      { title: 'Favorite Drinks', component: LoginPage },
+      { title: 'Search', component: HelloIonicPage }
+      // { title:  this.login, component: this.comp } TODO: Figure out to refresh menu
     ];
   }
 

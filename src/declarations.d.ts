@@ -13,3 +13,4 @@
 */
 declare module '*';
 declare module 'angular2-swing';
+declare const facebookConnectPlugin: any;

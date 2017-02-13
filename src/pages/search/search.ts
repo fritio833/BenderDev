@@ -41,7 +41,7 @@ export class SearchPage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad SearchPage');
-    console.log(this.beers);
+    // console.log(this.beers);
   }
 
 }
