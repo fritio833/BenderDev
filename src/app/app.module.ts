@@ -2,6 +2,7 @@ import { NgModule, ErrorHandler } from '@angular/core';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { MyApp } from './app.component';
+import { Ionic2RatingModule } from 'ionic2-rating';
 
 import { FbProvider } from '../providers/fb-provider';
 import { BreweryService } from '../providers/brewery-service';
@@ -27,6 +28,7 @@ import { FavoritesPage } from '../pages/favorites/favorites';
 import { ProfilePage } from '../pages/profile/profile';
 import { ReviewsPage } from '../pages/reviews/reviews';
 import { FriendsPage } from '../pages/friends/friends';
+import { ReviewBeerPage } from '../pages/review-beer/review-beer';
 
 
 @NgModule({
@@ -49,11 +51,13 @@ import { FriendsPage } from '../pages/friends/friends';
     FavoritesPage,
     ProfilePage,
     ReviewsPage,
-    FriendsPage
+    FriendsPage,
+    ReviewBeerPage
 
   ],
   imports: [
-    IonicModule.forRoot(MyApp)
+    IonicModule.forRoot(MyApp),
+    Ionic2RatingModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -75,7 +79,8 @@ import { FriendsPage } from '../pages/friends/friends';
     FavoritesPage,
     ProfilePage,
     ReviewsPage,
-    FriendsPage  
+    FriendsPage,
+    ReviewBeerPage 
   ],
   providers: [{provide: ErrorHandler, 
               useClass: IonicErrorHandler},

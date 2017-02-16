@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, AlertController, LoadingController } from 'ionic-angular';
+import { NavController, NavParams, AlertController, LoadingController,ModalController } from 'ionic-angular';
 import { Validators, FormBuilder } from '@angular/forms';
 import { Storage } from '@ionic/storage';
 
@@ -24,11 +24,12 @@ export class LoginPage {
   public id:any;
   public picture:any;
   public gender:any;
+  public birthday:any;
   public password:any;
   public loginCredentials = {email: '', password: ''};
   public loading:any;
 
-  constructor(public navCtrl: NavController, public params: NavParams,public alertCtrl: AlertController,public form: FormBuilder,public fb:FbProvider, public storage: Storage,public sing: SingletonService,public auth:AuthService, public loadingCtrl: LoadingController) {
+  constructor(public navCtrl: NavController, public params: NavParams,public alertCtrl: AlertController,public form: FormBuilder,public fb:FbProvider, public storage: Storage,public sing: SingletonService,public auth:AuthService, public loadingCtrl: LoadingController, public modalCtrl:ModalController) {
 
     this.email = params.get("email");
     this.password = params.get("password");
@@ -36,11 +37,6 @@ export class LoginPage {
     this.emailForm = this.form.group({
       email : ['',Validators.compose([Validators.required,Validators.maxLength(30),ValidationService.emailValidator])],
       password : ['',Validators.compose([Validators.required,Validators.maxLength(30)])]
-    });
-
-    console.log('user',storage.get('user'));
-    storage.get('userType').then((name)=> {
-      console.log('userType',name);
     });
 
   }
@@ -53,17 +49,21 @@ export class LoginPage {
     console.log('ionViewDidLoad LoginPage');
   }
 
-  loginFB(logType) {
+  presentModal() {
+    let modal = this.modalCtrl.create(CreateAccountFinalPage);
+    modal.present();
+  }
+
+  loginFB() {
 
     this.fb.loginAndroid().then(() => {
-      this.fb.getCurrentUserProfileAndroid().then(
-        (profileData) => {
-          this.email = profileData.email;
-          this.name = profileData.name;
-          this.id = profileData.id;
-          this.gender = profileData.gender;
-          this.picture = "https://graph.facebook.com/" + profileData.id + "/picture?type=large";
+
+      this.fb.setCurrentUserProfileAndroid().then((success) => {
+          
+          this.navCtrl.setRoot(MyPubPage);
+
       });
+
     });
   }
 
@@ -95,7 +95,7 @@ export class LoginPage {
           if (allowed) {
             setTimeout(() => {
             this.loading.dismiss();
-            this.navCtrl.setRoot(MyPubPage)
+            this.navCtrl.setRoot(MyPubPage);
             });
           } else {
             this.showError("Access Denied");

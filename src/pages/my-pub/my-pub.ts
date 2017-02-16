@@ -9,6 +9,7 @@ import { FavoritesPage } from '../favorites/favorites';
 import { ProfilePage } from '../profile/profile';
 import { ReviewsPage } from '../reviews/reviews';
 import { FriendsPage } from '../friends/friends';
+import { LoginPage } from '../login/login';
 
 /*
   Generated class for the MyPub page.
@@ -37,7 +38,7 @@ export class MyPubPage {
   
     this.auth.logout().subscribe(allowed => {
       if (allowed) {
-        this.navCtrl.setRoot(HelloIonicPage); 
+        this.navCtrl.setRoot(LoginPage); 
         this.presentToast('Log out was successful');      
       }
     });

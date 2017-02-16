@@ -39,7 +39,7 @@ export class MyApp {
         //console.log("loggedIn!:",status);
         if (status == null) {
           sing.loggedIn = false;
-          this.rootPage = HelloIonicPage
+          this.rootPage = LoginPage
         } else {
           sing.loggedIn = true;
           this.rootPage = MyPubPage;

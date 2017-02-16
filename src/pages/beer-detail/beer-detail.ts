@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, ToastController } from 'ionic-angular';
+import { NavController, NavParams, ToastController, ModalController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 
 import { BreweryService } from '../../providers/brewery-service';
@@ -8,6 +8,8 @@ import { DbService } from '../../providers/db-service';
 import { Beer } from '../../models/beer';
 
 import { LoginPage } from '../login/login';
+import { ReviewBeerPage } from '../review-beer/review-beer';
+import { Ionic2RatingModule } from 'ionic2-rating';
 
 /*
   Generated class for the BeerDetail page.
@@ -27,8 +29,11 @@ export class BeerDetailPage {
   public isFavorites:boolean = false;
   public hideSave:boolean = false;
   public beerLikes:number;
+  public beerReviews:any;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public beerAPI: BreweryService, public storage:Storage, public toastCtrl:ToastController, public sing:SingletonService,public db:DbService) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, public beerAPI: BreweryService, 
+    public storage:Storage, public toastCtrl:ToastController, public sing:SingletonService,public db:DbService, 
+    public modalCtrl:ModalController) {
 
     this.beerId = navParams.get('beerId');
     this.isFavorites = navParams.get('favorites');
@@ -40,14 +45,14 @@ export class BeerDetailPage {
 
   ionViewDidLoad() {
 
-    console.log('ionViewDidLoad BeerDetailPage');
-
-
+    // console.log('ionViewDidLoad BeerDetailPage');
 
     this.beerAPI.loadBeerById(this.beerId).subscribe(beer => {
-       this.beer = beer;
-       this.loadBeer(this.beer);
+      this.beer = beer;
+      this.loadBeer(this.beer);
 
+      this.getBeerReviews()
+      //  Hide Save button if we saved this beer already
       this.storage.ready().then(()=>{
 
         this.storage.get("beers").then((beerArray)=>{
@@ -71,9 +76,6 @@ export class BeerDetailPage {
 
     this.beer = data.data;
 
-    //console.log('wut',this.beer);
-    //console.log('name',this.beer.name);
-
  		
     // fix beers with no images
     if (!this.beer.hasOwnProperty('labels')) {
@@ -96,7 +98,7 @@ export class BeerDetailPage {
         this.beer['available'] = {description:'',name:'',id:''};
 
     }
-    console.log('detail',this.beer);
+    //console.log('detail',this.beer);
   }
 
   saveBeerToFavorites(beerId) {
@@ -138,6 +140,21 @@ export class BeerDetailPage {
     
       });
     }
+  }
+
+  rateBeer(beerId) {
+
+
+  }
+
+  getBeerReviews() {
+
+     // Get beer reviews by beer id
+     this.db.getBeerReviewsById(this.beerId).subscribe(success=>{
+
+      this.beerReviews = success.data;
+       
+     });
   }
 
   removeBeerFromFavorites(beerId) {
@@ -198,5 +215,22 @@ export class BeerDetailPage {
     });
 
   }
+
+  reviewBeer(beerId,beerName) {
+
+    let modal = this.modalCtrl.create(ReviewBeerPage,{beerId:beerId,beerName:beerName});
+    modal.onDidDismiss(()=> {
+      this.getBeerReviews();
+    });
+    modal.present();
+
+  }
+
+  ionViewWillEnter() { 
+       
+       console.log("HERE VIEW WILL ENTER"); 
+
+  }  
+
 
 }

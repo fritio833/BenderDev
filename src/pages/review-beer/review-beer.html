@@ -1,0 +1,57 @@
+<!--
+  Generated template for the ReviewBeer page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar color="primary">
+    <ion-buttons start>
+        <button (click)="cancel()">
+          <ion-icon name="close"></ion-icon>
+        </button>
+    </ion-buttons>  
+    <ion-title>review-beer</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+
+<ion-grid>
+  <ion-row>
+    <ion-col>
+		<div align='center'><h2>Write a review for {{BeerName}}</h2></div>
+	</ion-col>
+</ion-row>
+<ion-row>
+  <ion-col>
+    <div align="center">
+        Rate this beer on taste
+	  	<rating [(ngModel)]="beerRating" max="5"></rating>
+		<ion-chip>
+		  <ion-icon name="star"></ion-icon>
+		  <ion-label>{{beerRating}} stars</ion-label>
+		</ion-chip>
+	</div>
+  </ion-col>
+</ion-row>
+<ion-row>
+  <ion-col>
+    <div align="center">
+	<textarea [(ngModel)]="beerReview" rows="10" cols="40"></textarea>
+	</div>
+  </ion-col>
+</ion-row>
+<ion-row>
+  <ion-col>
+	<div align="center">
+		<button ion-button (click)="submitBeerReview()">Submit Review</button>
+		<button ion-button (click)="cancel()">Close</button>
+	</div>
+  </ion-col>
+ </ion-row>
+</ion-grid>
+</ion-content>

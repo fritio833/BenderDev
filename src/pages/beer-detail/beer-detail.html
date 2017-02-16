@@ -46,17 +46,21 @@
 		     	<button ion-button icon-left color="secondary" (click)='setLikeBeer(beer?.id)'>
                    <ion-icon name="thumbs-up"></ion-icon>
                 </button>
-		     	<button ion-button icon-left>
+		     	<button ion-button icon-left (click)='reviewBeer(beer?.id,beer?.name)'>
                    <ion-icon name="create"></ion-icon>
-                      Rate
+                      Review
                 </button>
 		     	<button ion-button icon-left (click)='saveBeerToFavorites(beer?.id)' [hidden]='hideSave'>
                    <ion-icon name="heart"></ion-icon>
-                      save
-                </button>           
+                      Save
+                </button>
+		     	<button ion-button icon-left>
+                   <ion-icon name="beer"></ion-icon>
+                      Check-in
+                </button>                          
 		     	<button ion-button icon-left (click)='removeBeerFromFavorites(beer?.id)' [hidden]='!hideSave'>
                    <ion-icon name="remove-circle"></ion-icon>
-                      delete
+                      Delete
                 </button>                                                                              
 		     </div>
 		  </ion-col>
@@ -72,5 +76,10 @@
 		</ion-row>
 	  </ion-grid>
 	</ion-card-content>
-  </ion-card>  
+  </ion-card>
+  <ion-card *ngFor="let review of beerReviews" >
+	  <ion-card-content>
+	    {{review.review}} 	<rating [(ngModel)]="review.beer_rating" readOnly="true" max="5"></rating>
+	  </ion-card-content>
+  </ion-card> 
 </ion-content>

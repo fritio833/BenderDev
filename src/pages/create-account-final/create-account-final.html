@@ -7,49 +7,94 @@
 
 <ion-header>
   <ion-navbar  color="primary">
-  	<!----
-    <button ion-button menuToggle>
-      <ion-icon name="menu"></ion-icon>
-    </button>
-    ---->
-    <ion-title>Finalize Bender Account</ion-title>
+    <ion-buttons start>
+        <button (click)="cancel()">
+          <ion-icon name="close"></ion-icon>
+        </button>
+    </ion-buttons>
+    <ion-title>Create Account</ion-title>
   </ion-navbar>
 </ion-header>
 <ion-content padding>
-
-<ion-grid>
-	<ion-row center>
-        <ion-col width-100>
-        	<ion-list inset>
-				<ion-item>
-				    <ion-label floating>Create a username</ion-label>
-				    <ion-input type="text"></ion-input>
-				</ion-item>
-				<ion-item>
-				    <ion-label floating>Your date of birth</ion-label>
-				    <ion-datetime displayFormat="MM/DD/YYYY" [(ngModel)]="myDate"></ion-datetime>
-				</ion-item>
-				<ion-item text-wrap>
-					<ion-label id="agree">
-						By signing up you indicate that you have read and agree to the Terms 
-						of Service and Privacy Policy.
-					</ion-label>
-					<ion-checkbox [(ngModel)]="agree"></ion-checkbox>
-				</ion-item>				
-				<ion-item>
-                    <ion-row>
-                        <ion-col width-100>
-                            <div align="center">
-            					<button ion-button icon-left round (click)="presentLoading()">
-            						<ion-icon name="log-in"></ion-icon>Join Bender
-            					</button>
-                            </div>
-                        </ion-col>
-                    </ion-row>
-				</ion-item>				        		
-        	</ion-list>
-        </ion-col>
-	</ion-row>
-</ion-grid>
-
+  <form [formGroup] = "genderForm">
+    <ion-list radio-group formControlName="gender" no-lines>
+      <ion-item>
+        <ion-label>Gender</ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-label>Male</ion-label>
+        <ion-radio value="M" checked></ion-radio>
+      </ion-item>
+      <ion-item>
+        <ion-label>Female</ion-label>
+        <ion-radio value="F"></ion-radio>
+      </ion-item>
+      <ion-item>
+        <ion-label>Rather not say</ion-label>
+        <ion-radio value=""></ion-radio>
+      </ion-item>
+    </ion-list>
+  </form>
+  <form [formGroup] = "newUserForm" (submit)="saveUser()">
+  	<ion-list inset no-lines>
+      <ion-item>
+        <ion-label floating>Name</ion-label>
+        <ion-input type="text" formControlName="name" [class.invalid]="!newUserForm.controls.name.valid && (newUserForm.controls.name.dirty || submitAttempt)"></ion-input>        
+      </ion-item>
+      <ion-item *ngIf="!newUserForm.controls.name.valid && (newUserForm.controls.name.dirty || submitAttempt)">
+          <p class="warning">Please enter a valid name.</p>
+      </ion-item>      
+      <ion-item>
+          <ion-label floating>Username</ion-label>
+          <ion-input type="text" formControlName="userName" [class.invalid]="(!newUserForm.controls.userName.valid && submitAttempt) || duplicateUser"></ion-input>         
+      </ion-item>
+      <ion-item *ngIf="!newUserForm.controls.userName.valid && (newUserForm.controls.userName.dirty || submitAttempt)">
+          <p class="warning">Please enter a valid user name. Spaces not allowed. Only letters and numbers.</p>
+      </ion-item>
+      <ion-item *ngIf="duplicateUser">
+          <p class="warning">Found duplicate user.  Please choose another user name.</p>
+      </ion-item>               
+     <ion-item>
+          <ion-label floating>Email</ion-label>
+          <ion-input type="text" formControlName="email" [class.invalid]="(!newUserForm.controls.email.valid && submitAttempt) || duplicateEmail"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="!newUserForm.controls.email.valid && (newUserForm.controls.email.dirty || submitAttempt)">
+          <p class="warning">Please enter a valid email.</p>
+      </ion-item>
+      <ion-item *ngIf="duplicateEmail">
+          <p class="warning">Found duplicate email.</p>
+      </ion-item>                   
+			<ion-item>
+			    <ion-label floating>Password</ion-label>
+			    <ion-input type="password" formControlName="pword" [class.invalid]="!newUserForm.controls.pword.valid && (newUserForm.controls.pword.dirty || submitAttempt)"></ion-input>         
+			</ion-item>
+      <ion-item *ngIf="!newUserForm.controls.pword.valid && (newUserForm.controls.pword.dirty || submitAttempt)">
+          <p class="warning">Please enter a valid password. Must be at least 5 characters.</p>
+      </ion-item>                  
+			<ion-item>
+			    <ion-label floating>Your date of birth</ion-label>
+			    <ion-datetime displayFormat="MM/DD/YYYY" formControlName="birthDay">You must be of legal drinking age to register.</ion-datetime>
+			</ion-item>
+      <ion-item *ngIf="!newUserForm.controls.birthDay.valid && (newUserForm.controls.birthDay.dirty || submitAttempt)">
+          <p class="warning">You must be 18 to register.</p>
+      </ion-item>           
+			<ion-item text-wrap>
+				<ion-label id="agree">
+					By signing up you indicate that you have read and agree to the Terms 
+					of Service and Privacy Policy.
+				</ion-label>
+				<ion-checkbox formControlName="agree"></ion-checkbox>
+			</ion-item>
+      <ion-item *ngIf="!newUserForm.controls.agree.valid && (newUserForm.controls.agree.dirty || submitAttempt)">
+          <p class="warning">Must agree to terms of service and privacy policy to proceed.</p>
+      </ion-item>       			
+			<ion-item>    
+         <div align="center">
+  					<button type="submit" ion-button icon-left round>
+  						<ion-icon name="log-in"></ion-icon>Join Bender
+  					</button>
+         </div>
+			</ion-item>				        		
+  	</ion-list>
+  </form>
 </ion-content>

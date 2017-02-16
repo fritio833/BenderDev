@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
+import { Storage } from '@ionic/storage';
 
 import { SingletonService } from '../../providers/singleton-service';
 
@@ -15,10 +16,19 @@ import { SingletonService } from '../../providers/singleton-service';
 })
 export class ProfilePage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public sing: SingletonService) {}
+  public profileIMG:any;
+
+  constructor(public navCtrl: NavController, public navParams: NavParams, public sing: SingletonService, public storage:Storage) {}
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad ProfilePage');
+    
+    this.storage.ready().then(()=>{
+       this.storage.get('fbPic').then((val) =>{
+         this.profileIMG = val;
+       })
+    });
+
   }
 
 }

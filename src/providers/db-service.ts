@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 
-let databaseServiceUrl = 'http://192.168.1.100/bender/';
+let databaseServiceUrl = 'http://benderapp.servebeer.com/bender/';
 
 /*
   Generated class for the DbService provider.
@@ -27,5 +27,65 @@ export class DbService {
 
     return this.http.get(databaseServiceUrl + 'likes/?action=get' + '&beerid=' + beerId)
         .map(res => res.json());
-  }  
+  }
+
+  public checkDuplicateUsername(uname) {
+
+    return this.http.get(databaseServiceUrl + 'user/?action=udup' + '&uname=' + uname)
+  		.map(res => res.json());
+  }
+
+  public checkDuplicateEmail(email) {
+
+    return this.http.get(databaseServiceUrl + 'user/?action=edup' + '&email=' + email)
+  		.map(res => res.json());
+  }
+
+  public saveUser(email,username,name,gender,password,birthday,isFB,facebookID,fbPic) {
+
+    return this.http.get(databaseServiceUrl + 'user/?action=save' 
+         + '&email=' + email
+         + '&username=' + username
+         + '&name=' + name
+         + '&gender=' + gender
+         + '&password=' + password
+         + '&birthday=' + birthday
+         + '&isFB=' + isFB
+         + '&facebookID=' + facebookID
+         + '&fbPic=' + fbPic)
+  		.map(res => res.json());
+  }
+  
+  public loginFacebook(FacebookId) {
+  		
+    return this.http.get(databaseServiceUrl + 'user/?action=loginFB' 
+         + '&facebookid=' + FacebookId)
+  		.map(res => res.json());
+  }
+
+  public loginUser(email,password) {
+
+    return this.http.get(databaseServiceUrl + 'user/?action=login' 
+         + '&email=' + email
+         + '&pword=' + password)
+  		.map(res => res.json());
+  }
+
+  public writeBeerReview(token,beerReview,beerRating,beerId) {
+
+    return this.http.get(databaseServiceUrl + 'reviews/?action=reviewbeer' 
+         + '&token=' + token
+         + '&review=' + beerReview
+         + '&rating=' + beerRating
+         + '&beerid=' + beerId)
+      .map(res => res.json());
+  }
+
+  public getBeerReviewsById(beerId) {
+
+    return this.http.get(databaseServiceUrl + 'reviews/?action=GetBeerReviews&beerid=' + beerId)
+      .map(res => res.json());
+
+  }
+
 }
