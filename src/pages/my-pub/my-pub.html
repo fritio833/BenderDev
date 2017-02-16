@@ -8,11 +8,9 @@
          <button ion-button icon-only (click)="doSearch()">
              <ion-icon name="search"></ion-icon>
          </button>
-         <!----
          <button [hidden]="!sing.loggedIn" ion-button icon-only>
              <ion-icon name="contact"></ion-icon>{{sing.userName}}
          </button>
-         ---->
          <button [hidden]="!sing.loggedIn" ion-button icon-only (click)="doLogout()">
              <ion-icon name="log-out"></ion-icon>
          </button>              

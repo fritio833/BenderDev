@@ -30,6 +30,7 @@ export class BeerDetailPage {
   public hideSave:boolean = false;
   public beerLikes:number;
   public beerReviews:any;
+  public overallBeerRating:number;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public beerAPI: BreweryService, 
     public storage:Storage, public toastCtrl:ToastController, public sing:SingletonService,public db:DbService, 
@@ -51,22 +52,28 @@ export class BeerDetailPage {
       this.beer = beer;
       this.loadBeer(this.beer);
 
-      this.getBeerReviews()
+      this.getBeerReviews();
+
       //  Hide Save button if we saved this beer already
+
       this.storage.ready().then(()=>{
 
         this.storage.get("beers").then((beerArray)=>{
-        
-          for (let i = 0; i < beerArray.length; i++) {
-            if (beerArray[i].id == this.beer.id ){
-              this.hideSave = true;
-              return;
+      
+          if (beerArray != null) {
+
+            for (let i = 0; i < beerArray.length; i++) {
+              if (beerArray[i].id == this.beer.id ){
+                this.hideSave = true;
+                return;
+              }
             }
           }
-
+          
         });      
     
-      });  
+      }); 
+      
 
     });
   }
@@ -149,11 +156,27 @@ export class BeerDetailPage {
 
   getBeerReviews() {
 
+     let beerRatingTotal:number = 0;
+     let beerReviewCount:number = 0;
      // Get beer reviews by beer id
      this.db.getBeerReviewsById(this.beerId).subscribe(success=>{
 
       this.beerReviews = success.data;
-       
+
+     // Get overall Beer Ratings:  TODO: Create a backend make the calculation TABLE: beer_rating
+      console.log('beer reviews',this.beerReviews);
+      for (let i = 0; i < this.beerReviews.length; i++) {
+
+        // if the beer rating is zero, they never bothered to rate.  Ignore.
+        if (parseInt(this.beerReviews[i].beer_rating)) {
+          beerRatingTotal += parseInt(this.beerReviews[i].beer_rating);
+          beerReviewCount++;  
+        }
+      }
+
+      this.overallBeerRating = beerRatingTotal  / beerReviewCount;
+
+
      });
   }
 

@@ -73,11 +73,14 @@ export class DbService {
 
   public writeBeerReview(token,beerReview,beerRating,beerId) {
 
-    return this.http.get(databaseServiceUrl + 'reviews/?action=reviewbeer' 
-         + '&token=' + token
-         + '&review=' + beerReview
-         + '&rating=' + beerRating
-         + '&beerid=' + beerId)
+    return this.http.post(databaseServiceUrl+'reviews/write/',
+              {
+                action:'reviewbeer', 
+                token: token,
+                review: beerReview,
+                rating: beerRating,
+                beerid: beerId
+              })
       .map(res => res.json());
   }
 
@@ -85,7 +88,16 @@ export class DbService {
 
     return this.http.get(databaseServiceUrl + 'reviews/?action=GetBeerReviews&beerid=' + beerId)
       .map(res => res.json());
+  }
 
+  public saveFavoriteBeers(token,beers) {
+    return this.http.post(databaseServiceUrl+'favorites/write/',{action:'favbeer',token:token,beers:beers})
+      .map(res => res.json());    
+  }
+
+  public getFavoriteBeers(token) {
+    return this.http.get(databaseServiceUrl + 'favorites/?action=GetFavBeers&token=' + token)
+      .map(res => res.json());    
   }
 
 }

@@ -37,12 +37,7 @@
 		      	<p><b class="info-label">Is Organic:</b> {{beer?.isOrganic}}</p>
 		      	<p><b class="info-label">In Production:</b> {{beer?.statusDisplay}}</p>
 		     </div>
-		     <div>
-		        <!----
-		     	<button ion-button icon-left color="danger">
-                   <ion-icon name="thumbs-down"></ion-icon>
-                </button>
-                ---->                
+		     <div>               
 		     	<button ion-button icon-left color="secondary" (click)='setLikeBeer(beer?.id)'>
                    <ion-icon name="thumbs-up"></ion-icon>
                 </button>
@@ -64,8 +59,13 @@
                 </button>                                                                              
 		     </div>
 		  </ion-col>
-	      <ion-col width-50>
+	      <ion-col width-50 align="center">
+	        <div [hidden]="!overallBeerRating">
+	          <rating [(ngModel)]="overallBeerRating" readOnly="true" max="5"></rating>
+	        </div>
+	        <div>
 			  <img [src]="beer?.labels.large" />
+			</div>
 		  </ion-col>	  
 		</ion-row>
 		<ion-row [hidden]="beer?.description == null">
@@ -79,7 +79,10 @@
   </ion-card>
   <ion-card *ngFor="let review of beerReviews" >
 	  <ion-card-content>
-	    {{review.review}} 	<rating [(ngModel)]="review.beer_rating" readOnly="true" max="5"></rating>
+	    {{review.review}}
+	    <div [hidden]="+review.beer_rating == 0">  	
+	    	<rating [(ngModel)]="review.beer_rating" readOnly="true" max="5"></rating>
+	    </div>
 	  </ion-card-content>
   </ion-card> 
 </ion-content>

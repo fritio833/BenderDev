@@ -31,40 +31,55 @@ export class AuthService {
 
         this.db.loginUser(credentials.email,credentials.password)
            .subscribe(allowed => {
-              //console.log(allowed);
-              let access = false;
+            //console.log(allowed);
+            let access = false;
 
-              if (allowed.status) {
+            if (allowed.status) {
 
-                access = true;
-        
-                this.currentUser = new User(allowed.data.name, allowed.data.email);
+              access = true;
+      
+              this.currentUser = new User(allowed.data.name, allowed.data.email);
 
-                this.sing.loggedIn = true;
-                this.sing.userName = allowed.data.username;
+              this.sing.loggedIn = true;
+              this.sing.userName = allowed.data.username;
+              console.log('allowed',allowed.data.token);
 
-                this.storage.set('loggedIn',true);
-                this.storage.set('token',allowed.data.token)
-                this.storage.set('email',credentials.email);
-                this.storage.set('userName',allowed.data.username);
-                this.storage.set('name',allowed.data.name);
-                this.storage.set('isFB', allowed.data.is_facebook);
-                this.storage.set('fbID', allowed.data.fb_id);
-                this.storage.set('fbPic', allowed.data.fb_pic);
+              this.storage.set('loggedIn',true);
+              this.storage.set('token',allowed.data.token)
+              this.storage.set('email',credentials.email);
+              this.storage.set('userName',allowed.data.username);
+              this.storage.set('name',allowed.data.name);
+              this.storage.set('isFB', allowed.data.is_facebook);
+              this.storage.set('fbID', allowed.data.fb_id);
+              this.storage.set('fbPic', allowed.data.fb_pic);
 
-              } else {
-                 access = false;
-                 console.log('login fail');
-              }
+              // Get Favorite Beers
+              this.db.getFavoriteBeers(allowed.data.token).subscribe((beersObj)=>{
 
-              observer.next(access);
-              observer.complete();
+                  if (beersObj != null) {
 
-           },error => {
-              console.log(error);
-           });
+                    let beersArray = new Array();
+                    let beers = JSON.parse(beersObj.data.beers);
 
+                    for (let i = 0; i < beers.length; i++) {
+                      beersArray.push(beers[i]);
+                    }
+                    this.storage.set('beers',beersArray);
+                  }
+                  
+              });
 
+            } else {
+               access = false;
+               console.log('login fail');
+            }
+
+            observer.next(access);
+            observer.complete();
+
+         },error => {
+            console.log(error);
+         });
 
       });
     }
@@ -90,9 +105,29 @@ export class AuthService {
     return Observable.create(observer => {
       this.currentUser = null;
 
-      this.storage.ready().then(()=>{      
+      this.storage.ready().then(()=>{
+
+        // store favorites before we destroy it
+        this.storage.get('beers').then((beers)=>{
+
+          console.log('beers to delete',beers);
+          this.storage.get('token').then((token)=>{
+            
+            this.db.saveFavoriteBeers(token,JSON.stringify(beers)).subscribe((success)=>{
+               //console.log(success);
+               this.storage.remove('token');
+               
+               this.storage.clear().then((isClear)=>{
+                  observer.next(true);
+                  observer.complete();                 
+               });
+            });
+                        
+          });          
+        });
+
+         /*
   	    this.storage.remove('loggedIn');
-        this.storage.remove('token');
         this.storage.remove('user');
         this.storage.remove('userName');
         this.storage.remove('name');
@@ -102,8 +137,10 @@ export class AuthService {
         this.storage.remove('fbPic');        
 
   	    this.sing.loggedIn = false;
-  	    observer.next(true);
-  	    observer.complete();
+        */
+        //observer.next(true);
+        //observer.complete();          
+
       });
 
     });

@@ -113,7 +113,7 @@ export class HelloIonicPage {
   
     this.auth.logout().subscribe(allowed => {
       if (allowed) {
-        this.navCtrl.setRoot(HelloIonicPage);
+        this.navCtrl.setRoot(LoginPage);
         this.presentToast('Log out was successful');      
       }
     });

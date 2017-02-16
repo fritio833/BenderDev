@@ -74,13 +74,13 @@ export class FavoritesPage {
   }
 
   ionViewWillEnter() { 
-    console.log("YO MISTER!");
 
      this.storage.ready().then(()=>{
 	      this.storage.get('beers').then((beerArray)=>{
 	        this.beers = beerArray;
+          console.log('fav beers',this.beers);
 	      }); 
-     });    
+     });
 
   }  
 
