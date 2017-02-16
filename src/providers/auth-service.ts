@@ -56,8 +56,11 @@ export class AuthService {
               // Get Favorite Beers
               this.db.getFavoriteBeers(allowed.data.token).subscribe((beersObj)=>{
 
-                  if (beersObj != null) {
-
+                  console.log('beerObj',beersObj);
+                  
+                  
+                  if (beersObj.status) {
+                    
                     let beersArray = new Array();
                     let beers = JSON.parse(beersObj.data.beers);
 
@@ -65,7 +68,10 @@ export class AuthService {
                       beersArray.push(beers[i]);
                     }
                     this.storage.set('beers',beersArray);
+                  
                   }
+                  
+                  
                   
               });
 
@@ -112,17 +118,21 @@ export class AuthService {
 
           console.log('beers to delete',beers);
           this.storage.get('token').then((token)=>{
-            
-            this.db.saveFavoriteBeers(token,JSON.stringify(beers)).subscribe((success)=>{
-               //console.log(success);
-               this.storage.remove('token');
-               
-               this.storage.clear().then((isClear)=>{
-                  observer.next(true);
-                  observer.complete();                 
-               });
-            });
-                        
+
+              // If we have no beers to save, don't bother saving nothing.
+              if(beers!=null){
+
+                this.db.saveFavoriteBeers(token,JSON.stringify(beers)).subscribe((success)=>{
+                   //console.log(success);
+                   this.storage.clear();
+                   observer.next(true);
+                   observer.complete();
+                });
+              } else {
+                this.storage.clear();
+                observer.next(true);
+                observer.complete();
+             }
           });          
         });
 
