@@ -29,6 +29,8 @@ import { ProfilePage } from '../pages/profile/profile';
 import { ReviewsPage } from '../pages/reviews/reviews';
 import { FriendsPage } from '../pages/friends/friends';
 import { ReviewBeerPage } from '../pages/review-beer/review-beer';
+import { HomePage } from '../pages/home/home';
+import { MyRatingsPage } from '../pages/my-ratings/my-ratings';
 
 
 @NgModule({
@@ -52,7 +54,9 @@ import { ReviewBeerPage } from '../pages/review-beer/review-beer';
     ProfilePage,
     ReviewsPage,
     FriendsPage,
-    ReviewBeerPage
+    ReviewBeerPage,
+    HomePage,
+    MyRatingsPage
 
   ],
   imports: [
@@ -80,7 +84,9 @@ import { ReviewBeerPage } from '../pages/review-beer/review-beer';
     ProfilePage,
     ReviewsPage,
     FriendsPage,
-    ReviewBeerPage 
+    ReviewBeerPage,
+    HomePage,
+    MyRatingsPage 
   ],
   providers: [{provide: ErrorHandler, 
               useClass: IonicErrorHandler},

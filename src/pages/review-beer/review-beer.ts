@@ -22,14 +22,20 @@ export class ReviewBeerPage {
   public BeerName:any;
   public beerRating = 0;
   public beerReview = '';
+  public beerPic = '';
 
-  constructor(public navCtrl: NavController, public params: NavParams, public view: ViewController, public db:DbService,
-          public storage:Storage, public toastCtrl:ToastController) {
+  constructor(public navCtrl: NavController, 
+              public params: NavParams, 
+              public view: ViewController, 
+              public db:DbService,
+              public storage:Storage, 
+              public toastCtrl:ToastController) {
 
      this.BeerId = params.get('beerId');
      this.BeerName = params.get('beerName');
+     this.beerPic = params.get('beerPic');
 
-     console.log('BeerId', this.BeerId);
+     //console.log('BeerId', this.BeerId);
   }
   
 
@@ -46,16 +52,50 @@ export class ReviewBeerPage {
     this.storage.get("token").then((tok) => {
 
       this.db.writeBeerReview(tok,this.beerReview,this.beerRating,this.BeerId).subscribe((data)=> {
+
          if (data.status) {
+
+            let reviewStruct:any;
+
+            // Store            
+            this.storage.ready().then(()=>{
+
+              this.storage.get("reviews").then((reviewArray)=>{
+
+                  let date = new Date();
+                  let currentDate = '';
+                  currentDate = date.getFullYear()+'-'+('0'+(date.getMonth()+1)).slice(-2)+'-'+('0'+date.getDate()).slice(-2);
+                  reviewStruct = {
+                                  review_id:data.data,
+                                  name:this.BeerName,
+                                  beer_id:this.BeerId, 
+                                  review:this.beerReview,
+                                  rating:this.beerRating,
+                                  date_created:currentDate,
+                                  img:this.beerPic
+                                };
+
+                if( reviewArray == null) {
+                   let tmpReview = new Array();
+                   tmpReview.push(reviewStruct); 
+                   this.storage.set('reviews',tmpReview);
+                } else {
+                  console.log('img',this.beerPic);
+                  reviewArray.push(reviewStruct);
+                  this.storage.set('reviews',reviewArray);
+                }
+
+              });
+
+            });
+           
            this.presentToast("Review Submitted");
            this.cancel();
          }
       },(error)=>{
          console.log('error',error);
       });
-
     });
-    console.log("token",this.storage.get("token"));
   }
 
   presentToast(msg) {

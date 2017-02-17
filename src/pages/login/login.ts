@@ -9,7 +9,7 @@ import { SingletonService } from '../../providers/singleton-service';
 import { AuthService } from '../../providers/auth-service';
 
 import { CreateAccountFinalPage }from '../create-account-final/create-account-final';
-import { MyPubPage } from '../my-pub/my-pub';
+import { HomePage } from '../home/home';
 
 
 @Component({
@@ -60,7 +60,7 @@ export class LoginPage {
 
       this.fb.setCurrentUserProfileAndroid().then((success) => {
           
-          this.navCtrl.setRoot(MyPubPage);
+          this.navCtrl.setRoot(HomePage);
 
       });
 
@@ -95,7 +95,7 @@ export class LoginPage {
           if (allowed) {
             setTimeout(() => {
             this.loading.dismiss();
-            this.navCtrl.setRoot(MyPubPage);
+            this.navCtrl.setRoot(HomePage);
             });
           } else {
             this.showError("Access Denied");

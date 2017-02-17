@@ -41,13 +41,12 @@ export class DbService {
   		.map(res => res.json());
   }
 
-  public saveUser(email,username,name,gender,password,birthday,isFB,facebookID,fbPic) {
+  public saveUser(email,username,name,password,birthday,isFB,facebookID,fbPic) {
 
     return this.http.get(databaseServiceUrl + 'user/?action=save' 
          + '&email=' + email
          + '&username=' + username
          + '&name=' + name
-         + '&gender=' + gender
          + '&password=' + password
          + '&birthday=' + birthday
          + '&isFB=' + isFB

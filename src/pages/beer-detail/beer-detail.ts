@@ -26,19 +26,21 @@ export class BeerDetailPage {
 
   public beerId:string;
   public beer:Beer;
-  public isFavorites:boolean = false;
   public hideSave:boolean = false;
   public beerLikes:number;
   public beerReviews:any;
   public overallBeerRating:number;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public beerAPI: BreweryService, 
-    public storage:Storage, public toastCtrl:ToastController, public sing:SingletonService,public db:DbService, 
-    public modalCtrl:ModalController) {
+  constructor( public navCtrl: NavController, 
+               public navParams: NavParams, 
+               public beerAPI: BreweryService, 
+               public storage:Storage, 
+               public toastCtrl:ToastController, 
+               public sing:SingletonService,
+               public db:DbService, 
+               public modalCtrl:ModalController) {
 
     this.beerId = navParams.get('beerId');
-    this.isFavorites = navParams.get('favorites');
-
     this.getLikeBeer(this.beerId);
     // console.log("beerid",this.beerId);
 
@@ -163,7 +165,7 @@ export class BeerDetailPage {
 
       this.beerReviews = success.data;
 
-     // Get overall Beer Ratings:  TODO: Create a backend make the calculation TABLE: beer_rating
+      // Get overall Beer Ratings:  TODO: Create a backend make the calculation TABLE: beer_rating
       console.log('beer reviews',this.beerReviews);
       for (let i = 0; i < this.beerReviews.length; i++) {
 
@@ -177,7 +179,7 @@ export class BeerDetailPage {
       this.overallBeerRating = beerRatingTotal  / beerReviewCount;
 
 
-     });
+      });
   }
 
   removeBeerFromFavorites(beerId) {
@@ -239,9 +241,13 @@ export class BeerDetailPage {
 
   }
 
-  reviewBeer(beerId,beerName) {
+  reviewBeer(beer) {
 
-    let modal = this.modalCtrl.create(ReviewBeerPage,{beerId:beerId,beerName:beerName});
+    let modal = this.modalCtrl.create(ReviewBeerPage,{
+                                         beerId:beer.id,
+                                         beerName:beer.name,
+                                         beerPic:beer.labels.icon
+                                       });
     modal.onDidDismiss(()=> {
       this.getBeerReviews();
     });
@@ -251,7 +257,7 @@ export class BeerDetailPage {
 
   ionViewWillEnter() { 
        
-       console.log("HERE VIEW WILL ENTER"); 
+      // console.log("HERE VIEW WILL ENTER"); 
 
   }  
 

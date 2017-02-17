@@ -1,9 +1,9 @@
-<ion-header [hidden]='isFavorites'>
+<ion-header>
   <ion-navbar  color="primary">
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>Bender {{isFavorites}}</ion-title>
+    <ion-title>Bender</ion-title>
        <ion-buttons end>
            <button ion-button end icon-only (click)="doLogin()">
                <ion-icon name="log-in"></ion-icon>
@@ -11,20 +11,12 @@
         </ion-buttons>  
   </ion-navbar>
 </ion-header>
-
-<ion-header [hidden]='!isFavorites'>
-  <ion-navbar class="show-back-button">
-    <ion-title>{{sing.userName}}'s Beer List</ion-title>
-  </ion-navbar>      
-</ion-header>
-
 <ion-content padding>
   <ion-card>
   	<ion-card-content>
 	  <ion-grid>
 	    <ion-row>
 		  <ion-col width-50>
-		    <div class="pad-detail" [hidden]='!isFavorites'></div>
 		    <ion-card-title>
 		      {{beer?.name}} <ion-badge item-right [hidden]='!beerLikes'>{{beerLikes}} Likes</ion-badge>
 		    </ion-card-title>
@@ -41,7 +33,7 @@
 		     	<button ion-button icon-left color="secondary" (click)='setLikeBeer(beer?.id)'>
                    <ion-icon name="thumbs-up"></ion-icon>
                 </button>
-		     	<button ion-button icon-left (click)='reviewBeer(beer?.id,beer?.name)'>
+		     	<button ion-button icon-left (click)='reviewBeer(beer)'>
                    <ion-icon name="create"></ion-icon>
                       Review
                 </button>

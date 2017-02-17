@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
+import {Geolocation} from 'ionic-native';
 
 import { SingletonService } from '../../providers/singleton-service';
 
@@ -17,8 +18,17 @@ import { SingletonService } from '../../providers/singleton-service';
 export class ProfilePage {
 
   public profileIMG:any;
+  public latitude:string;
+  public longitude:string;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public sing: SingletonService, public storage:Storage) {}
+  constructor(public navCtrl: NavController, public navParams: NavParams, public sing: SingletonService, public storage:Storage) {
+
+    Geolocation.getCurrentPosition().then(pos => {
+      console.log('lat: ' + pos.coords.latitude + ', lon: ' + pos.coords.longitude);
+    });
+    
+
+  }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad ProfilePage');

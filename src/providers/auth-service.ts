@@ -52,8 +52,11 @@ export class AuthService {
               this.storage.set('isFB', allowed.data.is_facebook);
               this.storage.set('fbID', allowed.data.fb_id);
               this.storage.set('fbPic', allowed.data.fb_pic);
+              this.storage.set('description', allowed.data.description);
 
               // Get Favorite Beers
+
+              /*
               this.db.getFavoriteBeers(allowed.data.token).subscribe((beersObj)=>{
 
                   console.log('beerObj',beersObj);
@@ -69,12 +72,9 @@ export class AuthService {
                     }
                     this.storage.set('beers',beersArray);
                   
-                  }
-                  
-                  
-                  
+                  }   
               });
-
+              */
             } else {
                access = false;
                console.log('login fail');
@@ -123,20 +123,15 @@ export class AuthService {
               if(beers!=null){
 
                 this.db.saveFavoriteBeers(token,JSON.stringify(beers)).subscribe((success)=>{
-                   //console.log(success);
-                   this.storage.clear();
-                   observer.next(true);
-                   observer.complete();
+                   console.log(success);
+                   //this.storage.clear();
+
                 });
-              } else {
-                this.storage.clear();
-                observer.next(true);
-                observer.complete();
-             }
+              } 
           });          
         });
 
-         /*
+
   	    this.storage.remove('loggedIn');
         this.storage.remove('user');
         this.storage.remove('userName');
@@ -145,11 +140,11 @@ export class AuthService {
         this.storage.remove('isFB');
         this.storage.remove('fbID');
         this.storage.remove('fbPic');        
-
+        this.storage.remove('description');
   	    this.sing.loggedIn = false;
-        */
-        //observer.next(true);
-        //observer.complete();          
+        
+        observer.next(true);
+        observer.complete();          
 
       });
 

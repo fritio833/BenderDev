@@ -1,15 +1,20 @@
 import { Component, ViewChild } from '@angular/core';
 
-import { Platform, MenuController, Nav } from 'ionic-angular';
+import { Platform, MenuController, Nav, ToastController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { StatusBar, Splashscreen } from 'ionic-native';
 
 import { HelloIonicPage } from '../pages/hello-ionic/hello-ionic';
 import { SingletonService } from '../providers/singleton-service';
 
-import { SwipePage } from '../pages/swipe/swipe';
-import { MyPubPage } from '../pages/my-pub/my-pub';
+
 import { LoginPage } from '../pages/login/login';
+import { HomePage } from '../pages/home/home';
+import { MyRatingsPage } from '../pages/my-ratings/my-ratings';
+
+
+
+import {AuthService} from '../providers/auth-service';
 
 
 @Component({
@@ -29,7 +34,9 @@ export class MyApp {
     public platform: Platform,
     public menu: MenuController,
     public sing: SingletonService,
-    public storage: Storage
+    public storage: Storage,
+    public toastCtrl: ToastController,
+    public auth: AuthService
   ) {
     this.initializeApp();
 
@@ -38,11 +45,19 @@ export class MyApp {
       storage.get("loggedIn").then((status)=>{
         //console.log("loggedIn!:",status);
         if (status == null) {
+
+          storage.get('fbPic').then((fbPic)=>{
+
+                sing.profileIMG = fbPic;
+
+          });
+
           sing.loggedIn = false;
-          this.rootPage = LoginPage
+          this.rootPage = LoginPage;
+
         } else {
           sing.loggedIn = true;
-          this.rootPage = MyPubPage;
+          this.rootPage = HomePage;
         }
       });
 
@@ -50,17 +65,24 @@ export class MyApp {
         if ( uName != null )
           sing.userName = uName;
       });
+      storage.get("name").then((name) =>{
+          sing.realName = name;
+      });
+
+      storage.get("description").then((description) =>{
+          sing.description = description;
+      });             
 
     });
 
 
-    console.log('loginstatus', sing.loggedIn);
     // set our app's pages
     this.pages = [
-      { title: 'My Pub', component: MyPubPage },
-      { title: 'Favorite Drinks', component: LoginPage },
-      { title: 'Search', component: HelloIonicPage }
-      // { title:  this.login, component: this.comp } TODO: Figure out to refresh menu
+      //{ title: 'My Pub', component: MyPubPage },
+      { title: 'Home', component: HomePage },
+      { title: 'Search', component: HelloIonicPage },
+      { title: 'My Ratings', component: MyRatingsPage },
+      { title: 'Settings', component: HomePage }
     ];
   }
 
@@ -80,4 +102,24 @@ export class MyApp {
     // navigate to the new page if it is not the current page
     this.nav.setRoot(page.component);
   }
+
+  doLogout() {
+  
+    this.auth.logout().subscribe(allowed => {
+      if (allowed) {
+        this.nav.setRoot(LoginPage); 
+        this.presentToast('Log out was successful');
+        this.menu.close(); 
+      }
+    });
+  }
+
+  presentToast(msg) {
+    let toast = this.toastCtrl.create({
+      message: msg,
+      position: 'top',
+      duration: 3000
+    });
+    toast.present();
+  }    
 }

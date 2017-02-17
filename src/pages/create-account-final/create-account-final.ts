@@ -9,6 +9,7 @@ import { AuthService } from '../../providers/auth-service';
 
 import { MyPubPage } from '../my-pub/my-pub';
 import { SuccessPage } from '../success/success';
+import { HomePage } from '../home/home';
 
 
 
@@ -31,7 +32,6 @@ export class CreateAccountFinalPage {
   public birthDay:any
   public gender:any;
   public newUserForm:any;
-  public genderForm:any;
   public agree:boolean;
   public submitAttempt;
   public duplicateUser:boolean;
@@ -63,9 +63,6 @@ export class CreateAccountFinalPage {
 	                 Validators.pattern('[0-9a-zA-Z]*')])]
 	});
 
-    this.genderForm = this.form.group({
-      gender : ['',Validators.required]
-    });
  
   }
 
@@ -113,7 +110,6 @@ export class CreateAccountFinalPage {
          this.db.saveUser(this.newUserForm.controls.email.value,
 			 this.newUserForm.controls.userName.value,
 			 this.newUserForm.controls.name.value,
-			 this.genderForm.controls.gender.value,
 			 this.newUserForm.controls.pword.value,
 			 this.newUserForm.controls.birthDay.value,
 			 '',
@@ -143,7 +139,7 @@ export class CreateAccountFinalPage {
       if (allowed) {
         setTimeout(() => {
         this.loading.dismiss();
-        this.navCtrl.setRoot(MyPubPage)
+        this.navCtrl.setRoot(HomePage)
         });
       }
     },

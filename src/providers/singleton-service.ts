@@ -7,6 +7,9 @@ import { Injectable } from '@angular/core';
 export class SingletonService {
   public loggedIn:boolean = false;
   public userName:string = '';
+  public profileIMG:string = '';
+  public realName:string = '';
+  public description:string = '';
 
 
 }

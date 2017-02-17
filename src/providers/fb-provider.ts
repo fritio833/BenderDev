@@ -97,7 +97,6 @@ export class FbProvider {
                       this.db.saveUser(profileData.email,
                            profileData.name,
                            profileData.name,
-                           profileData.gender,
                            profileData.id,
                            '',
                            1,
