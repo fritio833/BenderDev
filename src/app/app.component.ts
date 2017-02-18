@@ -6,7 +6,8 @@ import { StatusBar, Splashscreen } from 'ionic-native';
 
 import { HelloIonicPage } from '../pages/hello-ionic/hello-ionic';
 import { SingletonService } from '../providers/singleton-service';
-
+import { GoogleService } from '../providers/google-service';
+import { Geolocation } from 'ionic-native';
 
 import { LoginPage } from '../pages/login/login';
 import { HomePage } from '../pages/home/home';
@@ -36,46 +37,14 @@ export class MyApp {
     public sing: SingletonService,
     public storage: Storage,
     public toastCtrl: ToastController,
-    public auth: AuthService
+    public auth: AuthService,
+    public geo:GoogleService
   ) {
     this.initializeApp();
 
-    storage.ready().then(()=>{
 
-      storage.get("loggedIn").then((status)=>{
-        //console.log("loggedIn!:",status);
-        if (status == null) {
-
-          storage.get('fbPic').then((fbPic)=>{
-
-                sing.profileIMG = fbPic;
-
-          });
-
-          sing.loggedIn = false;
-          this.rootPage = LoginPage;
-
-        } else {
-          sing.loggedIn = true;
-          this.rootPage = HomePage;
-        }
-      });
-
-      storage.get("userName").then((uName) =>{
-        if ( uName != null )
-          sing.userName = uName;
-      });
-      storage.get("name").then((name) =>{
-        if ( name != null)
-            sing.realName = name;
-      });
-
-      storage.get("description").then((description) =>{
-          sing.description = description;
-      });             
-
-    });
-
+    this.setUserStorageData();
+    this.getGeolocation();
 
     // set our app's pages
     this.pages = [
@@ -113,6 +82,61 @@ export class MyApp {
         this.menu.close(); 
       }
     });
+  }
+
+  setUserStorageData() {
+    this.storage.ready().then(()=>{
+
+      this.storage.get("loggedIn").then((status)=>{
+        //console.log("loggedIn!:",status);
+        if (status == null) {
+
+          this.storage.get('fbPic').then((fbPic)=>{
+
+                this.sing.profileIMG = fbPic;
+
+          });
+
+          this.sing.loggedIn = false;
+          this.rootPage = LoginPage;
+
+        } else {
+          this.sing.loggedIn = true;
+          this.rootPage = HomePage;
+        }
+      });
+
+      this.storage.get("userName").then((uName) =>{
+        if ( uName != null )
+          this.sing.userName = uName;
+      });
+      this.storage.get("name").then((name) =>{
+        if ( name != null)
+            this.sing.realName = name;
+      });
+
+      this.storage.get("description").then((description) =>{
+          this.sing.description = description;
+      });             
+
+    });    
+  }
+
+  getGeolocation() {
+
+    Geolocation.getCurrentPosition().then((resp) => {
+       
+       if (resp.coords.latitude) {
+         this.geo.reverseGeocodeLookup(resp.coords.latitude,resp.coords.longitude)
+           .subscribe((success)=>{
+
+              this.sing.geoCity= success.results[2].address_components[0].short_name;
+              this.sing.geoState = success.results[2].address_components[2].short_name;            
+          });
+       }
+    }).catch((error) => {
+      console.log('Error getting location', error);
+    });    
   }
 
   presentToast(msg) {

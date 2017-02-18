@@ -64,11 +64,14 @@ export class LocationDetailPage {
 			 this.geo.placesNearByMe(30.464081,-84.298049).subscribe((success)=>{
 			 	console.log(success);
 			 });
-			*/
+			
 			 this.geo.placesNearByMe(30.433979,-84.286388).subscribe((success)=>{
 			 	console.log(success);
-			 });					    		
+			 });
+       */					    		
     	}
+    },(error)=>{
+        console.log(error);
     });
 
     this.loc.getLocationImages(this.location.id).subscribe((success)=>{
@@ -77,6 +80,8 @@ export class LocationDetailPage {
     		this.locImages = success;
     		//console.log('images',this.locImages);
     	}
+    },(error)=>{
+       console.log(error);
     });
 
     this.loc.getLocationScore(this.location.id).subscribe((success)=>{
@@ -85,6 +90,8 @@ export class LocationDetailPage {
     		this.locScore = success;
     		//console.log('score',this.locScore);
     	}
+    },(error)=>{
+       console.log(error);
     });
 
   }

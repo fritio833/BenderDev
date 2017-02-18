@@ -9,14 +9,14 @@
 <ion-content id="home-content" padding>
 
 
-  <ion-segment [(ngModel)]="choice" class="toolbar">
-    <ion-segment-button icon-left role="button" color="primary" value="beersearch">
-      <ion-icon name="beer"></ion-icon>Find a beer
-    </ion-segment-button>   
-    <ion-segment-button icon-left role="button" color="primary" value="locationsearch">
-      <ion-icon name="pint"></ion-icon>Find a brewery or bar
-    </ion-segment-button>         
-  </ion-segment>
+<ion-segment [(ngModel)]="choice" class="toolbar">
+  <ion-segment-button icon-left role="button" color="primary" value="beersearch">
+    <ion-icon name="beer"></ion-icon>Find a beer
+  </ion-segment-button>   
+  <ion-segment-button icon-left role="button" color="primary" (click)="getLocal()" value="locationsearch">
+    <ion-icon name="pint"></ion-icon>Find a brewery or bar
+  </ion-segment-button>         
+</ion-segment>
 
 <div [ngSwitch]="choice">
 
@@ -38,17 +38,7 @@
   </ion-list>
 
   <ion-list *ngSwitchCase="'locationsearch'">
-
-      <div align="center">            
-          <div class="search-input">
-            <ion-list>
-              <ion-item class="search-beer">
-                  <ion-searchbar id="search-location" type="text" placeholder="Enter a brewery or a bar" (ionInput)="getLocations($event)"></ion-searchbar>
-              </ion-item>
-            </ion-list>
-          </div>
-      </div>
-      <!----
+    <div>
       <form [formGroup] = "qSearchLocationForm" (submit) = "doSearchLocation()">
         <div align="center">            
             <div class="search-input">
@@ -63,16 +53,25 @@
             </div>
         </div>
       </form>
-      ---->     
+    </div>
+    <div [hidden]="locations==null">
+      <ion-list>
+        <h3>
+         Breweries and bars located in {{sing.geoCity}}, {{sing.geoState}} 
+        </h3>
+      </ion-list>
+      <ion-list>
+        <button ion-item *ngFor="let location of locations" (click) = "getLocationDetail(location)">
+          <h2>{{ location.name }}</h2>
+          <h3 [hidden]="location.overall==0">Score: {{location.overall}}</h3>
+          <p>Location: {{ location.street }} {{ location.city }} {{location.state}} {{location.zip}} {{location.country}}</p>
+          <p>{{location.status}}</p>
+          <ion-icon name="arrow-forward" item-right></ion-icon>
+        </button>
+      </ion-list>
+    </div>          
   </ion-list>
-</div>
-<div>
-  <ion-list>
-    <button ion-item *ngFor="let location of locations" (click) = "getLocationDetail(location)">
-      <h2>{{ location.description }}</h2>
-      <ion-icon name="arrow-forward" item-right></ion-icon>
-    </button>
-  </ion-list>
+
 </div>
 
 </ion-content>

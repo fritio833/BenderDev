@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
-import { Geolocation } from 'ionic-native';
 import { SingletonService } from './singleton-service';
 import 'rxjs/add/operator/map';
 
@@ -32,14 +31,6 @@ export class GoogleService {
     // https://maps.googleapis.com/maps/api/place/autocomplete/output?parameters
     //https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522,151.1957362&radius=500&type=restaurant&keyword=cruise&key=AIzaSyA4dIwMeqXekFajK1uIesJn53LzkyZ_kU4
     //https://maps.googleapis.com/maps/api/place/nearbysearch/json/location=?30.464081,-84.298049&radius=100&key=AIzaSyA4dIwMeqXekFajK1uIesJn53LzkyZ_kU4
-
-	Geolocation.getCurrentPosition().then((resp) => {
-	 this.lat = resp.coords.latitude
-	 this.lng = resp.coords.longitude
-	 console.log(resp);
-	}).catch((error) => {
-	  console.log('Error getting location', error);
-	});
 
   }
 

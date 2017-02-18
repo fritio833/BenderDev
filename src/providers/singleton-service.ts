@@ -12,6 +12,8 @@ export class SingletonService {
   public profileIMG:string = '';
   public realName:string = '';
   public description:string = '';
+  public geoCity = '';
+  public geoState = '';
   
   // App configuration.  API keys, webservice url, etc. 
   public breweryDbAPIKey:string = '3c7ec73417afb44ae7a4450482f99d70';

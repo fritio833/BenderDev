@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, AlertController, ToastController} from 'ionic-angular';
-
+import { Geolocation } from 'ionic-native';
 import {Validators, FormBuilder } from '@angular/forms';
 
 import { LoginPage } from '../login/login';
@@ -14,6 +14,7 @@ import { SearchPage } from '../search/search';
 import { MyPubPage } from '../my-pub/my-pub';
 import { Beer } from '../../models/beer';
 import { LocationResultsPage } from '../location-results/location-results';
+import { LocationDetailPage } from '../location-detail/location-detail';
 
 
 @Component({
@@ -44,7 +45,7 @@ export class HelloIonicPage {
               public auth: AuthService, 
               public toastCtrl:ToastController,
               public location:LocationService,
-              public google:GoogleService) {
+              public geo:GoogleService) {
 
   	this.qSearchBeer = params.get("qSearchBeer");
     this.qSearchLocation = params.get("qSearchLocation");
@@ -55,8 +56,9 @@ export class HelloIonicPage {
   		qSearchBeer : ['',Validators.required]
   	});
 
-
-
+    this.qSearchLocationForm = this._form.group({
+      qSearchLocation : ['',Validators.required]
+    });
 
     this.choice = "beersearch";
 
@@ -80,35 +82,62 @@ export class HelloIonicPage {
   }
 
   doSearchLocation() {
-    /*
+    
     let locationName = this.qSearchLocationForm.value.qSearchLocation;
     this.location.getLocationsByName(locationName).subscribe((success)=>{
+       console.log(success[0].id);
+       if (parseInt(success[0].id)) {
+         this.navCtrl.push(LocationResultsPage,{locations:success});         
+       } else {
 
-       if (!success.id) {
-         this.navCtrl.push(LocationResultsPage,{locations:success});
+           if ( success[0].name == "Try a Longer Search") {
+             this.presentToast("Try a Longer Search");
+           }
+
+           if ( success[0].name == "No locations Found") {
+             this.presentToast("No Locations Found");
+           }           
+         console.log(success);
        }
     });
-    */
+    
   }
 
-  getLocations(event) {
-    let predictions:any;
-    this.locations = new Array();
-    //console.log(event.target.value);
-    
-    this.google.placesAutocomplete(event.target.value).subscribe((success)=>{
-        //console.log(success.predictions[0].description);
-        predictions = success.predictions;
-        console.log(success);
-        for (var i = 0; i < predictions.length; i++) {
-            this.locations.push({id:predictions[i].id,description:predictions[i].description});
-        }
-    });
-    
-    //var types:string[] = ['bar','food','restaurant'];
-    //let response = new google.maps.places.Autocomplete(event.target).setTypes(types);
-    //console.log(response);
+  getLocal() {
+
+    Geolocation.getCurrentPosition().then((resp) => {
+       
+       if (resp.coords.latitude) {
+         this.geo.reverseGeocodeLookup(resp.coords.latitude,resp.coords.longitude)
+           .subscribe((success)=>{
+              //console.log(success);
+
+              this.sing.geoCity= success.results[1].address_components[1].short_name;
+              this.sing.geoState = success.results[1].address_components[3].short_name;
+              this.location.getLocationCityState(this.sing.geoCity,this.sing.geoState)
+                .subscribe((success)=>{
+                  if (parseInt(success[0].id)) {
+                    this.locations = success;
+                    for (var i=0;i<this.locations.length;i++) {
+
+                      this.locations[i].overall = Math.round(this.locations[i].overall);
+                    }
+                  }
+                  //console.log(this.locations);
+              });
+                          
+          });
+       }
+    }).catch((error) => {
+      console.log('Error getting location', error);
+    });   
   }
+
+ getLocationDetail(location) {
+
+    this.navCtrl.push(LocationDetailPage,{location:location});
+
+  }  
 
   loadBeers(data) {
 
