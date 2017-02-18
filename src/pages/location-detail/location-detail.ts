@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { LocationService } from '../../providers/location-service';
+import { GoogleService } from '../../providers/google-service';
 import { Geolocation } from 'ionic-native';
 
 /*
@@ -22,7 +23,8 @@ export class LocationDetailPage {
 
   constructor(public navCtrl: NavController, 
   	          public params: NavParams, 
-  	          public loc:LocationService) {
+  	          public loc:LocationService,
+  	          public geo:GoogleService) {
 
     this.location = params.get("location");
     this.location.overall = Math.round(this.location.overall); 
@@ -31,6 +33,9 @@ export class LocationDetailPage {
 	Geolocation.getCurrentPosition().then((resp) => {
 	 // resp.coords.latitude
 	 // resp.coords.longitude
+	 //this.geo.reverseGeocodeLookup(resp.coords.latitude,resp.coords.longitude).subscribe((success)=>{
+	 //	console.log(success);
+	 //});
 	 console.log(resp);
 	}).catch((error) => {
 	  console.log('Error getting location', error);
@@ -46,7 +51,23 @@ export class LocationDetailPage {
 
     	if (success) {
     		this.locMap = success;
-    		//console.log('map',this.locMap);
+    		console.log('lat',this.locMap[0].lat);
+    		console.log('lng',this.locMap[0].lng);
+
+    		/*
+			 this.geo.reverseGeocodeLookup(30.464081,-84.298049).subscribe((success)=>{
+			 	console.log(success);
+			 });
+			*/
+			/*
+			Pug's
+			 this.geo.placesNearByMe(30.464081,-84.298049).subscribe((success)=>{
+			 	console.log(success);
+			 });
+			*/
+			 this.geo.placesNearByMe(30.433979,-84.286388).subscribe((success)=>{
+			 	console.log(success);
+			 });					    		
     	}
     });
 

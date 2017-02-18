@@ -8,6 +8,7 @@ import { BreweryService } from '../../providers/brewery-service';
 import { LocationService } from '../../providers/location-service';
 import { SingletonService } from '../../providers/singleton-service';
 import { AuthService } from '../../providers/auth-service';
+import { GoogleService } from '../../providers/google-service';
 
 import { SearchPage } from '../search/search';
 import { MyPubPage } from '../my-pub/my-pub';
@@ -32,6 +33,7 @@ export class HelloIonicPage {
   public currentPage:number;
   public beers:Beer[];
   public choice:string;
+  public locations:any;
 
   constructor(public navCtrl: NavController,
               public params:NavParams,
@@ -41,7 +43,8 @@ export class HelloIonicPage {
               public sing: SingletonService, 
               public auth: AuthService, 
               public toastCtrl:ToastController,
-              public location:LocationService) {
+              public location:LocationService,
+              public google:GoogleService) {
 
   	this.qSearchBeer = params.get("qSearchBeer");
     this.qSearchLocation = params.get("qSearchLocation");
@@ -52,9 +55,7 @@ export class HelloIonicPage {
   		qSearchBeer : ['',Validators.required]
   	});
 
-    this.qSearchLocationForm = this._form.group({
-      qSearchLocation : ['',Validators.required]
-    });
+
 
 
     this.choice = "beersearch";
@@ -79,14 +80,34 @@ export class HelloIonicPage {
   }
 
   doSearchLocation() {
+    /*
     let locationName = this.qSearchLocationForm.value.qSearchLocation;
     this.location.getLocationsByName(locationName).subscribe((success)=>{
-       //console.log(success);
 
        if (!success.id) {
          this.navCtrl.push(LocationResultsPage,{locations:success});
        }
     });
+    */
+  }
+
+  getLocations(event) {
+    let predictions:any;
+    this.locations = new Array();
+    //console.log(event.target.value);
+    
+    this.google.placesAutocomplete(event.target.value).subscribe((success)=>{
+        //console.log(success.predictions[0].description);
+        predictions = success.predictions;
+        console.log(success);
+        for (var i = 0; i < predictions.length; i++) {
+            this.locations.push({id:predictions[i].id,description:predictions[i].description});
+        }
+    });
+    
+    //var types:string[] = ['bar','food','restaurant'];
+    //let response = new google.maps.places.Autocomplete(event.target).setTypes(types);
+    //console.log(response);
   }
 
   loadBeers(data) {

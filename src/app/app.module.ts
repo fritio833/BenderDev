@@ -10,6 +10,7 @@ import { SingletonService } from '../providers/singleton-service';
 import { AuthService } from '../providers/auth-service';
 import { DbService } from '../providers/db-service';
 import { LocationService } from '../providers/location-service';
+import { GoogleService } from '../providers/google-service';
 
 import { HelloIonicPage } from '../pages/hello-ionic/hello-ionic';
 import { ItemDetailsPage } from '../pages/item-details/item-details';
@@ -103,6 +104,7 @@ import { LocationDetailPage } from '../pages/location-detail/location-detail';
               SingletonService,
               AuthService,
               DbService,
-              LocationService]
+              LocationService,
+              GoogleService]
 })
 export class AppModule {}
