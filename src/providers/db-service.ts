@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
+import { SingletonService } from './singleton-service';
 import 'rxjs/add/operator/map';
 
-let databaseServiceUrl = 'http://benderapp.servebeer.com/bender/';
 
 /*
   Generated class for the DbService provider.
@@ -13,37 +13,40 @@ let databaseServiceUrl = 'http://benderapp.servebeer.com/bender/';
 @Injectable()
 export class DbService {
 
-  constructor(public http: Http) {
+  public databaseServiceUrl:string;
+
+  constructor(public http: Http,public sing:SingletonService) {
      //console.log('Hello DbService Provider');
+     this.databaseServiceUrl = this.sing.databaseServiceUrl;
   }
 
   public setLikeBeer(beerId) {
 
-    return this.http.get(databaseServiceUrl + 'likes/?action=set' + '&beerid=' + beerId)
+    return this.http.get(this.databaseServiceUrl + 'likes/?action=set' + '&beerid=' + beerId)
         .map(res => res.json());
   }
 
   public getLikeBeer(beerId) {
 
-    return this.http.get(databaseServiceUrl + 'likes/?action=get' + '&beerid=' + beerId)
+    return this.http.get(this.databaseServiceUrl + 'likes/?action=get' + '&beerid=' + beerId)
         .map(res => res.json());
   }
 
   public checkDuplicateUsername(uname) {
 
-    return this.http.get(databaseServiceUrl + 'user/?action=udup' + '&uname=' + uname)
+    return this.http.get(this.databaseServiceUrl + 'user/?action=udup' + '&uname=' + uname)
   		.map(res => res.json());
   }
 
   public checkDuplicateEmail(email) {
 
-    return this.http.get(databaseServiceUrl + 'user/?action=edup' + '&email=' + email)
+    return this.http.get(this.databaseServiceUrl + 'user/?action=edup' + '&email=' + email)
   		.map(res => res.json());
   }
 
   public saveUser(email,username,name,password,birthday,isFB,facebookID,fbPic) {
 
-    return this.http.get(databaseServiceUrl + 'user/?action=save' 
+    return this.http.get(this.databaseServiceUrl + 'user/?action=save' 
          + '&email=' + email
          + '&username=' + username
          + '&name=' + name
@@ -57,14 +60,14 @@ export class DbService {
   
   public loginFacebook(FacebookId) {
   		
-    return this.http.get(databaseServiceUrl + 'user/?action=loginFB' 
+    return this.http.get(this.databaseServiceUrl + 'user/?action=loginFB' 
          + '&facebookid=' + FacebookId)
   		.map(res => res.json());
   }
 
   public loginUser(email,password) {
 
-    return this.http.get(databaseServiceUrl + 'user/?action=login' 
+    return this.http.get(this.databaseServiceUrl + 'user/?action=login' 
          + '&email=' + email
          + '&pword=' + password)
   		.map(res => res.json());
@@ -72,7 +75,7 @@ export class DbService {
 
   public writeBeerReview(token,beerReview,beerRating,beerId) {
 
-    return this.http.post(databaseServiceUrl+'reviews/write/',
+    return this.http.post(this.databaseServiceUrl+'reviews/write/',
               {
                 action:'reviewbeer', 
                 token: token,
@@ -85,17 +88,17 @@ export class DbService {
 
   public getBeerReviewsById(beerId) {
 
-    return this.http.get(databaseServiceUrl + 'reviews/?action=GetBeerReviews&beerid=' + beerId)
+    return this.http.get(this.databaseServiceUrl + 'reviews/?action=GetBeerReviews&beerid=' + beerId)
       .map(res => res.json());
   }
 
   public saveFavoriteBeers(token,beers) {
-    return this.http.post(databaseServiceUrl+'favorites/write/',{action:'favbeer',token:token,beers:beers})
+    return this.http.post(this.databaseServiceUrl+'favorites/write/',{action:'favbeer',token:token,beers:beers})
       .map(res => res.json());    
   }
 
   public getFavoriteBeers(token) {
-    return this.http.get(databaseServiceUrl + 'favorites/?action=GetFavBeers&token=' + token)
+    return this.http.get(this.databaseServiceUrl + 'favorites/?action=GetFavBeers&token=' + token)
       .map(res => res.json());    
   }
 

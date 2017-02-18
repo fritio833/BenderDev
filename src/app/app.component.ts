@@ -66,7 +66,8 @@ export class MyApp {
           sing.userName = uName;
       });
       storage.get("name").then((name) =>{
-          sing.realName = name;
+        if ( name != null)
+            sing.realName = name;
       });
 
       storage.get("description").then((description) =>{

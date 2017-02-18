@@ -1,0 +1,40 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>Bender</ion-title>  
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+
+<ion-grid>
+	<ion-row>
+		<ion-col>
+		  <div>
+		    <h1>{{location.name}}</h1>
+
+		    <p><b>{{location.stuts}}</b></p>
+		    <p>{{location.style}}</p>
+	   	    <p>{{location.street}}</p>
+	   	    <p>{{location.city}}, {{location.state}} {{location.zip}}</p>
+	   	  </div>
+	   	  <div>
+	   	    <button data-href="tel:location.phone" clear item-right>
+   			  <ion-icon name="call"></ion-icon>Call {{location.phone}}
+   			</button>
+	   	  </div>
+	   	  <div [hidden]="!location.overall">
+	   	  	 <p><small>Beermapping.com Rating</small></p>
+             <h2>{{location.overall}}</h2>
+             <p><small>out of 100</small></p>
+	   	  </div>
+		</ion-col>
+		<ion-col>
+		  <div *ngFor="let image of locImages">
+           <img [src]="image.imageurl" [hidden]="image.imageurl==null">
+          </div>
+		</ion-col>
+	</ion-row>
+</ion-grid>
+
+</ion-content>

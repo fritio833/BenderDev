@@ -2,12 +2,9 @@ import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
-import {Observable} from 'rxjs/Observable';
-
+import { Observable } from 'rxjs/Observable';
+import { SingletonService } from './singleton-service';
 import { Beer } from '../models/beer';
-
-let breweryDbUrl = 'http://api.brewerydb.com/v2/';
-let breweryDbAPI = 'key=3c7ec73417afb44ae7a4450482f99d70';
 
 /*
   Generated class for the BreweryService provider.
@@ -21,23 +18,28 @@ let breweryDbAPI = 'key=3c7ec73417afb44ae7a4450482f99d70';
 export class BreweryService {
 
   public data:any;
+  public breweryDbAPI:any;
+  public breweryDbUrl:any;
 
-  constructor(public http: Http) {
+  constructor(public http: Http, public single:SingletonService) {
   	this.http = http;
   	this.data = null;
+
+    this.breweryDbAPI = single.breweryDbAPIKey;
+    this.breweryDbUrl = 'http://api.brewerydb.com/v2/';
   	console.log('Hello BreweryService Provider');
   }
 
   
   loadBeerByName(beerName): Observable<Beer[]>  {
 
-    return this.http.get(breweryDbUrl + 'search/?' + breweryDbAPI + '&q=' + beerName +'&type=beer')
+    return this.http.get(this.breweryDbUrl + 'search/?key=' + this.breweryDbAPI + '&q=' + beerName +'&type=beer')
         .map(res => <Beer[]>res.json());
   }
 
   loadBeerById(beerId): Observable<Beer>  {
 
-    return this.http.get(breweryDbUrl + 'beer/' + beerId + '/?' + breweryDbAPI)
+    return this.http.get(this.breweryDbUrl + 'beer/' + beerId + '/?key=' + this.breweryDbAPI)
         .map(res => <Beer>(res.json()));
   } 
 

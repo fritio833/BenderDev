@@ -28,7 +28,7 @@ export class AuthService {
     } else {
       return Observable.create(observer => {
         // At this point make a request to your backend to make a real check!
-
+        // login could be user name.  Backend makes the check.
         this.db.loginUser(credentials.email,credentials.password)
            .subscribe(allowed => {
             //console.log(allowed);
@@ -54,7 +54,8 @@ export class AuthService {
               this.storage.set('fbPic', allowed.data.fb_pic);
               this.storage.set('description', allowed.data.description);
 
-              // Get Favorite Beers
+              // If favorites exists and this is a new device, set favorites storage
+              // TODO:  Work on this later.  Code goes here.
 
               /*
               this.db.getFavoriteBeers(allowed.data.token).subscribe((beersObj)=>{

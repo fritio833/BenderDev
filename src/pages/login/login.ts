@@ -35,7 +35,7 @@ export class LoginPage {
     this.password = params.get("password");
     
     this.emailForm = this.form.group({
-      email : ['',Validators.compose([Validators.required,Validators.maxLength(30),ValidationService.emailValidator])],
+      email : ['',Validators.required],
       password : ['',Validators.compose([Validators.required,Validators.maxLength(30)])]
     });
 
@@ -98,12 +98,14 @@ export class LoginPage {
             this.navCtrl.setRoot(HomePage);
             });
           } else {
-            this.showError("Access Denied");
+            this.showError("Check user name and passord.");
           }
         },
         error => {
           this.showError(error);
         });    
+      } else {
+        this.showError("Fields can't be left blank");
       }
   }
 
@@ -126,7 +128,7 @@ export class LoginPage {
     });
  
     let alert = this.alertCtrl.create({
-      title: 'Fail',
+      title: 'Login Failed',
       subTitle: text,
       buttons: ['OK']
     });

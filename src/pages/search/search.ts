@@ -20,7 +20,6 @@ import { BeerDetailPage } from '../beer-detail/beer-detail';
 
 export class SearchPage {
 
-  public qSearch:any;
   public totalResults:number;
   public numberOfPages:number;
   public beers:Array<string>;
@@ -28,7 +27,6 @@ export class SearchPage {
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public beerAPI: BreweryService) {
 
-    // this.qSearch = navParams.get('qSearch');
     this.beers = navParams.get('beers');    
 
   }

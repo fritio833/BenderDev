@@ -1,10 +1,10 @@
 page-hello-ionic {
 
 	.intro {
-	   padding-top: 20px;
-	   padding-bottom: 20px;
-	   color: #ffffff;
-	   text-shadow: black 0 0 0.4em;
+	   //padding-top: 20px;
+	   //padding-bottom: 20px;
+	   //color: #ffffff;
+	   //text-shadow: black 0 0 0.4em;
 
 	}
 
@@ -16,10 +16,10 @@ page-hello-ionic {
 	}
 
 	#home-content {
-	  background-image: url('../images/bar2.jpg');
-	  background-repeat: no-repeat;
-	  background-size: 100%;
-	  background-color: #000000;
+	  //background-image: url('../images/bar2.jpg');
+	  //background-repeat: no-repeat;
+	  //background-size: 100%;
+	  //background-color: #000000;
 	}
 	
 	.bender-logo{
@@ -51,15 +51,35 @@ page-hello-ionic {
     .ion-grid {
       font-color:#ffffff;
     }
-
+    /*
 	input[type="text"], textarea {
-	  font-size: 25px;
+	  font-size: 20px;
 	  background-color : #ffffff;
 	}
+	*/
+
+    ion-input, ion-select, ion-textarea {
+        background-color: #f2f2f2;
+	    font-size: 20px;
+	    background-color : #ffffff;     
+    } 	
 
 	#search {
-		float: right;
+		width:90%;
 	}
+
+	.ion-segment {
+	  margin-top: 40px;
+	}
+
+
+    ion-input, ion-select, ion-textarea {
+        background-color: #d6d6d6;
+        padding: 5px 10px;
+        border-bottom-color: transparent !important;
+    }
+
+ 
 
 
 }

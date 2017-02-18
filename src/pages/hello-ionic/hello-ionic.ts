@@ -5,12 +5,14 @@ import {Validators, FormBuilder } from '@angular/forms';
 
 import { LoginPage } from '../login/login';
 import { BreweryService } from '../../providers/brewery-service';
+import { LocationService } from '../../providers/location-service';
 import { SingletonService } from '../../providers/singleton-service';
 import { AuthService } from '../../providers/auth-service';
 
 import { SearchPage } from '../search/search';
 import { MyPubPage } from '../my-pub/my-pub';
 import { Beer } from '../../models/beer';
+import { LocationResultsPage } from '../location-results/location-results';
 
 
 @Component({
@@ -20,21 +22,42 @@ import { Beer } from '../../models/beer';
 
 export class HelloIonicPage {
 
-  public qSearch:any;
-  public qSearchForm:any;
+  public qSearchBeer:any;
+  public qSearchLocation:any;
+  public qSearchBeerForm:any;
+  public qSearchLocationForm:any;
   public alert:string;
   public totalResults:number;
   public numberOfPages:number;
   public currentPage:number;
   public beers:Beer[];
+  public choice:string;
 
-  constructor(public navCtrl: NavController,public params:NavParams,public _form: FormBuilder,private alertCtrl: AlertController,public beerAPI: BreweryService, public sing: SingletonService, public auth: AuthService, public toastCtrl:ToastController) {
+  constructor(public navCtrl: NavController,
+              public params:NavParams,
+              public _form: FormBuilder,
+              private alertCtrl: AlertController,
+              public beerAPI: BreweryService, 
+              public sing: SingletonService, 
+              public auth: AuthService, 
+              public toastCtrl:ToastController,
+              public location:LocationService) {
 
-  	this.qSearch = params.get("qSearch");
+  	this.qSearchBeer = params.get("qSearchBeer");
+    this.qSearchLocation = params.get("qSearchLocation");
   	this.alert = params.get("alert");
-  	this.qSearchForm = this._form.group({
-  		qSearch : ['',Validators.required]
+    
+
+  	this.qSearchBeerForm = this._form.group({
+  		qSearchBeer : ['',Validators.required]
   	});
+
+    this.qSearchLocationForm = this._form.group({
+      qSearchLocation : ['',Validators.required]
+    });
+
+
+    this.choice = "beersearch";
 
   }
 
@@ -43,11 +66,11 @@ export class HelloIonicPage {
   	this.navCtrl.push(LoginPage);
   }
 
-  doSearch() {
+  doSearchBeer() {
 
-  	 if (this.qSearchForm.valid) {
+  	 if (this.qSearchBeerForm.valid) {
 
-      this.beerAPI.loadBeerByName(this.qSearchForm.value.qSearch).subscribe(beer => {
+      this.beerAPI.loadBeerByName(this.qSearchBeerForm.value.qSearchBeer).subscribe(beer => {
          this.beers = beer;
          this.loadBeers(this.beers);
       }); 
@@ -55,7 +78,16 @@ export class HelloIonicPage {
   	 }
   }
 
+  doSearchLocation() {
+    let locationName = this.qSearchLocationForm.value.qSearchLocation;
+    this.location.getLocationsByName(locationName).subscribe((success)=>{
+       //console.log(success);
 
+       if (!success.id) {
+         this.navCtrl.push(LocationResultsPage,{locations:success});
+       }
+    });
+  }
 
   loadBeers(data) {
 
@@ -63,8 +95,6 @@ export class HelloIonicPage {
 
     this.beers = data.data;
     this.totalResults = data.totalResults;
-    // this.currentPage = data.currentPage;
-    // this.numberOfPages = data.numberOfPages;
 
     
     if ( !this.totalResults ) {
@@ -90,14 +120,9 @@ export class HelloIonicPage {
      
     }
     //console.log(this.beers);
-    this.navCtrl.push(SearchPage,{qSearch:this.qSearchForm.value.qSearch,beers:this.beers});
+    this.navCtrl.push(SearchPage,{beers:this.beers});
  
   }  
-
-  
-  doSupriseMe() {
-
-  }
 
   presentAlert() {
     let alert = this.alertCtrl.create({
@@ -117,10 +142,6 @@ export class HelloIonicPage {
         this.presentToast('Log out was successful');      
       }
     });
-  }
-
-  doMyPub() {
-    this.navCtrl.setRoot(MyPubPage);
   }
 
   presentToast(msg) {

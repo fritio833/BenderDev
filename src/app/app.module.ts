@@ -9,6 +9,7 @@ import { BreweryService } from '../providers/brewery-service';
 import { SingletonService } from '../providers/singleton-service';
 import { AuthService } from '../providers/auth-service';
 import { DbService } from '../providers/db-service';
+import { LocationService } from '../providers/location-service';
 
 import { HelloIonicPage } from '../pages/hello-ionic/hello-ionic';
 import { ItemDetailsPage } from '../pages/item-details/item-details';
@@ -31,6 +32,8 @@ import { FriendsPage } from '../pages/friends/friends';
 import { ReviewBeerPage } from '../pages/review-beer/review-beer';
 import { HomePage } from '../pages/home/home';
 import { MyRatingsPage } from '../pages/my-ratings/my-ratings';
+import { LocationResultsPage } from '../pages/location-results/location-results';
+import { LocationDetailPage } from '../pages/location-detail/location-detail';
 
 
 @NgModule({
@@ -56,7 +59,9 @@ import { MyRatingsPage } from '../pages/my-ratings/my-ratings';
     FriendsPage,
     ReviewBeerPage,
     HomePage,
-    MyRatingsPage
+    MyRatingsPage,
+    LocationResultsPage,
+    LocationDetailPage
 
   ],
   imports: [
@@ -86,7 +91,9 @@ import { MyRatingsPage } from '../pages/my-ratings/my-ratings';
     FriendsPage,
     ReviewBeerPage,
     HomePage,
-    MyRatingsPage 
+    MyRatingsPage,
+    LocationResultsPage,
+    LocationDetailPage
   ],
   providers: [{provide: ErrorHandler, 
               useClass: IonicErrorHandler},
@@ -95,6 +102,7 @@ import { MyRatingsPage } from '../pages/my-ratings/my-ratings';
               FbProvider,
               SingletonService,
               AuthService,
-              DbService]
+              DbService,
+              LocationService]
 })
 export class AppModule {}
