@@ -26,20 +26,27 @@ export class BreweryService {
   	this.data = null;
 
     this.breweryDbAPI = single.breweryDbAPIKey;
-    this.breweryDbUrl = 'http://api.brewerydb.com/v2/';
+    this.breweryDbUrl = 'v2/';
   	console.log('Hello BreweryService Provider');
   }
 
   
   loadBeerByName(beerName): Observable<Beer[]>  {
 
-    return this.http.get(this.breweryDbUrl + 'search/?key=' + this.breweryDbAPI + '&q=' + beerName +'&type=beer')
+    return this.http.get(this.breweryDbUrl 
+         + 'search/?key=' 
+         + this.breweryDbAPI 
+         + '&q=' + beerName +'&type=beer&withBreweries=Y')
         .map(res => <Beer[]>res.json());
   }
 
   loadBeerById(beerId): Observable<Beer>  {
 
-    return this.http.get(this.breweryDbUrl + 'beer/' + beerId + '/?key=' + this.breweryDbAPI)
+    return this.http.get(this.breweryDbUrl 
+         + 'beer/' 
+         + beerId 
+         + '/?key=' + this.breweryDbAPI
+         + '&type=beer&withBreweries=Y')
         .map(res => <Beer>(res.json()));
   } 
 

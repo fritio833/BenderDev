@@ -1,14 +1,6 @@
 <ion-header>
   <ion-navbar  color="primary">
-    <button ion-button menuToggle>
-      <ion-icon name="menu"></ion-icon>
-    </button>
-    <ion-title>Bender</ion-title>
-       <ion-buttons end>
-           <button ion-button end icon-only (click)="doLogin()">
-               <ion-icon name="log-in"></ion-icon>
-           </button>
-        </ion-buttons>  
+    <ion-title>Bender</ion-title>  
   </ion-navbar>
 </ion-header>
 <ion-content padding>
@@ -22,10 +14,11 @@
 		    </ion-card-title>
 		    <div>
 		        <p id="beer-info-head"><b id="bold-info">Beer Info</b></p>
+		        <p><b class="info-label">Brewery:</b> {{beer?.breweries[0].name}}</p>
 		      	<p><b class="info-label">Style:</b> {{beer?.style.category.name}}</p>
 		      	<p><b class="info-label">Alchohol by Volume (ABV):</b> {{beer?.abv}}%</p>
 		      	<p><b class="info-label">Availability:</b> {{beer?.available.name}}</p>
-		      	<p><b class="info-label">Container:</b> {{beer?.available.name}}</p>
+		      	<p><b class="info-label">Container:</b> {{beer?.glass.name}}</p>
 		      	<p><b class="info-label">Is Organic:</b> {{beer?.isOrganic}}</p>
 		      	<p><b class="info-label">In Production:</b> {{beer?.statusDisplay}}</p>
 		     </div>
@@ -41,7 +34,7 @@
                    <ion-icon name="heart"></ion-icon>
                       Save
                 </button>
-		     	<button ion-button icon-left>
+		     	<button ion-button icon-left (click)='checkIn(beer)'>
                    <ion-icon name="beer"></ion-icon>
                       Check-in
                 </button>                          

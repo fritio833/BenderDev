@@ -9,6 +9,7 @@ import { Beer } from '../../models/beer';
 
 import { LoginPage } from '../login/login';
 import { ReviewBeerPage } from '../review-beer/review-beer';
+import { CheckinPage } from '../checkin/checkin';
 import { Ionic2RatingModule } from 'ionic2-rating';
 
 /*
@@ -42,7 +43,7 @@ export class BeerDetailPage {
 
     this.beerId = navParams.get('beerId');
     this.getLikeBeer(this.beerId);
-    // console.log("beerid",this.beerId);
+    //console.log("beerid",this.beerId);
 
   }
 
@@ -53,7 +54,7 @@ export class BeerDetailPage {
     this.beerAPI.loadBeerById(this.beerId).subscribe(beer => {
       this.beer = beer;
       this.loadBeer(this.beer);
-
+      //console.log(this.beer);
       this.getBeerReviews();
 
       //  Hide Save button if we saved this beer already
@@ -94,7 +95,7 @@ export class BeerDetailPage {
     }
 
     // fix no beer category
- 	if (!this.beer.hasOwnProperty('style')) {
+ 	  if (!this.beer.hasOwnProperty('style')) {
 
         this.beer['style'] = {category:{name:'',createDate:'',id:''}};
 
@@ -102,11 +103,17 @@ export class BeerDetailPage {
 
     // fix no description in available
     
- 	if (!this.beer.hasOwnProperty('available')) {
+ 	  if (!this.beer.hasOwnProperty('available')) {
 
         this.beer['available'] = {description:'',name:'',id:''};
 
     }
+
+     if (!this.beer.hasOwnProperty('glass')) {
+
+        this.beer['glass'] = {createDate:'',name:'',id:''};
+
+    }    
     //console.log('detail',this.beer);
   }
 
@@ -151,9 +158,14 @@ export class BeerDetailPage {
     }
   }
 
-  rateBeer(beerId) {
-
-
+  checkIn(beer) {
+    
+    let modal = this.modalCtrl.create(CheckinPage,{beer:beer});
+    modal.onDidDismiss(()=> {
+      this.getBeerReviews();
+    });
+    modal.present();
+    
   }
 
   getBeerReviews() {
@@ -166,7 +178,6 @@ export class BeerDetailPage {
       this.beerReviews = success.data;
 
       // Get overall Beer Ratings:  TODO: Create a backend make the calculation TABLE: beer_rating
-      console.log('beer reviews',this.beerReviews);
       for (let i = 0; i < this.beerReviews.length; i++) {
 
         // if the beer rating is zero, they never bothered to rate.  Ignore.
@@ -217,11 +228,11 @@ export class BeerDetailPage {
   setLikeBeer(beerId) {
 
     this.db.setLikeBeer(beerId).subscribe((value) => {
-      console.log(value);
+      //console.log(value);
     }, (error) => {
       console.log(error);
     },() => {
-      console.log('success');
+      //console.log('success');
       this.presentToast("You liked this beer.");
       this.getLikeBeer(beerId);
     });
@@ -230,12 +241,12 @@ export class BeerDetailPage {
 
   getLikeBeer(beerId) {
     this.db.getLikeBeer(beerId).subscribe((value) => {
-      console.log('beer likes',value.data); 
+      //console.log('beer likes',value.data); 
       this.beerLikes = value.data;
     }, (error) => {
       console.log(error);
     },() => {
-      console.log('success');
+      //console.log('success');
 
     });
 

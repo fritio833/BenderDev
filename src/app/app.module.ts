@@ -35,6 +35,7 @@ import { HomePage } from '../pages/home/home';
 import { MyRatingsPage } from '../pages/my-ratings/my-ratings';
 import { LocationResultsPage } from '../pages/location-results/location-results';
 import { LocationDetailPage } from '../pages/location-detail/location-detail';
+import { CheckinPage }  from '../pages/checkin/checkin';
 
 
 @NgModule({
@@ -62,7 +63,8 @@ import { LocationDetailPage } from '../pages/location-detail/location-detail';
     HomePage,
     MyRatingsPage,
     LocationResultsPage,
-    LocationDetailPage
+    LocationDetailPage,
+    CheckinPage
 
   ],
   imports: [
@@ -94,7 +96,8 @@ import { LocationDetailPage } from '../pages/location-detail/location-detail';
     HomePage,
     MyRatingsPage,
     LocationResultsPage,
-    LocationDetailPage
+    LocationDetailPage,
+    CheckinPage
   ],
   providers: [{provide: ErrorHandler, 
               useClass: IonicErrorHandler},

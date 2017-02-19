@@ -133,7 +133,7 @@ export class HelloIonicPage {
     });   
   }
 
- getLocationDetail(location) {
+  getLocationDetail(location) {
 
     this.navCtrl.push(LocationDetailPage,{location:location});
 

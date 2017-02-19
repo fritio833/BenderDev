@@ -22,12 +22,18 @@ export class SearchPage {
 
   public totalResults:number;
   public numberOfPages:number;
-  public beers:Array<string>;
+  public beers:any;
   public currentPage:number;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public beerAPI: BreweryService) {
 
     this.beers = navParams.get('beers');    
+
+    
+    for (var i=0;i<this.beers.length;i++) {
+       console.log(this.beers[i].breweries[0].name);
+    }
+
 
   }
 
@@ -39,7 +45,9 @@ export class SearchPage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad SearchPage');
-    // console.log(this.beers);
+    console.log(this.beers);
+
+
   }
 
 }
