@@ -43,7 +43,7 @@ export class GoogleService {
   placesNearByMe(lat,lng) {
 
     return this.http.get(this.googlePlacesURL + 'nearbysearch/json?location='
-    	  + lat + ',' + lng + '&radius=100&key=' + this.googlePlacesAPIKey)
+    	  + lat + ',' + lng + '&keyword=bar|food|restaurant|liquor_store&radius=50&types=establishment&key=' + this.googlePlacesAPIKey)
         .map(res => res.json());
 
   }
@@ -51,7 +51,10 @@ export class GoogleService {
   placesAutocomplete(locationName) {
 
     return this.http.get(this.googlePlacesURL + 'autocomplete/json?input='
-    	  + locationName + "&location=" + this.lat + ',' + this.lng + '&types=establishment&radius=500&key=' + this.googlePlacesAPIKey)
+    	  + locationName + "&location=" 
+        + this.lat + ',' + this.lng 
+        + '&keyword=bar|food|restaurant|liquor_store&types=establishment&radius=500&key=' 
+        + this.googlePlacesAPIKey)
         .map(res => res.json());
 
   }

@@ -9,6 +9,30 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
-   CHECK IN
+<ion-content>
+
+<ion-grid>
+  <ion-row>
+    <ion-col>
+      <div>
+        <ion-list>
+          <ion-item>
+	      <ion-avatar item-right>
+	      	<img [src]="beer.labels.icon" />
+	      </ion-avatar>
+	      </ion-item>
+	    </ion-list>
+	  </div>
+    </ion-col>
+    <ion-col width-90>
+      <ion-list>
+        <ion-item>
+    	  <h3>{{beer.name}}</h3>
+    	  <p>{{beer?.breweries[0].name}}</p>
+    	</ion-item>
+      </ion-list>
+    </ion-col>
+  </ion-row>
+</ion-grid>
+
 </ion-content>
