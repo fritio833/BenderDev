@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { SingletonService } from './singleton-service';
+import { Platform } from 'ionic-angular';
 
 /*
   Generated class for the LocationService provider.
@@ -12,13 +13,19 @@ import { SingletonService } from './singleton-service';
 @Injectable()
 export class LocationService {
 
-  public beermappingURL = "http://beermapping.com/webservice/";
+  public beermappingURL = "webservice/";
   public beermappingAPIKey = "";
 
-  constructor(public http: Http,public sing:SingletonService) {
+  constructor(public http: Http,public sing:SingletonService, public platform:Platform) {
     console.log('Hello LocationService Provider');
 
     this.beermappingAPIKey = sing.beermappingAPIKey;
+
+    if (this.platform.is('cordova')) {
+      this.beermappingURL = 'http://beermapping.com/webservice/';         
+    } else {
+      this.beermappingURL = 'webservice/';      
+    }    
 
   }
 

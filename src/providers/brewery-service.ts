@@ -5,6 +5,7 @@ import 'rxjs/add/operator/catch';
 import { Observable } from 'rxjs/Observable';
 import { SingletonService } from './singleton-service';
 import { Beer } from '../models/beer';
+import { Platform } from 'ionic-angular';
 
 /*
   Generated class for the BreweryService provider.
@@ -21,12 +22,18 @@ export class BreweryService {
   public breweryDbAPI:any;
   public breweryDbUrl:any;
 
-  constructor(public http: Http, public single:SingletonService) {
+  constructor(public http: Http, public single:SingletonService, public platform:Platform) {
   	this.http = http;
   	this.data = null;
 
     this.breweryDbAPI = single.breweryDbAPIKey;
-    this.breweryDbUrl = 'v2/';
+
+    if (this.platform.is('cordova')) {       
+      this.breweryDbUrl = 'http://api.brewerydb.com/v2/';   
+    } else {
+      this.breweryDbUrl = 'v2/';
+    }
+
   	console.log('Hello BreweryService Provider');
   }
 

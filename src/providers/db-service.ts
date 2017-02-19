@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import { SingletonService } from './singleton-service';
 import 'rxjs/add/operator/map';
-
+import { Platform } from 'ionic-angular';
 
 /*
   Generated class for the DbService provider.
@@ -15,9 +15,15 @@ export class DbService {
 
   public databaseServiceUrl:string;
 
-  constructor(public http: Http,public sing:SingletonService) {
+  constructor(public http: Http,public sing:SingletonService, public platform:Platform) {
      //console.log('Hello DbService Provider');
      this.databaseServiceUrl = this.sing.databaseServiceUrl;
+
+    if (this.platform.is('cordova')) {
+      this.databaseServiceUrl = 'http://benderapp.servebeer.com/bender/';          
+    } else {
+      this.databaseServiceUrl = 'bender/';
+    }         
   }
 
   public setLikeBeer(beerId) {

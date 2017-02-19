@@ -18,6 +18,9 @@ import { GoogleService } from '../../providers/google-service';
 export class CheckinPage {
 
   public beer:any;
+  public locations;
+  public locationsLen:number;
+  public price:number;
 
   constructor(public navCtrl: NavController, 
   	          public params: NavParams,
@@ -25,15 +28,22 @@ export class CheckinPage {
   	          public geo:GoogleService) {
 
     this.beer = params.get("beer");
+    this.price = 0;
     console.log(this.beer);
   }
 
   cancel() {
     this.view.dismiss();
-  }  
+  }
+
+  priceSiderFormat(price) {
+    return price.toFixed(2);
+  }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad CheckinPage');
+
+
 
     Geolocation.getCurrentPosition().then((resp) => {
         let lat:number;
@@ -44,7 +54,11 @@ export class CheckinPage {
         lng = -84.269281;
     	this.geo.placesNearByMe(lat,lng)
     	  .subscribe((success)=>{
-    	  	console.log(success);
+          this.locations = success.results;
+          //this.locationsLen = this.locations.length;
+    	  	this.locationsLen = this.locations.length;
+          console.log(this.locations[0]);
+          console.log('beer name',this.beer.name);
     	  });
     });
 

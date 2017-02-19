@@ -17,20 +17,68 @@
       <div>
         <ion-list>
           <ion-item>
-	      <ion-avatar item-right>
+	      <ion-avatar item-right width-20>
 	      	<img [src]="beer.labels.icon" />
 	      </ion-avatar>
 	      </ion-item>
 	    </ion-list>
 	  </div>
     </ion-col>
-    <ion-col width-90>
+    <ion-col width-80>
       <ion-list>
         <ion-item>
     	  <h3>{{beer.name}}</h3>
     	  <p>{{beer?.breweries[0].name}}</p>
     	</ion-item>
       </ion-list>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col>
+    <div *ngFor="let location of locations" align="center">
+       You're drinking {{beer?.name}} @ {{location.name}}
+    </div>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+  <ion-col>
+    <ion-list>
+      <ion-item item-right>
+        <ion-grid>
+          <ion-row wrap>
+            <ion-col><h4>Tell us the cost and earn an extra 5 points.</h4></ion-col>
+            <ion-col><div align="right"><ion-badge>${{price}}</ion-badge></div></ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+      <ion-item>
+        <ion-range min="100" max="2000" step="25" [(ngModel)]="100*price" (ngModelChange)="(price=priceSiderFormat($event/100))">
+          <ion-icon small range-left name="cash"></ion-icon>
+          <ion-icon range-right name="cash"></ion-icon>
+        </ion-range>
+      </ion-item>
+    </ion-list>
+  </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col>
+      <ion-list>
+        <ion-item item-right>
+          <div align="right">
+            <button ion-button mode="ios">
+              <ion-icon mode="ios" name="facebook"></ion-icon>Share on Facebook
+            </button>
+            <!---- Share <img id="fb-share" src="images/facebook-icon.png" /> ---->
+          </div>
+        </ion-item>
+      </ion-list>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col>
+      <div align="center">
+         <button ion-button>Check-in for 10 Points</button>
+      </div>
     </ion-col>
   </ion-row>
 </ion-grid>

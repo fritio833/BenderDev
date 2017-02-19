@@ -28,10 +28,10 @@ export class GoogleService {
     this.googlePlacesAPIKey = sing.googlePlacesAPIKey;
     this.googlePlacesURL = 'https://maps.googleapis.com/maps/api/place/';
     
-    // https://maps.googleapis.com/maps/api/place/autocomplete/output?parameters
+    //
     //https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522,151.1957362&radius=500&type=restaurant&keyword=cruise&key=AIzaSyA4dIwMeqXekFajK1uIesJn53LzkyZ_kU4
     //https://maps.googleapis.com/maps/api/place/nearbysearch/json/location=?30.464081,-84.298049&radius=100&key=AIzaSyA4dIwMeqXekFajK1uIesJn53LzkyZ_kU4
-
+    // works => https://maps.googleapis.com/maps/api/place/search/json?location=34.0522222,-118.2427778&radius=500&types=museum|art_gallery&sensor=false&key=AIzaSyA4dIwMeqXekFajK1uIesJn53LzkyZ_kU4
   }
 
   reverseGeocodeLookup(lat,lng) {
@@ -48,12 +48,23 @@ export class GoogleService {
 
   }
 
+  placesNearByName(name,lat,lng) {
+
+    return this.http.get(this.googlePlacesURL + 'nearbysearch/json?location='
+        + lat + ',' + lng 
+        + '&keyword=bar|food|restaurant|liquor_store&radius=50&types=establishment'
+        + '&name=' + name 
+        + '&key=' + this.googlePlacesAPIKey)
+        .map(res => res.json());
+
+  }  
+
   placesAutocomplete(locationName) {
 
     return this.http.get(this.googlePlacesURL + 'autocomplete/json?input='
     	  + locationName + "&location=" 
         + this.lat + ',' + this.lng 
-        + '&keyword=bar|food|restaurant|liquor_store&types=establishment&radius=500&key=' 
+        + '&keyword=bar|restaurant|liquor_store&types=establishment&radius=500&key=' 
         + this.googlePlacesAPIKey)
         .map(res => res.json());
 
