@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 
-import { Platform, MenuController, Nav, ToastController } from 'ionic-angular';
+import { Platform, MenuController, Nav, AlertController,ToastController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { StatusBar, Splashscreen } from 'ionic-native';
 
@@ -38,7 +38,8 @@ export class MyApp {
     public storage: Storage,
     public toastCtrl: ToastController,
     public auth: AuthService,
-    public geo:GoogleService
+    public geo:GoogleService,
+    public alertCtrl: AlertController
   ) {
     this.initializeApp();
 
@@ -125,7 +126,7 @@ export class MyApp {
   getGeolocation() {
 
     Geolocation.getCurrentPosition().then((resp) => {
-       
+       this.presentAlert("lat: " + resp.coords.latitude + " lng: " + resp.coords.longitude);
        if (resp.coords.latitude) {
          this.geo.reverseGeocodeLookup(resp.coords.latitude,resp.coords.longitude)
            .subscribe((success)=>{
@@ -146,5 +147,16 @@ export class MyApp {
       duration: 3000
     });
     toast.present();
-  }    
+  }
+
+  presentAlert(msg) {
+    let alert = this.alertCtrl.create({
+      title: 'Message',
+      subTitle: msg,
+      buttons: ['Dismiss']
+    });
+    alert.present();
+  }
+
+
 }

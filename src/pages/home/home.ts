@@ -34,15 +34,17 @@ export class HomePage {
   	          public storage:Storage) {
 
   	this.choice = "home";
+    this.loadFavoriteBeers();
+  }
 
-	this.storage.ready().then(()=>{
+  loadFavoriteBeers() {
+    this.storage.ready().then(()=>{
 
-	  this.storage.get('beers').then((beerArray)=>{
-	    this.beers = beerArray;
-	  });
+      this.storage.get('beers').then((beerArray)=>{
+        this.beers = beerArray;
+      });
 
-	});
-
+    });
   }
 
   ionViewDidLoad() {
@@ -81,18 +83,18 @@ export class HomePage {
     toast.present();
   }
 
-  getReviews() {
-
-	  this.storage.get('reviews').then((reviewArray)=>{
-	    this.reviews = reviewArray;
-	    console.log('lkj',reviewArray);
-	  });
-  }
 
   getBeerDetail(beerDbId) {
 
     this.navCtrl.push(BeerDetailPage,{beerId:beerDbId});
     
-  }   
+  }
+
+  // reload favorites after added
+  ionViewWillEnter() { 
+
+    this.loadFavoriteBeers()
+
+  }  
 
 }

@@ -11,12 +11,14 @@
     {  
         "path": "/webservice",
         "proxyUrl": "http://beermapping.com/webservice"
-
     },
     {
         "path": "/bender",
         "proxyUrl": "http://benderapp.servebeer.com/bender"
-
+    },
+    {
+        "path": "/maps",
+        "proxyUrl": "https://maps.googleapis.com/maps"
     }
   ] 
 }

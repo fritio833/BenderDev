@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams,ViewController } from 'ionic-angular';
-import { Geolocation } from 'ionic-native';
+import { NavController, NavParams,ViewController, AlertController, ToastController } from 'ionic-angular';
+import { Geolocation, SocialSharing } from 'ionic-native';
 import { GoogleService } from '../../providers/google-service';
-
 
 
 /*
@@ -19,13 +18,17 @@ export class CheckinPage {
 
   public beer:any;
   public locations;
+  public location;
   public locationsLen:number;
   public price:number;
+  public socialMessage:string;
 
   constructor(public navCtrl: NavController, 
   	          public params: NavParams,
   	          public view: ViewController,
-  	          public geo:GoogleService) {
+  	          public geo:GoogleService,
+              public toastCtrl:ToastController,
+              public alertCtrl:AlertController) {
 
     this.beer = params.get("beer");
     this.price = 0;
@@ -57,6 +60,7 @@ export class CheckinPage {
           this.locations = success.results;
           //this.locationsLen = this.locations.length;
     	  	this.locationsLen = this.locations.length;
+          this.location = this.locations[0]; 
           console.log(this.locations[0]);
           console.log('beer name',this.beer.name);
     	  });
@@ -64,5 +68,35 @@ export class CheckinPage {
 
     //this.geo.placesNearByMe()
   }
+
+  shareOnFacebook() {
+
+      let image:string = this.beer.labels.large;
+
+      SocialSharing.shareViaFacebook('message me',null,'http://benderapp.com').then((success)=>{
+         //Enter bender points here
+      }).catch((error) => {
+         this.presentAlert("Make sure you have the Facebook app installed.");
+      });
+
+  }
+
+  presentToast(msg) {
+    let toast = this.toastCtrl.create({
+      message: msg,
+      position: 'top',
+      duration: 3000
+    });
+    toast.present();
+  }
+
+  presentAlert(msg) {
+    let alert = this.alertCtrl.create({
+      title: 'error',
+      subTitle: msg,
+      buttons: ['Dismiss']
+    });
+    alert.present();
+  }     
 
 }

@@ -36,7 +36,7 @@
   <ion-row>
     <ion-col>
     <div *ngFor="let location of locations" align="center">
-       You're drinking {{beer?.name}} @ {{location.name}}
+       Pin {{beer?.name}} @ {{location.name}}
     </div>
     </ion-col>
   </ion-row>
@@ -47,7 +47,11 @@
         <ion-grid>
           <ion-row wrap>
             <ion-col><h4>Tell us the cost and earn an extra 5 points.</h4></ion-col>
-            <ion-col><div align="right"><ion-badge>${{price}}</ion-badge></div></ion-col>
+            <ion-col>
+              <div align="right">
+                <ion-badge color="secondary">${{price}}</ion-badge>
+              </div>
+            </ion-col>
           </ion-row>
         </ion-grid>
       </ion-item>
@@ -64,21 +68,27 @@
     <ion-col>
       <ion-list>
         <ion-item item-right>
-          <div align="right">
-            <button ion-button mode="ios">
-              <ion-icon mode="ios" name="facebook"></ion-icon>Share on Facebook
+          <ion-label stacked>Message</ion-label>
+          <ion-textarea placeholder="Did you enjoy?  Tell your friends." [(ngModel)]="socialMessage">
+            Enjoying an ice cold {{beer.name}} @ {{location}}.
+          </ion-textarea>
+        </ion-item>
+        <ion-item item-right>     
+            <button item-right ion-button icon-left (click)="shareOnFacebook()">
+              Share on Facebook
             </button>
-            <!---- Share <img id="fb-share" src="images/facebook-icon.png" /> ---->
-          </div>
         </ion-item>
       </ion-list>
     </ion-col>
   </ion-row>
   <ion-row>
     <ion-col>
+    <ion-buttons>
       <div align="center">
          <button ion-button>Check-in for 10 Points</button>
+         <button ion-button (click)="cancel()" color="dark">Close</button>
       </div>
+    </ion-buttons>
     </ion-col>
   </ion-row>
 </ion-grid>

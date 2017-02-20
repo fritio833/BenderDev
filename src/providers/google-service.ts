@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import { SingletonService } from './singleton-service';
+import { Platform } from 'ionic-angular';
 import 'rxjs/add/operator/map';
 
 
@@ -21,13 +22,22 @@ export class GoogleService {
   public lng:number;
 
 
-  constructor(public http: Http,public sing:SingletonService) {
+  constructor(public http: Http,public sing:SingletonService, public platform:Platform) {
     //console.log('Hello GoogleService Provider');
     this.googleGeocodeAPIKey = sing.googleGeocodeAPIKey;
-    this.googleGeocodeURL = 'https://maps.googleapis.com/maps/api/geocode/json?';
     this.googlePlacesAPIKey = sing.googlePlacesAPIKey;
-    this.googlePlacesURL = 'https://maps.googleapis.com/maps/api/place/';
+
+    if (this.platform.is('cordova')) {
+      this.googlePlacesURL = 'https://maps.googleapis.com/maps/api/place/';
+      this.googleGeocodeURL = 'https://maps.googleapis.com/maps/api/geocode/json?';
+    } else {
+      this.googlePlacesURL = 'maps/api/place/';
+      this.googleGeocodeURL = 'maps/api/geocode/json?';
+    }
+
+
     
+
     //
     //https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522,151.1957362&radius=500&type=restaurant&keyword=cruise&key=AIzaSyA4dIwMeqXekFajK1uIesJn53LzkyZ_kU4
     //https://maps.googleapis.com/maps/api/place/nearbysearch/json/location=?30.464081,-84.298049&radius=100&key=AIzaSyA4dIwMeqXekFajK1uIesJn53LzkyZ_kU4
