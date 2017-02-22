@@ -6,6 +6,7 @@ import { Storage } from '@ionic/storage';
 import { SingletonService } from '../../providers/singleton-service';
 
 import { BeerDetailPage } from '../beer-detail/beer-detail';
+import { HelloIonicPage } from '../hello-ionic/hello-ionic';
 
 /*
   Generated class for the Favorites page.
@@ -20,8 +21,16 @@ import { BeerDetailPage } from '../beer-detail/beer-detail';
 export class FavoritesPage {
 
   public beers = new Array();
+  public choice:string;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams,public sing:SingletonService, public storage:Storage, public toastCtrl: ToastController, public appRef:ApplicationRef) {}
+  constructor(public navCtrl: NavController, 
+              public navParams: NavParams,
+              public sing:SingletonService, 
+              public storage:Storage, 
+              public toastCtrl: ToastController, 
+              public appRef:ApplicationRef) {
+    this.choice = "beerlist";  
+  }
 
   getBeerDetail(beerDbId) {
 
@@ -72,6 +81,11 @@ export class FavoritesPage {
     });
 
   }
+
+  doSearch() {
+    this.navCtrl.push(HelloIonicPage); 
+  }
+
 
   ionViewWillEnter() { 
 

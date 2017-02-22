@@ -21,7 +21,10 @@ export class ProfilePage {
   public latitude:string;
   public longitude:string;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public sing: SingletonService, public storage:Storage) {
+  constructor(public navCtrl: NavController, 
+              public navParams: NavParams, 
+              public sing: SingletonService, 
+              public storage:Storage) {
 
     Geolocation.getCurrentPosition().then(pos => {
       console.log('lat: ' + pos.coords.latitude + ', lon: ' + pos.coords.longitude);
@@ -35,9 +38,14 @@ export class ProfilePage {
     
     this.storage.ready().then(()=>{
        this.storage.get('fbPic').then((val) =>{
+         console.log('profile pic: ' + val);
          this.profileIMG = val;
        })
     });
+
+    this.storage.get('description').then((description)=>{
+          this.sing.description = description;
+    });    
 
   }
 

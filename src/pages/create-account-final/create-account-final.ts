@@ -133,7 +133,7 @@ export class CreateAccountFinalPage {
 
   loginEmail(email,password) {
 
-    let loginCredentials = {email:email,password:password};
+    let loginCredentials = {email:email,password:password,socialLogin:0};
 
     this.auth.login(loginCredentials).subscribe(allowed => {
       if (allowed) {

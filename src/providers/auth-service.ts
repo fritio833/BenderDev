@@ -29,7 +29,8 @@ export class AuthService {
       return Observable.create(observer => {
         // At this point make a request to your backend to make a real check!
         // login could be user name.  Backend makes the check.
-        this.db.loginUser(credentials.email,credentials.password)
+
+        this.db.loginUser(credentials)
            .subscribe(allowed => {
             //console.log(allowed);
             let access = false;

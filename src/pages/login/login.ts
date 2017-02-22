@@ -26,7 +26,7 @@ export class LoginPage {
   public gender:any;
   public birthday:any;
   public password:any;
-  public loginCredentials = {email: '', password: ''};
+  public loginCredentials = {email: '', password: '', socialLogin: 0};
   public loading:any;
 
   constructor(public navCtrl: NavController, public params: NavParams,public alertCtrl: AlertController,public form: FormBuilder,public fb:FbProvider, public storage: Storage,public sing: SingletonService,public auth:AuthService, public loadingCtrl: LoadingController, public modalCtrl:ModalController) {
@@ -87,7 +87,11 @@ export class LoginPage {
 
   loginEmail() {
 
-    this.loginCredentials = {email:this.emailForm.value.email,password:this.emailForm.value.password};
+    this.loginCredentials = { 
+                                email:this.emailForm.value.email,
+                                password:this.emailForm.value.password,
+                                socialLogin:0
+                            };
 
     if (this.emailForm.valid) {
         this.showLoading();

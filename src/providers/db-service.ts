@@ -104,11 +104,13 @@ export class DbService {
       .map(res => res.json());
   }
 
-  public loginUser(email,password) {
+  public loginUser(credentials) {
 
+    console.log("credentials",credentials);
     return this.http.get(this.databaseServiceUrl + 'user/?action=login' 
-         + '&email=' + email
-         + '&pword=' + password)
+         + '&email=' + credentials.email
+         + '&pword=' + credentials.password
+         + '&socialLogin=' + credentials.socialLogin)
   		.map(res => res.json());
   }
 

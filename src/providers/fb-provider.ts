@@ -68,7 +68,7 @@ export class FbProvider {
     }
 
     setCurrentUserProfileAndroid() {
-        let loginCredentials = {email: '', password: ''};
+        let loginCredentials = {email: '', password: '',socialLogin:1};
         this.p = new Promise((resolve, reject) => {
           this.getCurrentUserProfileAndroid().then(
             (profileData) => {
@@ -78,7 +78,9 @@ export class FbProvider {
 
                     if (allow.status) {
 
-                        loginCredentials = {email:profileData.email,password:profileData.id};
+                        loginCredentials.email = profileData.email;
+                        loginCredentials.password = allow.data.token; // Social login password is token
+
                         this.auth.login(loginCredentials).subscribe((value)=>{
 
                           // we logged in succesfully

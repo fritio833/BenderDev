@@ -39,37 +39,19 @@ export class HomePage {
   	          public storage:Storage) {
 
   	this.choice = "home";
-    this.loadFavoriteBeers();
   }
 
-  loadFavoriteBeers() {
-    this.storage.ready().then(()=>{
-
-      this.storage.get('beers').then((beerArray)=>{
-        this.beers = beerArray;
-      });
-
-    });
-  }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad HomePage');
 
     //setTimeout(() => { this.initMap(),3000});
     this.initMap();
-
-	  this.storage.get('fbPic').then((fbPic)=>{
-	        this.sing.profileIMG = fbPic;
-	  });
-
-	  this.storage.get('description').then((description)=>{
-	        this.sing.description = description;
-	  });	  
-
   }
 
   initMap() {
 
+    /*
     Geolocation.getCurrentPosition().then((resp) => {
        if (resp.coords.latitude) {
 
@@ -86,18 +68,10 @@ export class HomePage {
        }
     }).catch((error) => {
       console.log('Error getting location', error);
-    }); 
+    });
+    */ 
   }
 
-  doLogout() {
-  
-    this.auth.logout().subscribe(allowed => {
-      if (allowed) {
-        this.navCtrl.setRoot(LoginPage);
-        this.presentToast('Log out was successful');      
-      }
-    });
-  }
 
   doSearch() {
   	this.navCtrl.push(HelloIonicPage); 
@@ -112,18 +86,6 @@ export class HomePage {
     toast.present();
   }
 
-
-  getBeerDetail(beerDbId) {
-
-    this.navCtrl.push(BeerDetailPage,{beerId:beerDbId});
-    
-  }
-
-  // reload favorites after added
-  ionViewWillEnter() { 
-
-    this.loadFavoriteBeers()
-
-  }  
+ 
 
 }
