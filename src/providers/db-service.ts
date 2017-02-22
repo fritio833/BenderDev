@@ -15,8 +15,11 @@ export class DbService {
 
   public databaseServiceUrl:string;
 
-  constructor(public http: Http,public sing:SingletonService, public platform:Platform) {
-     //console.log('Hello DbService Provider');
+  constructor(public http: Http,
+              public sing:SingletonService, 
+              public platform:Platform) {
+
+     console.log('Hello DbService Provider');
      this.databaseServiceUrl = this.sing.databaseServiceUrl;
 
     if (this.platform.is('cordova')) {
@@ -69,6 +72,36 @@ export class DbService {
     return this.http.get(this.databaseServiceUrl + 'user/?action=loginFB' 
          + '&facebookid=' + FacebookId)
   		.map(res => res.json());
+  }
+
+  public tackBeer(token,price,beer,loc,locGeo) {
+    /*
+    console.log(beer);
+    console.log(price);
+    console.log(loc);
+    console.log(token);
+    */
+    console.log(loc.types);
+
+    return this.http.get(this.databaseServiceUrl + 'checkin/?action=tackbeer' 
+         + '&token=' + token
+         + '&price=' + price
+         + '&name=' + loc.name
+         + '&place_id=' + loc.place_id
+         + '&beer_id=' + beer.id
+         + '&loc_types=' + loc.types.join()
+         + '&beer_name=' + beer.name
+         + '&loc_rating=' + loc.rating
+         + '&company=' + beer.breweries[0].name
+         + '&loc_lat=' + loc.geometry.location.lat
+         + '&loc_lng=' + loc.geometry.location.lng
+         + '&address=' + locGeo.address
+         + '&city=' + locGeo.city
+         + '&state=' + locGeo.state
+         + '&zip=' + locGeo.zip
+         + '&county=' + locGeo.county
+         + '&country=' + locGeo.country)
+      .map(res => res.json());
   }
 
   public loginUser(email,password) {

@@ -22,4 +22,26 @@ export class SingletonService {
   public googleGeocodeAPIKey:string = 'AIzaSyA4dIwMeqXekFajK1uIesJn53LzkyZ_kU4';
   public googlePlacesAPIKey: string = 'AIzaSyDJ5qz7QX1yXkX2c444v5v0ziSPg15PLjM';
 
+  //Testing. Dev Flags to simulate geolocation
+  public test = false;
+
+  //ABC Liquore Store 1930 Thomasville Rd, Tallahassee FL
+  //public lat = 30.466237;
+  //public lng = -84.269281;
+
+  // Fermintation Lounge
+  //public lat = 30.433812;
+  //public lng = -84.286296;
+
+  //McGuire's Pensacola
+  //public lat = 30.418049;
+  //public lng = -87.202452;
+
+  //Pug Mahone's
+  //public lat = 30.464105;
+  //public lng = -84.298067;
+
+  public lat = 0;
+  public lng = 0;
+
 }

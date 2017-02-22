@@ -105,49 +105,24 @@ export class HelloIonicPage {
 
   getLocal() {
 
-    
-    if (this.sing.geoCity == null || this.sing.geoCity == '') {
-          
-          this.location.getLocationCityState("Tallahassee","FL")
-            .subscribe((success)=>{
-              if (parseInt(success[0].id)) {
-                this.locations = success;
-                for (var i=0;i<this.locations.length;i++) {
 
-                  this.locations[i].overall = Math.round(this.locations[i].overall);
-                }
-              }
-          });      
-    } else {
 
-        Geolocation.getCurrentPosition().then((resp) => {
+    Geolocation.getCurrentPosition().then((resp) => {
 
-         this.geo.reverseGeocodeLookup(resp.coords.latitude,resp.coords.longitude)
-           .subscribe((success)=>{
-              //console.log(success);
+      this.location.getLocationCityState(this.sing.geoCity,this.sing.geoState)
+        .subscribe((success)=>{
+          if (parseInt(success[0].id)) {
+            this.locations = success;
+            for (var i=0;i<this.locations.length;i++) {
 
-              this.sing.geoCity= success.results[1].address_components[1].short_name;
-              this.sing.geoState = success.results[1].address_components[3].short_name;
-
-              this.location.getLocationCityState(this.sing.geoCity,this.sing.geoState)
-                .subscribe((success)=>{
-                  if (parseInt(success[0].id)) {
-                    this.locations = success;
-                    for (var i=0;i<this.locations.length;i++) {
-
-                      this.locations[i].overall = Math.round(this.locations[i].overall);
-                    }
-                  }
-              });
-                          
-          },(error)=>{
-
-          });
-           
-        }).catch((error) => {
-          console.log('Error getting location', error);
-        });
-    }  
+              this.locations[i].overall = Math.round(this.locations[i].overall);
+            }
+          }
+      });
+       
+    }).catch((error) => {
+      console.log('Error getting location', error);
+    });
   }
 
   getLocationDetail(location) {

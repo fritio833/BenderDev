@@ -35,11 +35,26 @@
   </ion-row>
   <ion-row>
     <ion-col>
-    <div *ngFor="let location of locations" align="center">
-       Pin {{beer?.name}} @ {{location.name}}
+    <div *ngFor="let location of locations" align="center" [hidden]="locationsLen > 1">
+      <ion-list radio-group>
+        <ion-list-header>
+          Currently located @ {{location.name}} 
+        </ion-list-header>
+      </ion-list>
     </div>
+    <div align="center" [hidden]="locationsLen == 1">
+      <ion-list radio-group>
+        <ion-list-header>
+          Where are you currently?
+        </ion-list-header>
+        <ion-item *ngFor="let location of locations; let i = index;">
+          <ion-label>{{location.name}}</ion-label>
+          <ion-radio value="{{i}}" (click)="selectLocation(i)"></ion-radio>
+        </ion-item>
+       </ion-list>
+    </div>    
     </ion-col>
-  </ion-row>
+  </ion-row>  
   <ion-row>
   <ion-col>
     <ion-list>
@@ -85,7 +100,7 @@
     <ion-col>
     <ion-buttons>
       <div align="center">
-         <button ion-button>Check-in for 10 Points</button>
+         <button ion-button  (click)="tackThisBeer()">Check-in for 10 Points</button>
          <button ion-button (click)="cancel()" color="dark">Close</button>
       </div>
     </ion-buttons>

@@ -11,7 +11,8 @@ import { Geolocation } from 'ionic-native';
 
 import { LoginPage } from '../pages/login/login';
 import { HomePage } from '../pages/home/home';
-import { MyRatingsPage } from '../pages/my-ratings/my-ratings';
+import { FavoritesPage } from '../pages/favorites/favorites';
+import { ProfilePage } from '../pages/profile/profile';
 
 
 
@@ -43,16 +44,13 @@ export class MyApp {
   ) {
     this.initializeApp();
 
-
-    this.setUserStorageData();
-    this.getGeolocation();
-
     // set our app's pages
     this.pages = [
       //{ title: 'My Pub', component: MyPubPage },
       { title: 'Home', component: HomePage },
       { title: 'Search', component: HelloIonicPage },
-      { title: 'My Ratings', component: MyRatingsPage },
+      { title: 'Favorites', component: FavoritesPage },
+      { title: 'Profile', component: ProfilePage },
       { title: 'Settings', component: HomePage }
     ];
   }
@@ -61,7 +59,8 @@ export class MyApp {
     this.platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
-
+      this.setUserStorageData();
+      this.getGeolocation();
       StatusBar.styleDefault();
       Splashscreen.hide();
     });
@@ -93,9 +92,7 @@ export class MyApp {
         if (status == null) {
 
           this.storage.get('fbPic').then((fbPic)=>{
-
-                this.sing.profileIMG = fbPic;
-
+            this.sing.profileIMG = fbPic;
           });
 
           this.sing.loggedIn = false;
@@ -126,14 +123,13 @@ export class MyApp {
   getGeolocation() {
 
     Geolocation.getCurrentPosition().then((resp) => {
-       this.presentAlert("lat: " + resp.coords.latitude + " lng: " + resp.coords.longitude);
        if (resp.coords.latitude) {
          this.geo.reverseGeocodeLookup(resp.coords.latitude,resp.coords.longitude)
            .subscribe((success)=>{
-
-              this.sing.geoCity= success.results[2].address_components[0].short_name;
-              this.sing.geoState = success.results[2].address_components[2].short_name;            
+            this.sing.geoCity = success.city;
+            this.sing.geoState = success.state;           
           });
+        
        }
     }).catch((error) => {
       console.log('Error getting location', error);

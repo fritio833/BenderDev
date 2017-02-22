@@ -11,7 +11,8 @@
     </ion-buttons>
   </ion-navbar>
 </ion-header>
-<ion-content padding>
+<ion-content>
+<!----
 <ion-card>
 	<ion-card-content>
 	 	<ion-grid>
@@ -38,7 +39,8 @@
 	 	</ion-grid>
 	</ion-card-content>
  </ion-card>
-<div padding>
+---->
+<div>
    <!---- change to android with mode=md ( android ) or mode=ios leave out for ionic to decide ---->
   <ion-segment [(ngModel)]="choice" class="toolbar">
     <ion-segment-button icon-left role="button" color="primary" value="home">
@@ -50,7 +52,7 @@
     <ion-segment-button icon-left role="button" color="primary" value="locations">
       <ion-icon name="pint"></ion-icon>
     </ion-segment-button>
-    <ion-segment-button icon-left role="button" color="primary" value="map" (click)="getReviews()">
+    <ion-segment-button icon-left role="button" color="primary" value="map">
       <ion-icon name="navigate"></ion-icon>
     </ion-segment-button>         
   </ion-segment>
@@ -59,19 +61,7 @@
 <div [ngSwitch]="choice">
 
   <ion-list *ngSwitchCase="'home'">
-    <ion-list-header>
-      <h2>Welcome {{sing.RealName}} to Bender</h2>
-    </ion-list-header>  
-    <ion-card>
-	  <ion-card-content>
-	   <p>
-	    Bender is a social community that brings the love of beers and where to find them at your finger tips.
-	    At Bender, you can lookup a beer's rating, description, prices, and where to buy them.  If you don't see
-	    the beer or a location, please help us grow by telling us about it through Bender.  To get started,
-	    click the search icon <button color="primary"><ion-icon color="primary" name="search"></ion-icon></button> on the top right.  Cheers!
-	   </p>
-	  </ion-card-content>
-    </ion-card>
+
   </ion-list>
 
   <ion-list *ngSwitchCase="'beerlist'">
@@ -107,5 +97,5 @@
     </ion-list-header>
   </ion-list>   
 </div>
-
+<div #map id="map"></div>
 </ion-content>

@@ -117,7 +117,8 @@ export class LoginPage {
 
   showLoading() {
     this.loading = this.loadingCtrl.create({
-      content: 'Please wait...'
+      content: 'Please wait...',
+      duration:3000
     });
     this.loading.present();
   }
