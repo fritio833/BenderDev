@@ -12,5 +12,144 @@
   </ion-navbar>
 </ion-header>
 <ion-content>
-  <div #map id="map"></div>
+  <ion-grid class="background-home">
+    <ion-row>
+      <ion-col>
+        <div id="find-drinks-button" class="center">
+          <button ion-button round>Find Drinks Near You</button>
+        </div>
+        <div class="right">
+          <button right ion-button small color="dark">{{sing.geoCity}}. Change?</button>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+<div class="card-head">
+  <p><ion-icon name="person"></ion-icon>&nbsp;Profile</p>
+</div>
+<ion-card>
+  <ion-card-content>
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-item no-lines>
+            <div align="center">
+              <ion-avatar>
+                <img [src]="profileIMG">
+              </ion-avatar>
+              <p>{{sing.userName}}</p>
+            </div>
+          </ion-item>
+        </ion-col>
+        <ion-col>
+          <ion-list>
+              <ion-item>
+                <div align="center">
+                  <button ion-button icon-left round (click)="goTackMap()">
+                     <ion-icon name="pin"></ion-icon>
+                        8 Drink Tacks
+                  </button>
+                </div>     
+              </ion-item>
+              <ion-item top>
+                <p class="center">Ranked #233</p>
+              </ion-item>
+          </ion-list>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card-content>
+</ion-card>
+<div class="card-head">
+  <p><ion-icon name="people"></ion-icon>&nbsp;Community</p>
+</div>
+<ion-card>
+  <ion-card-content>
+    <ion-grid>
+      <ion-row wrap>
+        <ion-col col-75>
+          <h4 class="center comm-label">
+            <ion-icon name="restaurant"></ion-icon>&nbsp;Most Tacked Location
+          </h4>
+          <p class="center bold">
+           Leon Pub
+          </p>
+        </ion-col>
+        <ion-col col-25>
+          <div class="center">
+            <ion-chip>
+              <button ion-button color="secondary">               
+                <ion-icon color="secondary" name="star"></ion-icon>
+              </button>
+              <ion-label>4.75</ion-label>                  
+            </ion-chip>
+          </div>
+        </ion-col>              
+      </ion-row>
+    </ion-grid>
+    <hr />
+    <ion-grid>
+      <ion-row wrap>
+        <ion-col col-75>
+          <h4 class="center comm-label">
+            <ion-icon name="pint"></ion-icon>&nbsp;Most Tacked Drink
+          </h4>
+          <p class="center bold">
+            Murphy's Irish Stout
+          </p>                
+        </ion-col>
+        <ion-col col-25>
+          <div class="center">
+            <ion-chip>
+              <button ion-button color="secondary">  
+                <ion-icon color="secondary" name="star"></ion-icon>
+              </button>
+              <ion-label>4.9</ion-label>                  
+            </ion-chip>
+          </div>
+        </ion-col>             
+      </ion-row>
+    </ion-grid>
+    <hr />
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <div class="center num-tacks">
+           Check-ins in {{sing.geoCity}}
+          </div>
+          <div class="center">
+              <ion-chip>
+                  <ion-icon color="secondary" name="checkmark"></ion-icon>
+                <ion-label>2545</ion-label>                  
+              </ion-chip>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card-content>
+</ion-card>
+<div class="card-head">
+  <p><ion-icon name="trophy"></ion-icon>&nbsp;Challenges</p>
+</div>
+<ion-card>
+  <ion-card-content>
+    <ion-grid>
+      <ion-row>
+        <ion-col width-25>
+          <div class="center challenge-icon">
+            <ion-icon color="danger" name="pin"></ion-icon>
+          </div>
+        </ion-col>
+        <ion-col width-75>
+          <h3 id="challenge-label" class="center">Pop My Tack Cherry</h3>
+          <p class="center">Find a location and check-in to place a tack.</p>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card-content>
+</ion-card>
+<!----
+<ion-card #map id="map">
+</ion-card>
+---->
 </ion-content>

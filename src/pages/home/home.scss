@@ -1,35 +1,68 @@
 page-home {
 
-
-	ul {
-	  padding: 0px;
-	  margin-top:0px;
-
-	  &.rating li {
-	    padding: 5px 10px;
-	    background: none;
-	    color: #ffb400;
-
-
-	    ion-icon {
-	      font-size: 20px;
-	    }
-	  }
-	}
-
- #header {
-    position: relative;
-    min-height: 150px;
+  .center {
+    text-align:center;
   }
-  #header-content {
-    position: absolute;
-    bottom: 0;
-    left: 0;
+
+  .right {
+    text-align:right;
+  }
+
+  .bold {
+    font-weight:bold;
   }
 
   #map {
     height:100%;
     width:100%;
+  }
+
+  .background-home {
+  	  background-image: url('../images/bar3.jpg');
+	  background-repeat: no-repeat;
+	  background-size: cover;
+	  background-color: #000000;
+  }
+
+  #find-drinks-button {
+    padding:20px;
+  }
+  .card-head {
+     font-size: 20px;
+     padding-left: 10px;
+  }
+
+  ion-content {
+    background-color: #dddddd;
+  }
+
+  .border-left {
+    border-left: think solid #dddddd;
+  }
+
+  .comm-label {
+    font-size: 15px;
+    color: #387ef5;
+  }
+
+  .num-tacks {
+    font-size:20px;
+  }
+
+  .challenge-icon {
+    font-size:40px;
+  }
+
+  #challenge-label {
+    font-size:15px;
+    font-weight:bold;
+  }
+
+  .home-change {
+    font-size:20px;
+    font-weight:bold;
+    color:#ffffff;
+    text-decoration:underline;
   }
 
 }

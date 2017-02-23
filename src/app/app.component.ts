@@ -127,7 +127,7 @@ export class MyApp {
          this.geo.reverseGeocodeLookup(resp.coords.latitude,resp.coords.longitude)
            .subscribe((success)=>{
             this.sing.geoCity = success.city;
-            this.sing.geoState = success.state;           
+            this.sing.geoState = success.state;                       
           });
         
        }

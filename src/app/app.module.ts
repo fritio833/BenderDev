@@ -11,6 +11,7 @@ import { AuthService } from '../providers/auth-service';
 import { DbService } from '../providers/db-service';
 import { LocationService } from '../providers/location-service';
 import { GoogleService } from '../providers/google-service';
+import { ConnectivityService } from '../providers/connectivity-service';
 
 import { HelloIonicPage } from '../pages/hello-ionic/hello-ionic';
 import { ItemDetailsPage } from '../pages/item-details/item-details';
@@ -36,7 +37,7 @@ import { MyRatingsPage } from '../pages/my-ratings/my-ratings';
 import { LocationResultsPage } from '../pages/location-results/location-results';
 import { LocationDetailPage } from '../pages/location-detail/location-detail';
 import { CheckinPage }  from '../pages/checkin/checkin';
-
+import { TackMapPage } from '../pages/tack-map/tack-map';
 
 @NgModule({
   declarations: [
@@ -64,7 +65,8 @@ import { CheckinPage }  from '../pages/checkin/checkin';
     MyRatingsPage,
     LocationResultsPage,
     LocationDetailPage,
-    CheckinPage
+    CheckinPage,
+    TackMapPage
 
   ],
   imports: [
@@ -97,7 +99,8 @@ import { CheckinPage }  from '../pages/checkin/checkin';
     MyRatingsPage,
     LocationResultsPage,
     LocationDetailPage,
-    CheckinPage
+    CheckinPage,
+    TackMapPage
   ],
   providers: [{provide: ErrorHandler, 
               useClass: IonicErrorHandler},
@@ -108,6 +111,7 @@ import { CheckinPage }  from '../pages/checkin/checkin';
               AuthService,
               DbService,
               LocationService,
-              GoogleService]
+              GoogleService,
+              ConnectivityService]
 })
 export class AppModule {}

@@ -10,6 +10,8 @@ import { AuthService } from '../../providers/auth-service';
 import { LoginPage } from '../login/login';
 import { HelloIonicPage } from '../hello-ionic/hello-ionic';
 import { BeerDetailPage } from '../beer-detail/beer-detail';
+import { TackMapPage } from '../tack-map/tack-map';
+
 
 declare var google;
 /*
@@ -30,6 +32,9 @@ export class HomePage {
   public beers = new Array();
   public reviews = new Array();
   public map:any;
+  public profileIMG:any;
+  public drinkRating = 4;
+  public locRating = 4.5;
 
   constructor(public navCtrl: NavController, 
   	          public navParams: NavParams, 
@@ -45,13 +50,19 @@ export class HomePage {
   ionViewDidLoad() {
     console.log('ionViewDidLoad HomePage');
 
-    //setTimeout(() => { this.initMap(),3000});
-    this.initMap();
+    this.storage.ready().then(()=>{
+       this.storage.get('fbPic').then((val) =>{
+         console.log('profile pic: ' + val);
+         this.profileIMG = val;
+       })
+    });    
+
+    //this.initMap();
   }
 
   initMap() {
 
-    /*
+   
     Geolocation.getCurrentPosition().then((resp) => {
        if (resp.coords.latitude) {
 
@@ -69,7 +80,7 @@ export class HomePage {
     }).catch((error) => {
       console.log('Error getting location', error);
     });
-    */ 
+   
   }
 
 
@@ -86,6 +97,7 @@ export class HomePage {
     toast.present();
   }
 
- 
-
+  goTackMap() {
+    this.navCtrl.push(TackMapPage);
+  }
 }
