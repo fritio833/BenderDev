@@ -11,6 +11,7 @@ export class SingletonService {
   public userName:string = '';
   public profileIMG:string = '';
   public realName:string = '';
+  public token:string = '';
   public description:string = '';
   public geoCity = '';
   public geoState = '';

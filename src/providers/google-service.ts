@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
+import { Http, Response } from '@angular/http';
 import { SingletonService } from './singleton-service';
 import { Platform } from 'ionic-angular';
 import 'rxjs/add/operator/map';
@@ -47,22 +47,76 @@ export class GoogleService {
   reverseGeocodeLookup(lat,lng) {
     return this.http.get(this.googleGeocodeURL 
     	  + 'latlng=' + lat + ',' + lng + '&sensor=false&key=' + this.googleGeocodeAPIKey)
-        .map(res => res.json());  	
+        .map(this.getCityState);  	
+  }
+
+  getCityState(res:Response) {
+    let loc = res.json();
+    let location = {
+                      address:'',
+                      street_number:'',
+                      route:'',city:'',
+                      state:'',
+                      zip:'',
+                      county:'',
+                      country:''
+    };
+
+    for (let i = 0; i < loc.results[0].address_components.length; i++) {
+
+      // Get street number
+      if (loc.results[0].address_components[i].types[0] == "street_number")
+        location.street_number = loc.results[0].address_components[i].short_name;
+
+      // Get street number
+      if (loc.results[0].address_components[i].types[0] == "route")
+        location.route = loc.results[0].address_components[i].short_name;      
+
+      // Get City
+      if (loc.results[0].address_components[i].types[0] == "locality")
+        location.city = loc.results[0].address_components[i].short_name;
+
+      // Get State
+      if (loc.results[0].address_components[i].types[0] == "administrative_area_level_1")
+        location.state = loc.results[0].address_components[i].short_name;
+
+      // Get zip
+      if (loc.results[0].address_components[i].types[0] == "postal_code")
+        location.zip = loc.results[0].address_components[i].short_name;
+
+      // Get county
+      if (loc.results[0].address_components[i].types[0] == "administrative_area_level_2")
+        location.county = loc.results[0].address_components[i].short_name;
+
+      // Get country
+      if (loc.results[0].address_components[i].types[0] == "country")
+        location.country = loc.results[0].address_components[i].short_name;
+
+    }
+    location.address = location.street_number + ' ' + location.route;
+
+    return location;
   }
 
   placesNearByMe(lat,lng) {
 
-    return this.http.get(this.googlePlacesURL + 'nearbysearch/json?location='
-    	  + lat + ',' + lng + '&keyword=bar|food|restaurant|liquor_store&radius=50&types=establishment&key=' + this.googlePlacesAPIKey)
-        .map(res => res.json());
+    return this.http.get(this.googlePlacesURL 
+        + 'nearbysearch/json?location='
+        + lat 
+        + ',' 
+        + lng 
+        + '&types=bar|grocery_or_supermarket|restaurant|liquor_store&radius=100&&key=' 
+        + this.googlePlacesAPIKey)
+        .map(res => res.json());    
 
+    //grocery_or_supermarket ?
   }
 
   placesNearByName(name,lat,lng) {
 
     return this.http.get(this.googlePlacesURL + 'nearbysearch/json?location='
         + lat + ',' + lng 
-        + '&keyword=bar|food|restaurant|liquor_store&radius=50&types=establishment'
+        + '&keyword=bar|food|restaurant|liquor_store&radius=100&types=establishment'
         + '&name=' + name 
         + '&key=' + this.googlePlacesAPIKey)
         .map(res => res.json());

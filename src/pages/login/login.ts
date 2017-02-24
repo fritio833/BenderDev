@@ -29,7 +29,16 @@ export class LoginPage {
   public loginCredentials = {email: '', password: '', socialLogin: 0};
   public loading:any;
 
-  constructor(public navCtrl: NavController, public params: NavParams,public alertCtrl: AlertController,public form: FormBuilder,public fb:FbProvider, public storage: Storage,public sing: SingletonService,public auth:AuthService, public loadingCtrl: LoadingController, public modalCtrl:ModalController) {
+  constructor(public navCtrl: NavController, 
+              public params: NavParams,
+              public alertCtrl: AlertController,
+              public form: FormBuilder,
+              public fb:FbProvider, 
+              public storage: Storage,
+              public sing: SingletonService,
+              public auth:AuthService, 
+              public loadingCtrl: LoadingController, 
+              public modalCtrl:ModalController) {
 
     this.email = params.get("email");
     this.password = params.get("password");

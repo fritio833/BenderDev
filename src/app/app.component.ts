@@ -7,6 +7,8 @@ import { StatusBar, Splashscreen } from 'ionic-native';
 import { HelloIonicPage } from '../pages/hello-ionic/hello-ionic';
 import { SingletonService } from '../providers/singleton-service';
 import { GoogleService } from '../providers/google-service';
+import { ConnectivityService } from '../providers/connectivity-service';
+
 import { Geolocation } from 'ionic-native';
 
 import { LoginPage } from '../pages/login/login';
@@ -40,7 +42,8 @@ export class MyApp {
     public toastCtrl: ToastController,
     public auth: AuthService,
     public geo:GoogleService,
-    public alertCtrl: AlertController
+    public alertCtrl: AlertController,
+    public conn:ConnectivityService
   ) {
     this.initializeApp();
 
@@ -59,7 +62,7 @@ export class MyApp {
     this.platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
-      this.setUserStorageData();
+      this.setSingletonData();
       this.getGeolocation();
       StatusBar.styleDefault();
       Splashscreen.hide();
@@ -84,7 +87,7 @@ export class MyApp {
     });
   }
 
-  setUserStorageData() {
+  setSingletonData() {
     this.storage.ready().then(()=>{
 
       this.storage.get("loggedIn").then((status)=>{
@@ -115,25 +118,35 @@ export class MyApp {
 
       this.storage.get("description").then((description) =>{
           this.sing.description = description;
-      });             
+      });
+
+      this.storage.get("token").then((token) =>{
+          this.sing.token = token;
+      });                 
 
     });    
   }
 
   getGeolocation() {
 
-    Geolocation.getCurrentPosition().then((resp) => {
-       if (resp.coords.latitude) {
-         this.geo.reverseGeocodeLookup(resp.coords.latitude,resp.coords.longitude)
-           .subscribe((success)=>{
-            this.sing.geoCity = success.city;
-            this.sing.geoState = success.state;                       
-          });
-        
-       }
-    }).catch((error) => {
-      console.log('Error getting location', error);
-    });    
+    if (this.conn.isOnline()) {
+      Geolocation.getCurrentPosition().then((resp) => {
+         if (resp.coords.latitude) {
+           this.geo.reverseGeocodeLookup(resp.coords.latitude,resp.coords.longitude)
+             .subscribe((success)=>{
+              this.sing.geoCity = success.city;
+              this.sing.geoState = success.state;                       
+            });
+          
+         }
+      }).catch((error) => {
+        console.log('Error getting location', error);
+      });
+    } else {
+      console.log("no connection");
+      this.sing.geoCity = "Pensacola";
+      this.sing.geoState = "FL";      
+    }
   }
 
   presentToast(msg) {

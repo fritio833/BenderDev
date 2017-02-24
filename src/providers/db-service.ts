@@ -75,12 +75,7 @@ export class DbService {
   }
 
   public tackBeer(token,price,beer,loc,locGeo) {
-    /*
-    console.log(beer);
-    console.log(price);
-    console.log(loc);
-    console.log(token);
-    */
+
     console.log(loc.types);
 
     return this.http.get(this.databaseServiceUrl + 'checkin/?action=tackbeer' 
@@ -112,6 +107,11 @@ export class DbService {
          + '&pword=' + credentials.password
          + '&socialLogin=' + credentials.socialLogin)
   		.map(res => res.json());
+  }
+
+  public getTacks(token) {
+    return this.http.get(this.databaseServiceUrl+'markers/?action=mytacks'+'&token='+token)
+      .map(res => res.json());    
   }
 
   public writeBeerReview(token,beerReview,beerRating,beerId) {
