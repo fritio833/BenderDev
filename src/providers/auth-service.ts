@@ -42,8 +42,6 @@ export class AuthService {
               this.currentUser = new User(allowed.data.name, allowed.data.email);
 
               this.sing.loggedIn = true;
-              this.sing.userName = allowed.data.username;
-              console.log('allowed',allowed.data.token);
 
               this.storage.set('loggedIn',true);
               this.storage.set('token',allowed.data.token)
@@ -54,6 +52,8 @@ export class AuthService {
               this.storage.set('fbID', allowed.data.fb_id);
               this.storage.set('fbPic', allowed.data.fb_pic);
               this.storage.set('description', allowed.data.description);
+
+              this.setSingletonData();
 
               // If favorites exists and this is a new device, set favorites storage
               // TODO:  Work on this later.  Code goes here.
@@ -108,6 +108,61 @@ export class AuthService {
   public getUserInfo() : User {
     return this.currentUser;
   }
+
+  public isLoggedIn() {
+    return new Promise((resolve) => {
+
+      this.storage.ready().then(()=>{
+
+        this.storage.get("loggedIn").then((status) =>{
+            
+            if (status == null ) {
+
+              this.sing.loggedIn = false;
+              resolve(false);
+
+            } else {
+
+              this.setSingletonData();
+              this.sing.loggedIn = true;
+              resolve(true);
+
+            }
+        });
+
+      });        
+       //this.sing.loggedIn;
+    });
+  }
+
+  public setSingletonData() {
+
+    console.log("Setting Singleton Data");
+    this.storage.ready().then(()=>{
+
+      this.storage.get('fbPic').then((fbPic)=>{
+        this.sing.profileIMG = fbPic;
+      });
+
+      this.storage.get("userName").then((uName) =>{
+        if ( uName != null )
+          this.sing.userName = uName;
+      });
+      this.storage.get("name").then((name) =>{
+        if ( name != null)
+            this.sing.realName = name;
+      });
+
+      this.storage.get("description").then((description) =>{
+          this.sing.description = description;
+      });
+
+      this.storage.get("token").then((token) =>{
+          this.sing.token = token;
+      });                 
+
+    });    
+  }  
  
   public logout() {
     return Observable.create(observer => {
@@ -136,6 +191,7 @@ export class AuthService {
 
   	    this.storage.remove('loggedIn');
         this.storage.remove('user');
+        this.storage.remove('token');
         this.storage.remove('userName');
         this.storage.remove('name');
         this.storage.remove('email');
@@ -143,7 +199,9 @@ export class AuthService {
         this.storage.remove('fbID');
         this.storage.remove('fbPic');        
         this.storage.remove('description');
+        this.sing.token = '';
   	    this.sing.loggedIn = false;
+        
         
         observer.next(true);
         observer.complete();          

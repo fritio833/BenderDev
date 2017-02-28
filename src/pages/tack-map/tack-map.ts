@@ -1,10 +1,11 @@
 import { Component, ViewChild } from '@angular/core';
 import { NavController, NavParams, LoadingController } from 'ionic-angular';
-
+import { Storage } from '@ionic/storage';
 import { Geolocation } from 'ionic-native';
 import { ConnectivityService } from '../../providers/connectivity-service';
 import { DbService } from '../../providers/db-service';
 import { SingletonService } from '../../providers/singleton-service';
+
 
 declare var google;
 declare var GoogleMap;
@@ -40,12 +41,10 @@ export class TackMapPage {
 
     this.loadGoogleMaps();
   }
-
+  
+  // http://stackoverflow.com/questions/31064916/how-to-change-position-of-google-maps-infowindow
+  // Good example of how to reposition and style
   initMap() {
-
-  	//console.log('init map');
-  	//console.log('isOnline',this.conn.isOnline());
-
 
     this.mapInitialised = true;
     let markers = [];//some array
@@ -72,7 +71,7 @@ export class TackMapPage {
 
 	    google.maps.event.addListener(marker, 'click', (function(marker, i) {
 	        return function() {
-	          infowindow.setContent(records[i].name);
+	          infowindow.setContent(`<h5>${records[i].name}</h5>`);
 	          infowindow.open(this.map, marker);
 	        }
 	    })(marker, i));        

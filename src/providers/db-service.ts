@@ -143,4 +143,9 @@ export class DbService {
       .map(res => res.json());    
   }
 
+  public getMostTackedDrinks(token) {
+    return this.http.get(this.databaseServiceUrl + 'drinks/?action=mostTacked&token=' + token)
+      .map(res => res.json());    
+  }
+
 }

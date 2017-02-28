@@ -1,17 +1,17 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, AlertController, ToastController} from 'ionic-angular';
 import { Geolocation } from 'ionic-native';
-import {Validators, FormBuilder } from '@angular/forms';
+import { Validators, FormBuilder } from '@angular/forms';
 
 import { LoginPage } from '../login/login';
 import { BreweryService } from '../../providers/brewery-service';
 import { LocationService } from '../../providers/location-service';
 import { SingletonService } from '../../providers/singleton-service';
-import { AuthService } from '../../providers/auth-service';
+import { DbService } from '../../providers/db-service';
 import { GoogleService } from '../../providers/google-service';
 
 import { SearchPage } from '../search/search';
-import { MyPubPage } from '../my-pub/my-pub';
+import { BeerDetailPage } from '../beer-detail/beer-detail';
 import { Beer } from '../../models/beer';
 import { LocationResultsPage } from '../location-results/location-results';
 import { LocationDetailPage } from '../location-detail/location-detail';
@@ -35,6 +35,7 @@ export class HelloIonicPage {
   public beers:Beer[];
   public choice:string;
   public locations:any;
+  public popularBeers:any;
 
   constructor(public navCtrl: NavController,
               public params:NavParams,
@@ -42,8 +43,8 @@ export class HelloIonicPage {
               private alertCtrl: AlertController,
               public beerAPI: BreweryService, 
               public sing: SingletonService, 
-              public auth: AuthService, 
               public toastCtrl:ToastController,
+              public db:DbService,
               public location:LocationService,
               public geo:GoogleService) {
 
@@ -164,7 +165,13 @@ export class HelloIonicPage {
     //console.log(this.beers);
     this.navCtrl.push(SearchPage,{beers:this.beers});
  
-  }  
+  }
+
+  getPopBeers(beerId) {
+
+    this.navCtrl.push(BeerDetailPage,{beerId:beerId});
+
+  }
 
   presentAlert() {
     let alert = this.alertCtrl.create({
@@ -175,16 +182,6 @@ export class HelloIonicPage {
     alert.present();
   }
 
-
-  doLogout() {
-  
-    this.auth.logout().subscribe(allowed => {
-      if (allowed) {
-        this.navCtrl.setRoot(LoginPage);
-        this.presentToast('Log out was successful');      
-      }
-    });
-  }
 
   presentToast(msg) {
     let toast = this.toastCtrl.create({
@@ -201,6 +198,15 @@ export class HelloIonicPage {
 
     if (this.alert != null) {
       this.presentAlert();    
+    }
+
+    if (this.choice == "beersearch") {
+      this.db.getMostTackedDrinks(this.sing.token).subscribe((success)=>{
+       
+        //console.log(success);
+        this.popularBeers = success.data;
+
+      });
     }
   } 
 

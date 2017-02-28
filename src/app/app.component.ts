@@ -1,7 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 
 import { Platform, MenuController, Nav, AlertController,ToastController } from 'ionic-angular';
-import { Storage } from '@ionic/storage';
 import { StatusBar, Splashscreen } from 'ionic-native';
 
 import { HelloIonicPage } from '../pages/hello-ionic/hello-ionic';
@@ -38,7 +37,6 @@ export class MyApp {
     public platform: Platform,
     public menu: MenuController,
     public sing: SingletonService,
-    public storage: Storage,
     public toastCtrl: ToastController,
     public auth: AuthService,
     public geo:GoogleService,
@@ -46,6 +44,15 @@ export class MyApp {
     public conn:ConnectivityService
   ) {
     this.initializeApp();
+
+    this.auth.isLoggedIn().then((status)=>{
+      if (status) {
+        this.rootPage = HomePage;
+      } else {
+        this.rootPage = LoginPage;
+      }
+    });
+
 
     // set our app's pages
     this.pages = [
@@ -62,7 +69,7 @@ export class MyApp {
     this.platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
-      this.setSingletonData();
+      //this.setSingletonData();
       this.getGeolocation();
       StatusBar.styleDefault();
       Splashscreen.hide();
@@ -87,45 +94,7 @@ export class MyApp {
     });
   }
 
-  setSingletonData() {
-    this.storage.ready().then(()=>{
 
-      this.storage.get("loggedIn").then((status)=>{
-        //console.log("loggedIn!:",status);
-        if (status == null) {
-
-          this.storage.get('fbPic').then((fbPic)=>{
-            this.sing.profileIMG = fbPic;
-          });
-
-          this.sing.loggedIn = false;
-          this.rootPage = LoginPage;
-
-        } else {
-          this.sing.loggedIn = true;
-          this.rootPage = HomePage;
-        }
-      });
-
-      this.storage.get("userName").then((uName) =>{
-        if ( uName != null )
-          this.sing.userName = uName;
-      });
-      this.storage.get("name").then((name) =>{
-        if ( name != null)
-            this.sing.realName = name;
-      });
-
-      this.storage.get("description").then((description) =>{
-          this.sing.description = description;
-      });
-
-      this.storage.get("token").then((token) =>{
-          this.sing.token = token;
-      });                 
-
-    });    
-  }
 
   getGeolocation() {
 
