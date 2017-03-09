@@ -4,37 +4,58 @@
   </ion-navbar>
 </ion-header>
 
-
-<ion-content padding>
-
-<ion-grid>
-	<ion-row>
-		<ion-col>
-		  <div>
-		    <h1>{{location.name}}</h1>
-
-		    <p><b>{{location.stuts}}</b></p>
-		    <p>{{location.style}}</p>
-	   	    <p>{{location.street}}</p>
-	   	    <p>{{location.city}}, {{location.state}} {{location.zip}}</p>
-	   	  </div>
-	   	  <div>
-	   	    <button data-href="tel:location.phone" clear item-right>
-   			  <ion-icon name="call"></ion-icon>Call {{location.phone}}
-   			</button>
-	   	  </div>
-	   	  <div [hidden]="!location.overall">
-	   	  	 <p><small>Beermapping.com Rating</small></p>
-             <h2>{{location.overall}}</h2>
-             <p><small>out of 100</small></p>
-	   	  </div>
-		</ion-col>
-		<ion-col>
-		  <div *ngFor="let image of locImages">
-           <img [src]="image.imageurl" [hidden]="image.imageurl==null">
-          </div>
-		</ion-col>
-	</ion-row>
-</ion-grid>
-
+<ion-content>
+	<ion-card>
+		<ion-grid>
+			<ion-row>
+				<ion-col>
+				    <h1>{{location?.name}}</h1>
+				    <p>{{location?.place_types}}</p>
+				</ion-col>
+				<ion-col>
+				</ion-col>
+			</ion-row>
+			<ion-row [hidden]="!locationRating">
+				<ion-col>
+					<rating [(ngModel)]="locationRating" readOnly="true" max="5"></rating>
+				</ion-col>
+			</ion-row>
+			<ion-row>
+    			<ion-col>
+    				{{location?.formatted_address}}
+    			</ion-col>
+			</ion-row>
+			<ion-row>
+				<ion-col>
+					<a ion-button href="tel:{{location?.international_phone_number}}">
+					  Call {{location?.formatted_phone_number}}
+					</a>
+				</ion-col>
+			</ion-row>
+			<ion-row [hidden]="locationHours == null">
+				<ion-col>
+					<p class="hours-head">{{location?.name}} Store Hours</p>
+					<p [hidden]="locationOpen">
+						<ion-badge color="danger">Currently Closed</ion-badge>
+					</p>
+					<p [hidden]="!locationOpen">
+						<ion-badge color="secondary">Currently Open</ion-badge>
+					</p>
+					<div class="hours" *ngFor="let hours of locationHours">
+						{{hours}}
+					</div>
+				</ion-col>
+			</ion-row>
+			<ion-row [hidden]="locationPhoto == null">
+				<ion-col>
+					<img [src]="locationPhoto">
+				</ion-col>
+			</ion-row>
+			<ion-row>
+				<ion-col>
+					<div #map id="map"></div>
+				</ion-col>
+			</ion-row>			
+		</ion-grid>
+	</ion-card>
 </ion-content>

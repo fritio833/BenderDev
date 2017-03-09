@@ -105,13 +105,26 @@ export class GoogleService {
         + lat 
         + ',' 
         + lng 
-        + '&types=bar|grocery_or_supermarket|restaurant|liquor_store&radius=100&&key=' 
+        + '&types=night_club|bar|grocery_or_supermarket|restaurant|liquor_store|convenience_store&radius=100&&key=' 
         + this.googlePlacesAPIKey)
         .map(res => res.json());    
 
     //grocery_or_supermarket ?
   }
 
+  placesNearByRadius(lat,lng,radius) {
+
+    return this.http.get(this.googlePlacesURL 
+        + 'nearbysearch/json?location='
+        + lat 
+        + ',' 
+        + lng 
+        + '&types=night_club|bar|grocery_or_supermarket|liquor_store|convenience_store&rankby=distance&key=' 
+        + this.googlePlacesAPIKey)
+        .map(res => res.json());    
+
+    //grocery_or_supermarket ?
+  }
   placesNearByName(name,lat,lng) {
 
     return this.http.get(this.googlePlacesURL + 'nearbysearch/json?location='
@@ -121,7 +134,20 @@ export class GoogleService {
         + '&key=' + this.googlePlacesAPIKey)
         .map(res => res.json());
 
-  }  
+  }
+
+  placeDetail(placeId) {
+    return this.http.get(this.googlePlacesURL + 'details/json?placeid='
+        + placeId
+        + '&key=' + this.googlePlacesAPIKey)
+        .map(res => res.json());    
+  }
+
+  placePhotos(photoRef) {
+    return this.http.get(this.googlePlacesURL + 'photo?photoreference='
+        + photoRef
+        + '&maxwidth=400&key=' + this.googlePlacesAPIKey);    
+  }
 
   placesAutocomplete(locationName) {
 

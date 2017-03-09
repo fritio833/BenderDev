@@ -6,7 +6,7 @@
     <ion-title>Bender</ion-title>
   </ion-navbar>
 </ion-header>
-<ion-content id="home-content" padding>
+<ion-content id="home-content">
 
 <ion-card>
 <ion-card-header>
@@ -34,7 +34,7 @@
                 </ion-item>
               </ion-list>
               <div class="card-head">
-                <p><ion-icon name="people"></ion-icon>&nbsp;Most Popular Beers</p>
+                <p><ion-icon name="beer"></ion-icon>&nbsp;Most Popular Beers</p>
               </div>              
               <ion-list>
                 <button ion-item *ngFor="let beer of popularBeers" (click) = "getPopBeers(beer.BeerId)">
@@ -55,7 +55,15 @@
             <div class="search-input">
               <ion-list>
                 <ion-item class="search-beer">
-                    <ion-input id="search" type="text" value="{{qSearchLocation}}" formControlName="qSearchLocation" placeholder="Enter a brewery or a bar"></ion-input>             
+
+                    <ion-input id="search" 
+                               type="text"
+                               [(ngModel)]='placeName' 
+                               value="{{qSearchLocation}}" 
+                               formControlName="qSearchLocation" 
+                               placeholder="Enter a location"
+                               input="autoLocationSearch($event.target.value)">
+                    </ion-input>             
                     <button large item-right ion-button>
                       <ion-icon name="search"></ion-icon>
                     </button>
@@ -66,17 +74,15 @@
       </form>
     </div>
     <div [hidden]="locations==null">
-      <ion-list>
-        <h3>
-         Breweries and bars located in {{sing.geoCity}}, {{sing.geoState}} 
-        </h3>
-      </ion-list>
+      <div class="card-head">
+        <p><ion-icon name="pint"></ion-icon>&nbsp;Locations to find beer nearby.</p>
+      </div>
       <ion-list>
         <button ion-item *ngFor="let location of locations" (click) = "getLocationDetail(location)">
           <h2>{{ location.name }}</h2>
-          <h3 [hidden]="location.overall==0">Score: {{location.overall}}</h3>
-          <p>Location: {{ location.street }} {{ location.city }} {{location.state}} {{location.zip}} {{location.country}}</p>
-          <p>{{location.status}}</p>
+          <h3 [hidden]="location.rating==null">Score: {{location.rating}}</h3>
+          <p>{{ location.vicinity }}</p>
+          <p>Type: {{location.place_types}}</p>
           <ion-icon name="arrow-forward" item-right></ion-icon>
         </button>
       </ion-list>

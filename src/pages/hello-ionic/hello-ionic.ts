@@ -36,6 +36,7 @@ export class HelloIonicPage {
   public choice:string;
   public locations:any;
   public popularBeers:any;
+  public placeName:any;
 
   constructor(public navCtrl: NavController,
               public params:NavParams,
@@ -82,6 +83,10 @@ export class HelloIonicPage {
   	 }
   }
 
+  autoLocationSearch(event) {
+    console.log("YOLO",event);
+  }
+
   doSearchLocation() {
     
     let locationName = this.qSearchLocationForm.value.qSearchLocation;
@@ -106,20 +111,31 @@ export class HelloIonicPage {
 
   getLocal() {
 
-
-
     Geolocation.getCurrentPosition().then((resp) => {
 
-      this.location.getLocationCityState(this.sing.geoCity,this.sing.geoState)
+      this.geo.placesNearByRadius(resp.coords.latitude,resp.coords.longitude,50000)
         .subscribe((success)=>{
-          if (parseInt(success[0].id)) {
-            this.locations = success;
-            for (var i=0;i<this.locations.length;i++) {
+           
+           this.locations = success.results;
+           let ptypes = '';
+           //console.log(this.locations);
+           for (var i = 0; i < this.locations.length; i++ ) {
 
-              this.locations[i].overall = Math.round(this.locations[i].overall);
-            }
-          }
-      });
+              ptypes ='';
+              
+              for (var j = 0; j < this.locations[i].types.length; j++) {
+                  
+                  if (this.locations[i].types[j] == 'bar'
+                      || this.locations[i].types[j] == 'night_club'
+                      || this.locations[i].types[j] == 'convenience_store'
+                      || this.locations[i].types[j] == 'liquor_store'
+                      || this.locations[i].types[j] == 'grocery_or_supermarket') {
+                    ptypes += this.locations[i].types[j] + ', ';
+                  }
+              }
+              this.locations[i].place_types = ptypes.replace(/,\s*$/, "").replace(/_/g, " ");
+           }
+        });
        
     }).catch((error) => {
       console.log('Error getting location', error);
@@ -128,7 +144,7 @@ export class HelloIonicPage {
 
   getLocationDetail(location) {
 
-    this.navCtrl.push(LocationDetailPage,{location:location});
+    this.navCtrl.push(LocationDetailPage,{placeId:location.place_id});
 
   }  
 
