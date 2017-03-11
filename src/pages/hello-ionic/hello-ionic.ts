@@ -27,7 +27,6 @@ export class HelloIonicPage {
   public qSearchBeer:any;
   public qSearchLocation:any;
   public qSearchBeerForm:any;
-  public qSearchLocationForm:any;
   public alert:string;
   public totalResults:number;
   public numberOfPages:number;
@@ -36,7 +35,8 @@ export class HelloIonicPage {
   public choice:string;
   public locations:any;
   public popularBeers:any;
-  public placeName:any;
+  public predictions:any;
+  public nextNearByToken:any;
 
   constructor(public navCtrl: NavController,
               public params:NavParams,
@@ -58,10 +58,6 @@ export class HelloIonicPage {
   		qSearchBeer : ['',Validators.required]
   	});
 
-    this.qSearchLocationForm = this._form.group({
-      qSearchLocation : ['',Validators.required]
-    });
-
     this.choice = "beersearch";
 
   }
@@ -77,36 +73,19 @@ export class HelloIonicPage {
 
       this.beerAPI.loadBeerByName(this.qSearchBeerForm.value.qSearchBeer).subscribe(beer => {
          this.beers = beer;
-         this.loadBeers(this.beers);
+         this.qSearchBeer = this.qSearchBeerForm.value.qSearchBeer;
+         this.loadBeers(this.beers);          
       }); 
 
   	 }
   }
 
   autoLocationSearch(event) {
-    console.log("YOLO",event);
-  }
-
-  doSearchLocation() {
     
-    let locationName = this.qSearchLocationForm.value.qSearchLocation;
-    this.location.getLocationsByName(locationName).subscribe((success)=>{
-       console.log(success[0].id);
-       if (parseInt(success[0].id)) {
-         this.navCtrl.push(LocationResultsPage,{locations:success});         
-       } else {
-
-           if ( success[0].name == "Try a Longer Search") {
-             this.presentToast("Try a Longer Search");
-           }
-
-           if ( success[0].name == "No locations Found") {
-             this.presentToast("No Locations Found");
-           }           
-         console.log(success);
-       }
+    this.geo.placesAutocomplete(event.target.value).subscribe((success)=>{
+      this.predictions = success.predictions;
+      console.log(this.predictions);
     });
-    
   }
 
   getLocal() {
@@ -116,25 +95,8 @@ export class HelloIonicPage {
       this.geo.placesNearByRadius(resp.coords.latitude,resp.coords.longitude,50000)
         .subscribe((success)=>{
            
-           this.locations = success.results;
-           let ptypes = '';
-           //console.log(this.locations);
-           for (var i = 0; i < this.locations.length; i++ ) {
-
-              ptypes ='';
-              
-              for (var j = 0; j < this.locations[i].types.length; j++) {
-                  
-                  if (this.locations[i].types[j] == 'bar'
-                      || this.locations[i].types[j] == 'night_club'
-                      || this.locations[i].types[j] == 'convenience_store'
-                      || this.locations[i].types[j] == 'liquor_store'
-                      || this.locations[i].types[j] == 'grocery_or_supermarket') {
-                    ptypes += this.locations[i].types[j] + ', ';
-                  }
-              }
-              this.locations[i].place_types = ptypes.replace(/,\s*$/, "").replace(/_/g, " ");
-           }
+           this.locations = this.fixLocations(success.results);
+           this.nextNearByToken = success.next_page_token;
         });
        
     }).catch((error) => {
@@ -142,9 +104,83 @@ export class HelloIonicPage {
     });
   }
 
+  fixLocations(locations) {
+
+   let ptypes = '';
+  
+   for (var i = 0; i < locations.length; i++ ) {
+
+      ptypes ='';
+      
+      if (!locations[i].hasOwnProperty('opening_hours')) {
+         locations[i]['opening_hours'] = {open_now:2};
+      } else if (locations[i].opening_hours.open_now) {
+        locations[i].opening_hours.open_now = 1;
+      } else {
+         locations[i].opening_hours.open_now = 0;
+      }
+    
+      for (var j = 0; j < locations[i].types.length; j++) {
+          
+          if (locations[i].types[j] == 'bar'
+              || locations[i].types[j] == 'night_club'
+              || locations[i].types[j] == 'convenience_store'
+              || locations[i].types[j] == 'gas_station'
+              || locations[i].types[j] == 'liquor_store'
+              || locations[i].types[j] == 'grocery_or_supermarket') {
+            ptypes += locations[i].types[j] + ', ';
+          }
+      }
+      locations[i].place_types = ptypes.replace(/,\s*$/, "").replace(/_/g, " ");
+    }
+    return locations;
+
+  }
+
+  getMoreLocal(infiniteScroll) {
+
+    setTimeout(() => {
+      this.geo.placesNearByNextToken(this.nextNearByToken).subscribe((success)=>{
+        console.log(success);
+        let locationsNext:any;
+
+        locationsNext = this.fixLocations(success.results);
+
+        if (success.hasOwnProperty('next_page_token'))
+          this.nextNearByToken = success.next_page_token;
+
+        for (let i = 0; i < locationsNext.length; i++) {
+          this.locations.push(locationsNext[i]);
+        }
+
+        infiniteScroll.complete();
+        //console.log(locationsNext);
+
+        if (!success.hasOwnProperty('next_page_token')) {
+          infiniteScroll.enable(false);
+        }
+
+      });
+    }, 1000);
+  }
+
   getLocationDetail(location) {
 
-    this.navCtrl.push(LocationDetailPage,{placeId:location.place_id});
+    this.geo.placeDetail(location.place_id).subscribe((resp)=>{
+
+      //console.log(resp.result.types);
+
+      for (var i=0;i<resp.result.types.length;i++) {
+
+          if (resp.result.types[i].match('night_club|food|bar|grocery_or_supermarket|liquor_store|gas_station|convenience_store')) {
+            this.navCtrl.push(LocationDetailPage,{location:resp.result});
+            return;
+          }
+      }
+      console.log(resp.result.types);
+      this.presentToast('Not a place that would sell alcoholic beverages');
+
+    });
 
   }  
 
@@ -179,7 +215,12 @@ export class HelloIonicPage {
      
     }
     //console.log(this.beers);
-    this.navCtrl.push(SearchPage,{beers:this.beers});
+    this.navCtrl.push(SearchPage,{
+                                   beers:this.beers,
+                                   totalResults:this.totalResults,
+                                   numbeOfPages:data.numberOfPages,
+                                   qSearchBeer:this.qSearchBeer
+                                 });
  
   }
 

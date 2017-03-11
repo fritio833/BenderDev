@@ -38,23 +38,30 @@ export class BreweryService {
   }
 
   
-  loadBeerByName(beerName): Observable<Beer[]>  {
+  loadBeerByName(beerName,page?)  {
+
+    let _page = '';
+
+    if (page!=null)
+      _page = '&p=' + page;
 
     return this.http.get(this.breweryDbUrl 
          + 'search/?key=' 
          + this.breweryDbAPI 
-         + '&q=' + beerName +'&type=beer&withBreweries=Y')
-        .map(res => <Beer[]>res.json());
+         + '&q=' + beerName
+         + _page 
+         +'&type=beer&withBreweries=Y')
+        .map(res => res.json());
   }
 
-  loadBeerById(beerId): Observable<Beer>  {
+  loadBeerById(beerId)  {
 
     return this.http.get(this.breweryDbUrl 
          + 'beer/' 
          + beerId 
          + '/?key=' + this.breweryDbAPI
          + '&type=beer&withBreweries=Y')
-        .map(res => <Beer>(res.json()));
+        .map(res => res.json());
   } 
 
 }

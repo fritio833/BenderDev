@@ -64,14 +64,14 @@ page-hello-ionic {
 
 
     .searchbar-md .searchbar-input {
-        background-color: #f2f2f2;
-        padding-top: 5px;
-        padding-bottom: 5px;
+        background-color: #d6d6d6;
+        padding-top: 10px;
+        padding-bottom: 10px;
 	    font-size: 20px;  
     }
 
 	#search {
-		width:90%;
+		width:100%;
 	}
 
 	.ion-segment {
@@ -93,5 +93,8 @@ page-hello-ionic {
      padding-top:15px;
   }
 
+  .loc-name {
+    font-weight:bold;
+  }
 
 }

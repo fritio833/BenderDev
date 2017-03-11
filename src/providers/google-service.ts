@@ -105,7 +105,7 @@ export class GoogleService {
         + lat 
         + ',' 
         + lng 
-        + '&types=night_club|bar|grocery_or_supermarket|restaurant|liquor_store|convenience_store&radius=100&&key=' 
+        + '&types=night_club|bar|grocery_or_supermarket|restaurant|liquor_store|gas_station|convenience_store&radius=100&&key=' 
         + this.googlePlacesAPIKey)
         .map(res => res.json());    
 
@@ -119,12 +119,20 @@ export class GoogleService {
         + lat 
         + ',' 
         + lng 
-        + '&types=night_club|bar|grocery_or_supermarket|liquor_store|convenience_store&rankby=distance&key=' 
+        + '&types=night_club|bar|grocery_or_supermarket|liquor_store|gas_station|convenience_store&rankby=distance&key=' 
         + this.googlePlacesAPIKey)
         .map(res => res.json());    
 
     //grocery_or_supermarket ?
   }
+
+  placesNearByNextToken(nextToken) {
+    return this.http.get(this.googlePlacesURL + 'nearbysearch/json?pagetoken='
+        + nextToken 
+        + '&key=' + this.googlePlacesAPIKey)
+        .map(res => res.json());
+  }
+
   placesNearByName(name,lat,lng) {
 
     return this.http.get(this.googlePlacesURL + 'nearbysearch/json?location='
@@ -154,7 +162,7 @@ export class GoogleService {
     return this.http.get(this.googlePlacesURL + 'autocomplete/json?input='
     	  + locationName + "&location=" 
         + this.lat + ',' + this.lng 
-        + '&keyword=bar|restaurant|liquor_store&types=establishment&radius=500&key=' 
+        + '&types=establishment&radius=500&key=' 
         + this.googlePlacesAPIKey)
         .map(res => res.json());
 

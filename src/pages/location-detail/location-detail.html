@@ -27,11 +27,20 @@
 			</ion-row>
 			<ion-row>
 				<ion-col>
-					<a ion-button href="tel:{{location?.international_phone_number}}">
+					<a ion-button icon-left href="tel:{{location?.international_phone_number}}">
+					  <ion-icon name="call"></ion-icon>
 					  Call {{location?.formatted_phone_number}}
 					</a>
 				</ion-col>
 			</ion-row>
+			<ion-row>
+				<ion-col>
+			     	<button ion-button icon-left (click)='viewMap()'>
+	                   <ion-icon name="map"></ion-icon>
+	                      View Map
+	                </button>
+				</ion-col>
+			</ion-row>			
 			<ion-row [hidden]="locationHours == null">
 				<ion-col>
 					<p class="hours-head">{{location?.name}} Store Hours</p>
@@ -50,12 +59,24 @@
 				<ion-col>
 					<img [src]="locationPhoto">
 				</ion-col>
-			</ion-row>
-			<ion-row>
-				<ion-col>
-					<div #map id="map"></div>
-				</ion-col>
 			</ion-row>			
 		</ion-grid>
 	</ion-card>
+	<div [hidden]="locationReviews == null">
+		<div class="card-head">
+		  <p><ion-icon name="happy"></ion-icon>&nbsp;{{location?.name}} Reviews</p>
+		</div>
+	    <ion-card *ngFor="let review of locationReviews" >
+		  <ion-card-content>
+		    {{review?.text}}
+		    <div align="right" [hidden]="review.rating == 0">  	
+		    	<rating [(ngModel)]="review.rating" readOnly="true" max="5"></rating>
+		    </div>
+		    <div align="right">
+		      <p>{{review.author_name}}</p>
+		      <p>{{review.relative_time_description}}</p>
+		    </div>
+		  </ion-card-content>
+	    </ion-card>		
+	</div> 
 </ion-content>

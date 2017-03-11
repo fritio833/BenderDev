@@ -4,7 +4,7 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content>
   <ion-list>
     <button ion-item *ngFor="let beer of beers" (click) = "getBeerDetail(beer.id)">
       <ion-avatar item-left>
@@ -14,6 +14,11 @@
       <p>{{ beer.breweries[0].name }}</p>
       <ion-icon name="arrow-forward" item-right></ion-icon>
     </button>
+    <button ion-item>
+      <ion-infinite-scroll *ngIf="numberOfPages > 1" (ionInfinite)="getMoreBeers($event)">
+        <ion-infinite-scroll-content></ion-infinite-scroll-content>
+      </ion-infinite-scroll>
+    </button>    
   </ion-list>
 
 </ion-content>

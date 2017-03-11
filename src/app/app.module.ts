@@ -38,6 +38,7 @@ import { LocationResultsPage } from '../pages/location-results/location-results'
 import { LocationDetailPage } from '../pages/location-detail/location-detail';
 import { CheckinPage }  from '../pages/checkin/checkin';
 import { TackMapPage } from '../pages/tack-map/tack-map';
+import { LocationMapPage } from '../pages/location-map/location-map';
 
 @NgModule({
   declarations: [
@@ -66,7 +67,8 @@ import { TackMapPage } from '../pages/tack-map/tack-map';
     LocationResultsPage,
     LocationDetailPage,
     CheckinPage,
-    TackMapPage
+    TackMapPage,
+    LocationMapPage
 
   ],
   imports: [
@@ -100,7 +102,8 @@ import { TackMapPage } from '../pages/tack-map/tack-map';
     LocationResultsPage,
     LocationDetailPage,
     CheckinPage,
-    TackMapPage
+    TackMapPage,
+    LocationMapPage
   ],
   providers: [{provide: ErrorHandler, 
               useClass: IonicErrorHandler},

@@ -50,41 +50,71 @@
 
   <ion-list *ngSwitchCase="'locationsearch'">
     <div>
-      <form [formGroup] = "qSearchLocationForm" (submit) = "doSearchLocation()">
         <div align="center">            
-            <div class="search-input">
-              <ion-list>
-                <ion-item class="search-beer">
-
-                    <ion-input id="search" 
-                               type="text"
-                               [(ngModel)]='placeName' 
-                               value="{{qSearchLocation}}" 
-                               formControlName="qSearchLocation" 
-                               placeholder="Enter a location"
-                               input="autoLocationSearch($event.target.value)">
-                    </ion-input>             
-                    <button large item-right ion-button>
-                      <ion-icon name="search"></ion-icon>
-                    </button>
-                </ion-item>
-              </ion-list>             
-            </div>
+          <div class="search-input">
+            <ion-list>
+              <ion-item class="search-beer">
+                  <!----
+                  <ion-input id="search" 
+                             type="text"
+                             [(ngModel)]='placeName' 
+                             value="{{qSearchLocation}}" 
+                             formControlName="qSearchLocation" 
+                             placeholder="Enter a Location Name"
+                             (input)="autoLocationSearch($event)">
+                  </ion-input>
+                  ---->
+                    <ion-searchbar id="search" 
+                                   type="text" 
+                                   placeholder="Enter a Location Name" 
+                                   (ionInput)="autoLocationSearch($event)">       
+                    </ion-searchbar>
+              </ion-item>
+            </ion-list>             
+          </div>
         </div>
-      </form>
+    </div>
+    <div [hidden]="predictions==null">
+      <div class="card-head">
+        <p><ion-icon name="search"></ion-icon>&nbsp;Search Results.</p>
+      </div>    
+      <ion-list>
+        <ion-item>
+          <button ion-item *ngFor="let result of predictions" (click) = "getLocationDetail(result)">
+              <h2 class="loc-name">{{result.structured_formatting.main_text}}</h2>
+              <p>{{result.structured_formatting.secondary_text}}</p>
+              <ion-icon name="arrow-forward" item-right></ion-icon>
+          </button>
+        </ion-item>
+      </ion-list>
     </div>
     <div [hidden]="locations==null">
       <div class="card-head">
-        <p><ion-icon name="pint"></ion-icon>&nbsp;Locations to find beer nearby.</p>
+        <p><ion-icon name="pint"></ion-icon>&nbsp;Locations to find drinks nearby.</p>
+        <p>Sorted by proximity.</p>
       </div>
       <ion-list>
         <button ion-item *ngFor="let location of locations" (click) = "getLocationDetail(location)">
-          <h2>{{ location.name }}</h2>
-          <h3 [hidden]="location.rating==null">Score: {{location.rating}}</h3>
+          <h2 class="loc-name">
+          {{ location.name }}
+          </h2>
+          <p>{{location.place_types}}</p>
           <p>{{ location.vicinity }}</p>
-          <p>Type: {{location.place_types}}</p>
+          <h3 [hidden]="location.rating==null">Score: {{location.rating}}</h3>
+          <span *ngIf="location.opening_hours.open_now==1">
+            <ion-badge color="secondary">Open</ion-badge>
+          </span>
+          <span *ngIf="location.opening_hours.open_now==0">
+            <ion-badge color="danger">Closed</ion-badge>
+          </span>
+          <span *ngIf="location.opening_hours.open_now==2">
+            <ion-badge color="dark">Call</ion-badge>
+          </span>
           <ion-icon name="arrow-forward" item-right></ion-icon>
         </button>
+        <ion-infinite-scroll (ionInfinite)="getMoreLocal($event)">
+          <ion-infinite-scroll-content></ion-infinite-scroll-content>
+        </ion-infinite-scroll>       
       </ion-list>
     </div>          
   </ion-list>
