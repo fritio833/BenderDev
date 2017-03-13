@@ -1,73 +1,122 @@
 <ion-header>
   <ion-navbar  color="primary">
-    <ion-title>Bender</ion-title>  
+    <ion-title>Beer</ion-title>  
   </ion-navbar>
 </ion-header>
-<ion-content padding>
-  <ion-card>
-  	<ion-card-content>
-	  <ion-grid>
-	    <ion-row>
-		  <ion-col width-50>
-		    <ion-card-title>
-		      {{beer?.name}} <ion-badge item-right [hidden]='!beerLikes'>{{beerLikes}} Likes</ion-badge>
-		    </ion-card-title>
-		    <div>
-		        <p id="beer-info-head"><b id="bold-info">Beer Info</b></p>
-		        <p><b class="info-label">Brewery:</b> {{beer?.breweries[0].name}}</p>
-		      	<p><b class="info-label">Style:</b> {{beer?.style.category.name}}</p>
-		      	<p><b class="info-label">Alchohol by Volume (ABV):</b> {{beer?.abv}}%</p>
-		      	<p><b class="info-label">Availability:</b> {{beer?.available.name}}</p>
-		      	<p><b class="info-label">Container:</b> {{beer?.glass.name}}</p>
-		      	<p><b class="info-label">Is Organic:</b> {{beer?.isOrganic}}</p>
-		      	<p><b class="info-label">In Production:</b> {{beer?.statusDisplay}}</p>
-		     </div>
-		     <div>               
-		     	<button ion-button icon-left color="secondary" (click)='setLikeBeer(beer?.id)'>
-                   <ion-icon name="thumbs-up"></ion-icon>
-                </button>
-		     	<button ion-button icon-left (click)='reviewBeer(beer)'>
-                   <ion-icon name="create"></ion-icon>
-                      Review
-                </button>
-		     	<button ion-button icon-left (click)='saveBeerToFavorites(beer?.id)' [hidden]='hideSave'>
-                   <ion-icon name="heart"></ion-icon>
-                      Save
-                </button>
-		     	<button ion-button icon-left (click)='checkIn(beer)'>
-                   <ion-icon name="pin"></ion-icon>
-                      Check-in
-                </button>                          
-		     	<button ion-button icon-left (click)='removeBeerFromFavorites(beer?.id)' [hidden]='!hideSave'>
-                   <ion-icon name="remove-circle"></ion-icon>
-                      Delete
-                </button>                                                                              
-		     </div>
-		  </ion-col>
-	      <ion-col width-50 align="center">
-	        <div [hidden]="!overallBeerRating">
-	          <rating [(ngModel)]="overallBeerRating" readOnly="true" max="5"></rating>
-	        </div>
-	        <div>
-			  <img [src]="beer?.labels.large" />
-			</div>
-		  </ion-col>	  
-		</ion-row>
-		<ion-row [hidden]="beer?.description == null">
-			<ion-col>
-			   <p id="beer-info-head"><b id="bold-info">Description</b></p>
-			   {{beer?.description || "No descrition entered."}}
-			</ion-col>
-		</ion-row>
-	  </ion-grid>
-	</ion-card-content>
-  </ion-card>
-  <ion-card *ngFor="let review of beerReviews" >
+<ion-content>
+<ion-card>
+	<ion-grid>
+	  <ion-row>
+	    <ion-col width-33>
+	      <img [src]="beer?.labels.medium" />
+	    </ion-col>
+	    <ion-col width-67>
+	      <ion-card-title>{{beer?.name}}</ion-card-title>
+	      <p>{{beer?.breweries[0].name}}</p>
+	      <p>{{beer?.style.category.name}}</p>
+	      <p>{{beer?.abv}}% ABV &#9726; {{beer?.ibu}} IBU</p>
+	      <p>{{beer?.available.description}}</p>
+	    </ion-col>
+	  </ion-row>
+	</ion-grid>
+  <ion-grid>
+    <ion-row>
+        <ion-col>
+	      <button outline block ion-button icon-left>
+	        <ion-icon name="pin"></ion-icon>
+	        LOCATE
+	      </button>
+	    </ion-col>
+	    <ion-col>
+	      <button outline block ion-button icon-left (click)='saveBeerToFavorites(beer?.id)'>
+	        <ion-icon name="heart"></ion-icon>
+	        SAVE
+	      </button>
+	    </ion-col>
+	    <ion-col>
+	      <button outline block ion-button icon-left (click)='reviewBeer(beer)'>
+	        <ion-icon name="create"></ion-icon>
+	        REVIEW
+	      </button>
+	    </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+		<button color="secondary" ion-button block full (click)='checkIn(beer)'>
+		    CHECK-IN
+		</button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+	    <ion-list [hidden]="!overallBeerRating">
+	      <ion-item>
+	        {{beerReviewCount}} ratings
+	        <rating item-right [(ngModel)]="overallBeerRating" readOnly="true" max="5"></rating>
+	      </ion-item>
+	    </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-card>
+
+<ion-card>
+  <ion-card-header>
+    BREWERY
+  </ion-card-header>
+  <ion-card-content>
+  <ion-grid *ngFor="let brewery of beer?.breweries">
+    <ion-row>
+      <ion-col width-33>
+        <img [src]="brewery.images.medium" />
+      </ion-col>
+      <ion-col width-67>
+        <h2>{{brewery.name}}</h2>
+        <p>Established in {{brewery.established}}</p>
+        <button ion-button>View More</button>      
+      </ion-col>
+    </ion-row>
+    <!----
+    <ion-row>
+      <ion-col>
+        <ion-list>
+	      <ion-item *ngFor="let location of brewery.locations" item-right>
+	        <h2>{{location.name}}</h2>
+	        <p>{{location.locationTypeDisplay}}</p>
+	        <p>{{location.streetAddress}}</p>
+            <p>{{location.locality}}, {{location.region}} {{location.country.displayName}}</p>
+	      </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+    ---->
+  </ion-grid>
+  </ion-card-content>
+</ion-card>
+
+<ion-card [hidden]="beer?.description == null">
+  <ion-card-header>
+    DESCRIPTION
+  </ion-card-header>
+  <ion-card-content>
+  	 {{beer?.description}}
+  </ion-card-content>
+</ion-card>
+
+<div [hidden]="beerReviews == null">
+	<div class="card-head">
+	  <p><ion-icon name="happy"></ion-icon>&nbsp;{{beer?.name}} Reviews</p>
+	</div>
+	<ion-card *ngFor="let review of beerReviews" >
 	  <ion-card-content>
 	    {{review.review}}
-	    <div [hidden]="+review.beer_rating == 0">  	
+	    <div [hidden]="+review.beer_rating == 0" align="right">  	
 	    	<rating [(ngModel)]="review.beer_rating" readOnly="true" max="5"></rating>
 	    </div>
+	    <div align="right">
+	      <p>{{review.date_created}}</p>
+	    </div>	    
 	  </ion-card-content>
-  </ion-card> 
+	</ion-card>
+</div>
 </ion-content>

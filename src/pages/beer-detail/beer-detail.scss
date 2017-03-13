@@ -1,8 +1,8 @@
 page-beer-detail {
 
-	.card-title {        
-	    border-bottom: 2px solid #999;
-	}
+	//.card-title {        
+	//    border-bottom: 2px solid #999;
+	//}
 
 	h3 {
 	  border-bottom: 2px solid #999;
@@ -54,6 +54,19 @@ page-beer-detail {
 	      font-size: 25px;
 	    }
 	  }
-	}    
+	}
+
+	.no-margin {
+	  margin: 0 !important;
+	}
+
+	.no-padding {
+	  padding: 0 !important;
+	}
+
+    .card-head {
+    	font-size: 20px;
+    	padding-left: 10px;
+    }	   
 
 }

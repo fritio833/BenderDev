@@ -100,7 +100,7 @@ export class MyApp {
 
     if (this.conn.isOnline()) {
 
-      let options = {timeout: 10000, enableHighAccuracy: true};
+      let options = {timeout: 30000, enableHighAccuracy: true};
       Geolocation.getCurrentPosition(options).then((resp) => {         
          if (resp.coords.latitude) {
            this.geo.reverseGeocodeLookup(resp.coords.latitude,resp.coords.longitude)

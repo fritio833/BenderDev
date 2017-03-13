@@ -31,6 +31,7 @@ export class BeerDetailPage {
   public beerLikes:number;
   public beerReviews:any;
   public overallBeerRating:number;
+  public beerReviewCount:number;
 
   constructor( public navCtrl: NavController, 
                public navParams: NavParams, 
@@ -54,7 +55,7 @@ export class BeerDetailPage {
     this.beerAPI.loadBeerById(this.beerId).subscribe(beer => {
       this.beer = beer;
       this.loadBeer(this.beer);
-      //console.log(this.beer);
+      console.log(this.beer);
       this.getBeerReviews();
 
       //  Hide Save button if we saved this beer already
@@ -171,11 +172,12 @@ export class BeerDetailPage {
   getBeerReviews() {
 
      let beerRatingTotal:number = 0;
-     let beerReviewCount:number = 0;
+     this.beerReviewCount = 0;
      // Get beer reviews by beer id
      this.db.getBeerReviewsById(this.beerId).subscribe(success=>{
 
       this.beerReviews = success.data;
+      console.log(this.beerReviews);
 
       // Get overall Beer Ratings:  TODO: Create a backend make the calculation TABLE: beer_rating
       for (let i = 0; i < this.beerReviews.length; i++) {
@@ -183,11 +185,11 @@ export class BeerDetailPage {
         // if the beer rating is zero, they never bothered to rate.  Ignore.
         if (parseInt(this.beerReviews[i].beer_rating)) {
           beerRatingTotal += parseInt(this.beerReviews[i].beer_rating);
-          beerReviewCount++;  
+          this.beerReviewCount++;  
         }
       }
 
-      this.overallBeerRating = beerRatingTotal  / beerReviewCount;
+      this.overallBeerRating = beerRatingTotal  / this.beerReviewCount;
 
 
       });
