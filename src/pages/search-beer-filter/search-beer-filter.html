@@ -1,0 +1,72 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-buttons start>
+        <button ion-button icon-only (click)="cancel()">
+          <ion-icon name="close"></ion-icon>
+        </button>
+    </ion-buttons>  
+    <ion-title>Beer Filter</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+	<ion-list>
+	  <ion-item>
+        <ion-label>Beer Category</ion-label>
+	    <ion-select [(ngModel)]="filter.categoryId" (ionChange)="updateBeerStyle($event)">
+	      <ion-option *ngFor="let cat of beerCategories" value="{{cat.id}}">
+	        {{cat.name}}
+	      </ion-option>
+	    </ion-select>      
+	  </ion-item>
+	  <ion-item>	  
+	    <ion-label>Beer Style</ion-label>
+	    <ion-select [(ngModel)]="filter.styleId">
+	      <ion-option *ngFor="let option of beerStyles" value="{{option.id}}">
+	        {{option.shortName}}
+	      </ion-option>
+	    </ion-select>
+	  </ion-item>
+	  <ion-item>
+	  	<ion-label>Organic Beer</ion-label>
+	  	<ion-checkbox item-right [(ngModel)]="filter.isOrganic"></ion-checkbox>
+	  </ion-item>
+	  <ion-item>
+	  	<ion-label>Show Beers with Labels</ion-label>
+	  	<ion-checkbox item-right [(ngModel)]="filter.showLabels"></ion-checkbox>
+	  </ion-item>
+	  <ion-item>
+        <ion-label>
+            <div>Min. Alcohol by Volume (ABV)</div> 
+            <div align="center">
+            	<ion-badge *ngIf="filter.minABV!=null">{{filter.minABV}}%</ion-badge>
+            </div>
+        </ion-label>
+        <ion-range min="1" max="15" step="1" [(ngModel)]="filter.minABV"></ion-range>
+	  </ion-item> 
+	  <ion-item>
+        <ion-label>
+        	<div>Min. International Bittering Unit (IBU)</div>
+            <div align="center">
+            	<ion-badge color="secondary" *ngIf="filter.minIBU!=null">{{filter.minIBU}}</ion-badge>
+            </div>
+        </ion-label>
+        <ion-range color="secondary" min="1" max="100" step="1" [(ngModel)]="filter.minIBU"></ion-range>
+	  </ion-item>
+	  <ion-item>	  
+	    <ion-label>Sort by Beer Name</ion-label>
+	    <ion-select [(ngModel)]="filter.sortBy">
+	      <ion-option value="ASC" selected="true">
+	        Ascending
+	      </ion-option>
+	      <ion-option value="DESC">
+	        Descending
+	      </ion-option>	      
+	    </ion-select>
+	  </ion-item>	  	  	  
+	</ion-list>
+</ion-content>
+<ion-footer>
+	<button ion-button full (click)="applyBeerFilter()">
+	  DONE
+	</button>
+</ion-footer>

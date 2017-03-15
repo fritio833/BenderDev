@@ -38,20 +38,57 @@ export class BreweryService {
   }
 
   
-  loadBeerByName(beerName,page?)  {
+  loadBeerByName(beerName,page?,filter?)  {
 
     let _page = '';
+    let _filter = '';
 
     if (page!=null)
       _page = '&p=' + page;
 
-    return this.http.get(this.breweryDbUrl 
-         + 'search/?key=' 
-         + this.breweryDbAPI 
-         + '&q=' + beerName
-         + _page 
-         +'&type=beer&withBreweries=Y')
-        .map(res => res.json());
+    //console.log('filter',filter);
+    
+    if (filter!=null) {
+
+      if (filter.styleId!=null)
+        _filter += '&styleId=' + filter.styleId;
+
+      if (filter.isOrganic!=null && filter.isOrganic)
+        _filter += '&isOrganic=Y';
+
+      if (filter.minABV!=null)
+        _filter += '&abv=' + filter.minABV + ',20';
+
+      if (filter.minIBU!=null)
+        _filter += '&ibu=' + filter.minIBU + ',100';
+
+      if (filter.showLabels!=null && filter.showLabels)
+        _filter += '&hasLabels=Y';
+
+      if (filter.sortBy!=null)
+        _filter += '&sort=' + filter.sortBy;
+
+      if (beerName!=null)
+        _filter += '&name=*' + beerName + '*';
+
+      return this.http.get(this.breweryDbUrl 
+           + 'beers/?key=' 
+           + this.breweryDbAPI 
+           + _page
+           + _filter 
+           +'&withBreweries=Y')
+          .map(res => res.json());
+
+    } else {
+
+      return this.http.get(this.breweryDbUrl 
+           + 'search/?key=' 
+           + this.breweryDbAPI 
+           + '&q=' + beerName
+           + _page 
+           +'&type=beer&withBreweries=Y')
+          .map(res => res.json());
+    }
   }
 
   loadBeerById(beerId)  {
@@ -63,5 +100,22 @@ export class BreweryService {
          + '&type=beer&withBreweries=Y')
         .map(res => res.json());
   } 
+
+  loadBeerCategories() {
+    return this.http.get(this.breweryDbUrl 
+         + 'categories/'
+         + '?key=' + this.breweryDbAPI)
+        .map(res => res.json());
+  }
+
+  loadBeerStyles() {
+
+    let categoryId = '';
+
+    return this.http.get(this.breweryDbUrl 
+         + 'styles/'
+         + '?key=' + this.breweryDbAPI)
+        .map(res => res.json());    
+  }
 
 }

@@ -39,6 +39,10 @@ import { LocationDetailPage } from '../pages/location-detail/location-detail';
 import { CheckinPage }  from '../pages/checkin/checkin';
 import { TackMapPage } from '../pages/tack-map/tack-map';
 import { LocationMapPage } from '../pages/location-map/location-map';
+import { SearchStartPage } from '../pages/search-start/search-start';
+import { SearchBeerPage } from '../pages/search-beer/search-beer';
+import { SearchLocationPage } from '../pages/search-location/search-location';
+import { SearchBeerFilterPage } from '../pages/search-beer-filter/search-beer-filter';
 
 @NgModule({
   declarations: [
@@ -68,7 +72,11 @@ import { LocationMapPage } from '../pages/location-map/location-map';
     LocationDetailPage,
     CheckinPage,
     TackMapPage,
-    LocationMapPage
+    LocationMapPage,
+    SearchStartPage,
+    SearchBeerPage,
+    SearchLocationPage,
+    SearchBeerFilterPage
 
   ],
   imports: [
@@ -103,7 +111,11 @@ import { LocationMapPage } from '../pages/location-map/location-map';
     LocationDetailPage,
     CheckinPage,
     TackMapPage,
-    LocationMapPage
+    LocationMapPage,
+    SearchStartPage,
+    SearchBeerPage,
+    SearchLocationPage,
+    SearchBeerFilterPage
   ],
   providers: [{provide: ErrorHandler, 
               useClass: IonicErrorHandler},

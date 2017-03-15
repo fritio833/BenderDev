@@ -16,7 +16,7 @@
     <ion-row>
       <ion-col>
         <div id="find-drinks-button" class="center">
-          <button ion-button round>Find Beers Near You</button>
+          <button ion-button round (click)="startSearch()">Find Beers Near You</button>
         </div>
         <div class="right">
           <button right ion-button small color="dark">{{sing.geoCity}}. Change?</button>

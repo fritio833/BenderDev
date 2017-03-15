@@ -14,7 +14,11 @@
 	      <ion-card-title>{{beer?.name}}</ion-card-title>
 	      <p>{{beer?.breweries[0].name}}</p>
 	      <p>{{beer?.style.category.name}}</p>
-	      <p>{{beer?.abv}}% ABV &#9726; {{beer?.ibu}} IBU</p>
+	      <p>
+	         {{beer?.abv}}% <span *ngIf="beer?.abv!=null">ABV</span> 
+	         <span *ngIf="beer?.abv!=null && beer?.ibu!=null">&#9726;</span> 
+	         {{beer?.ibu}} <span *ngIf="beer?.ibu!=null">IBU</span>
+	      </p>
 	      <p>{{beer?.available.description}}</p>
 	    </ion-col>
 	  </ion-row>
@@ -68,7 +72,7 @@
   <ion-grid *ngFor="let brewery of beer?.breweries">
     <ion-row>
       <ion-col width-33>
-        <img [src]="brewery.images.medium" />
+        <img [src]="brewery?.images.medium" />
       </ion-col>
       <ion-col width-67>
         <h2>{{brewery.name}}</h2>
@@ -103,7 +107,7 @@
   </ion-card-content>
 </ion-card>
 
-<div [hidden]="beerReviews == null">
+<div *ngIf="beerReviewCount">
 	<div class="card-head">
 	  <p><ion-icon name="happy"></ion-icon>&nbsp;{{beer?.name}} Reviews</p>
 	</div>

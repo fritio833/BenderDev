@@ -55,7 +55,7 @@ export class BeerDetailPage {
     this.beerAPI.loadBeerById(this.beerId).subscribe(beer => {
       this.beer = beer;
       this.loadBeer(this.beer);
-      console.log(this.beer);
+      //console.log(this.beer);
       this.getBeerReviews();
 
       //  Hide Save button if we saved this beer already
@@ -81,39 +81,37 @@ export class BeerDetailPage {
 
     });
   }
-
  
   loadBeer(data) {
 
     this.beer = data.data;
 
- 		
     // fix beers with no images
     if (!this.beer.hasOwnProperty('labels')) {
+      this.beer['labels'] = {icon:'images/no-image.jpg',
+                             medium:'images/no-image.jpg',
+                             large:'images/no-image.jpg'};
+    }
 
-      this.beer['labels'] = {icon:'images/no-image.jpg',medium:'images/no-image.jpg',large:'images/no-image.jpg'};
-
+    // fix breweries without pictures
+    if (!this.beer['breweries'][0].hasOwnProperty('images')) {
+      this.beer['breweries'][0].images = {icon:'images/no-image.jpg',
+                                          medium:'images/no-image.jpg',
+                                          large:'images/no-image.jpg'};  
     }
 
     // fix no beer category
  	  if (!this.beer.hasOwnProperty('style')) {
-
-        this.beer['style'] = {category:{name:'',createDate:'',id:''}};
-
+      this.beer['style'] = {category:{name:'',createDate:'',id:''}};
     }
 
-    // fix no description in available
-    
+    // fix no description in available    
  	  if (!this.beer.hasOwnProperty('available')) {
-
-        this.beer['available'] = {description:'',name:'',id:''};
-
+      this.beer['available'] = {description:'',name:'',id:''};
     }
 
-     if (!this.beer.hasOwnProperty('glass')) {
-
-        this.beer['glass'] = {createDate:'',name:'',id:''};
-
+    if (!this.beer.hasOwnProperty('glass')) {
+      this.beer['glass'] = {createDate:'',name:'',id:''};
     }    
     //console.log('detail',this.beer);
   }
@@ -177,7 +175,7 @@ export class BeerDetailPage {
      this.db.getBeerReviewsById(this.beerId).subscribe(success=>{
 
       this.beerReviews = success.data;
-      console.log(this.beerReviews);
+      // console.log(this.beerReviews);
 
       // Get overall Beer Ratings:  TODO: Create a backend make the calculation TABLE: beer_rating
       for (let i = 0; i < this.beerReviews.length; i++) {

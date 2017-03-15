@@ -31,6 +31,8 @@ export class MyApp {
   pages: Array<{title: string, component: any}>;
   login:any;
   comp:any;
+  geoInterval:any;
+  geoAttempt:number = 0;
 
 
   constructor(
@@ -98,26 +100,59 @@ export class MyApp {
 
   getGeolocation() {
 
-    if (this.conn.isOnline()) {
+    var temp = this;  // setInteval needs a tmp var to this.
 
-      let options = {timeout: 30000, enableHighAccuracy: true};
+    if (this.conn.isOnline()) {
+      this.geoAttempt++;
+
+      let options = {timeout: 5000, enableHighAccuracy: true, maximumAge:3000};
       Geolocation.getCurrentPosition(options).then((resp) => {         
          if (resp.coords.latitude) {
            this.geo.reverseGeocodeLookup(resp.coords.latitude,resp.coords.longitude)
              .subscribe((success)=>{
               this.sing.geoCity = success.city;
               this.sing.geoState = success.state;
+              console.log('Geolocation with high accuracy.');
             });
           
          }
       }).catch((error) => {
-        console.log('Error getting location', error);
+        console.log('Error getting location using high accuracy', error);
+        // Resort to low accuracy if fails
+        
+        temp.geoInterval = setInterval(function() {
+              temp.getGeolocationLowAccuracy();
+           }, 10000);        
+
       });
     } else {
       console.log("no connection");
       this.sing.geoCity = "Pensacola";
       this.sing.geoState = "FL";      
     }
+  }
+
+  getGeolocationLowAccuracy(){
+
+    if (this.geoAttempt > 5) {
+      clearInterval(this.geoInterval);
+    }
+
+    let options = {timeout: 5000, enableHighAccuracy: false, maximumAge:3000};
+    Geolocation.getCurrentPosition(options).then((resp) => {         
+       if (resp.coords.latitude) {
+         this.geo.reverseGeocodeLookup(resp.coords.latitude,resp.coords.longitude)
+           .subscribe((success)=>{
+            this.sing.geoCity = success.city;
+            this.sing.geoState = success.state;
+            clearInterval(this.geoInterval);
+            console.log('Geolocation with low accuracy.');
+          });
+       }
+    }).catch((error) => {
+      this.geoAttempt++;
+      console.log('Error getting location using low accuracy. Attempt: ' + this.geoAttempt, error);      
+    });    
   }
 
   presentToast(msg) {

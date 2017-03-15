@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavController, NavParams,ToastController } from 'ionic-angular';
+import { NavController, ToastController, ModalController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { Ionic2RatingModule } from 'ionic2-rating';
 import { Geolocation } from 'ionic-native';
@@ -7,10 +7,13 @@ import { Geolocation } from 'ionic-native';
 import { SingletonService } from '../../providers/singleton-service';
 import { AuthService } from '../../providers/auth-service';
 
-import { LoginPage } from '../login/login';
 import { HelloIonicPage } from '../hello-ionic/hello-ionic';
 import { BeerDetailPage } from '../beer-detail/beer-detail';
 import { TackMapPage } from '../tack-map/tack-map';
+import { SearchStartPage } from '../search-start/search-start';
+import { SearchBeerPage } from '../search-beer/search-beer';
+import { SearchLocationPage } from '../search-location/search-location';
+
 
 
 declare var google;
@@ -26,20 +29,17 @@ declare var google;
 })
 export class HomePage {
 
-  @ViewChild('map') mapElement;
-
   public choice:string;
   public beers = new Array();
   public reviews = new Array();
-  public map:any;
   public profileIMG:any;
   public drinkRating = 4;
   public locRating = 4.5;
 
   constructor(public navCtrl: NavController, 
-  	          public navParams: NavParams, 
   	          public sing:SingletonService,
-  	          public auth:AuthService, 
+  	          public auth:AuthService,
+              public modalCtrl:ModalController,
   	          public toastCtrl:ToastController,
   	          public storage:Storage) {
 
@@ -60,30 +60,6 @@ export class HomePage {
     //this.initMap();
   }
 
-  initMap() {
-
-   
-    Geolocation.getCurrentPosition().then((resp) => {
-       if (resp.coords.latitude) {
-
-         let latlng = new google.maps.LatLng(resp.coords.latitude,resp.coords.longitude);
-         
-         let mapOptions = {
-           center:latlng,
-           zoom:15,
-           mapTypeId: google.maps.MapTypeId.ROADMAP
-         };
-
-         this.map = new google.maps.Map(this.mapElement.nativeElement,mapOptions);
-        
-       }
-    }).catch((error) => {
-      console.log('Error getting location', error);
-    });
-   
-  }
-
-
   doSearch() {
   	this.navCtrl.push(HelloIonicPage); 
   }
@@ -100,4 +76,24 @@ export class HomePage {
   goTackMap() {
     this.navCtrl.push(TackMapPage);
   }
+
+  startSearch() {
+
+    let modal = this.modalCtrl.create(SearchStartPage);
+    modal.onDidDismiss(data => {
+      //console.log('page',data);
+      switch(data) {
+
+        case 'beers':
+          this.navCtrl.push(SearchBeerPage); 
+          break;
+        case 'locations':
+          this.navCtrl.push(SearchLocationPage);
+          break;
+        default: console.log('not valid search');
+      }      
+    });
+    modal.present();
+  }
+
 }

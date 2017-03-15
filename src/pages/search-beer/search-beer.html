@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-toolbar>
+    	<ion-searchbar (input)="doSearchBeer($event)" placeholder="Enter Beer Name"></ion-searchbar>
+    	<ion-buttons end>
+	      <button id="filter-button" ion-button icon-only (click)="showBeerFilter()">
+	        <ion-icon name="options"></ion-icon>
+	      </button>
+    	</ion-buttons>
+    </ion-toolbar>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content>
+  <ion-list>
+    <button ion-item *ngFor="let beer of beers" (click) = "getBeerDetail(beer.id)">
+      <ion-avatar item-left>
+      	<img [src]="beer.labels.icon" />
+      </ion-avatar>
+      <h2>{{ beer.name }}</h2>
+      <p>{{ beer.breweries[0].name }}</p>
+      <ion-icon name="arrow-forward" item-right></ion-icon>
+    </button>
+    <button ion-item>
+      <ion-infinite-scroll *ngIf="numberOfPages > 1" (ionInfinite)="getMoreBeers($event)">
+        <ion-infinite-scroll-content></ion-infinite-scroll-content>
+      </ion-infinite-scroll>
+    </button>    
+  </ion-list>
+</ion-content>
