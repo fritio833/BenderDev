@@ -9,7 +9,7 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content>
+<ion-content class="white-background">
   <ion-list>          
     <button ion-item (click)="doSearch('beers')">
       <ion-icon name="beer" item-left></ion-icon>
@@ -43,3 +43,8 @@
     </button>          
   </ion-list>
 </ion-content>
+<ion-footer>
+  <button ion-button full (click)="cancel()">
+    CLOSE
+  </button>
+</ion-footer>

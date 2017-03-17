@@ -122,7 +122,7 @@ export class MyApp {
         
         temp.geoInterval = setInterval(function() {
               temp.getGeolocationLowAccuracy();
-           }, 10000);        
+           }, 15000);        
 
       });
     } else {
@@ -138,7 +138,7 @@ export class MyApp {
       clearInterval(this.geoInterval);
     }
 
-    let options = {timeout: 5000, enableHighAccuracy: false, maximumAge:3000};
+    let options = {timeout: 10000, enableHighAccuracy: false, maximumAge:3000};
     Geolocation.getCurrentPosition(options).then((resp) => {         
        if (resp.coords.latitude) {
          this.geo.reverseGeocodeLookup(resp.coords.latitude,resp.coords.longitude)

@@ -20,19 +20,6 @@ export class SearchStartPage {
   }
 
   doSearch(type){
-
-    /*
-  	switch(type) {
-
-  		case 'beers':
-	  		this.navCtrl.push(SearchBeerPage); 
-	  		break;
-	  	case 'locations':
-	  		this.navCtrl.push(SearchLocationPage);
-	  		break;
-  		default: console.log('not valid search');
-  	}
-  	*/
   	this.view.dismiss(type);
   }
 }
