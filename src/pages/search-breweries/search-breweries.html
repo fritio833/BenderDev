@@ -1,0 +1,72 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-toolbar>
+    	<ion-searchbar [hidden]="showMap"
+    	               (ionInput)="autoBrewerySearch($event)" 
+    	               placeholder="Brewery Name"
+    	               (ionClear)="autoSearchCancel($event)">
+    	</ion-searchbar>
+    	<ion-buttons left>
+	      <button [hidden]="!showMap" ion-button icon-only (click)="showMarkerKey()">
+	        <div>
+	        	<ion-icon name="pin"></ion-icon>
+	        	<label>Key</label>
+	        </div>
+	      </button>
+    	</ion-buttons>    	
+    	<ion-buttons end>    	
+	      <button [hidden]="showMap" ion-button icon-only (click)="showBreweryMap()">
+	        <div>
+	        	<ion-icon name="map"></ion-icon>
+	        	<label>Map</label>
+	        </div>
+	      </button>
+	      <button [hidden]="!showMap" ion-button icon-only (click)="showBreweryList()">
+	        <div>
+	        	<ion-icon name="list-box"></ion-icon>
+	        	<label>List</label>
+	        </div>
+	      </button>	      
+	    </ion-buttons>
+    </ion-toolbar>
+  </ion-navbar>
+</ion-header>
+<ion-content class="white-background">
+<div [hidden]="!brewerySearchLen || showMap">
+  <ion-list>
+    <ion-item>
+      <p><ion-icon name="search"></ion-icon>&nbsp;Search Results.</p>
+    </ion-item>
+    <ion-item>
+      <button ion-item *ngFor="let result of brewerySearch" (click) = "getLocationDetail(result)">
+          <h2 class="loc-name">{{result.name}}</h2>
+          <p>{{result.type}}</p>
+          <ion-icon name="arrow-forward" item-right></ion-icon>
+      </button>
+    </ion-item>
+  </ion-list>
+</div>
+<div [hidden]="brewerySearchLen || showMap"> 
+  <ion-list>
+    <ion-item>
+      <p>Breweries in {{sing.getSelectCity()}}</p>
+      <button item-right ion-button round (click)="changeCity()">Change City</button>
+    </ion-item>
+    <button ion-item *ngFor="let brew of breweries; let i = index;" (click)="getDetail(brew)">
+      <ion-avatar item-left>
+      	<img [src]="brew.brewery.images.icon" />
+      </ion-avatar>
+      <h2 class="loc-name">
+      {{brew.brewery.name}}
+      </h2>
+      <p>{{brew.locationTypeDisplay}}</p>
+      <p *ngIf="sing.getLocation().geo">{{brew.distance}} miles away</p>
+      <ion-icon name="arrow-forward" item-right></ion-icon>
+    </button>
+    <ion-infinite-scroll [hidden]="numPages <= 1" (ionInfinite)="getMoreBreweries($event)">
+      <ion-infinite-scroll-content></ion-infinite-scroll-content>
+    </ion-infinite-scroll>       
+  </ion-list>
+</div>
+<div [hidden]="!showMap" #map id="map"></div>
+</ion-content>

@@ -1,28 +1,28 @@
 <ion-header>
-  <ion-navbar  color="primary">
+  <ion-navbar color="primary">
     <ion-title>Beer</ion-title>  
   </ion-navbar>
 </ion-header>
 <ion-content>
 <ion-card>
-	<ion-grid>
-	  <ion-row>
-	    <ion-col width-33>
-	      <img [src]="beer?.labels.medium" />
-	    </ion-col>
-	    <ion-col width-67>
-	      <ion-card-title>{{beer?.name}}</ion-card-title>
-	      <p>{{beer?.breweries[0].name}}</p>
-	      <p>{{beer?.style.category.name}}</p>
-	      <p>
-	         {{beer?.abv}}% <span *ngIf="beer?.abv!=null">ABV</span> 
-	         <span *ngIf="beer?.abv!=null && beer?.ibu!=null">&#9726;</span> 
-	         {{beer?.ibu}} <span *ngIf="beer?.ibu!=null">IBU</span>
-	      </p>
-	      <p>{{beer?.available.description}}</p>
-	    </ion-col>
-	  </ion-row>
-	</ion-grid>
+  <ion-grid>
+	<ion-row>
+	  <ion-col width-33>
+	    <img [src]="beer?.labels.medium" />
+	  </ion-col>
+	  <ion-col width-67>
+	    <ion-card-title>{{beer?.name}}</ion-card-title>
+	    <p>{{beer?.breweries[0].name}}</p>
+	    <p>{{beer?.style.category.name}}</p>
+	    <p>
+	      <span *ngIf="beer?.abv!=null">{{beer?.abv}}% ABV</span> 
+	      <span *ngIf="beer?.abv!=null && beer?.ibu!=null">&#9726;</span> 
+	      <span *ngIf="beer?.ibu!=null">{{beer?.ibu}} IBU</span>
+	    </p>
+	    <p>{{beer?.available.description}}</p>
+	  </ion-col>
+	</ion-row>
+  </ion-grid>
   <ion-grid>
     <ion-row>
         <ion-col>

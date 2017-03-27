@@ -1,11 +1,13 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavController, NavParams, LoadingController, ToastController } from 'ionic-angular';
+import { NavController, NavParams, ModalController, LoadingController, PopoverController, ToastController, AlertController } from 'ionic-angular';
 import { Geolocation } from 'ionic-native';
 
 import { GoogleService } from '../../providers/google-service';
 import { LocationDetailPage } from '../location-detail/location-detail';
 import { SingletonService } from '../../providers/singleton-service';
 import { ConnectivityService } from '../../providers/connectivity-service';
+import { SearchLocationKeyPage } from '../search-location-key/search-location-key';
+import { SearchLocationFilterPage } from '../search-location-filter/search-location-filter';
 
 declare var google;
 declare var GoogleMap;
@@ -26,13 +28,21 @@ export class SearchLocationPage {
   public mapInitialised: boolean = false;
   public apiKey: any = 'AIzaSyAKs0BGHgtV5I--IvIwsGkD3c_EFV0yXtY';
   public loading:any; 
+  public markers:any;
+  public filter:any;
+  public geoLat:any;
+  public geoLng:any;
+  public infScroll:any;
 
   constructor(public navCtrl: NavController, 
   	          public navParams: NavParams,
   	          public toastCtrl:ToastController,
   	          public sing:SingletonService,
   	          public loadingCtrl:LoadingController,
+              public alertCtrl:AlertController,
+  	          public popCtrl:PopoverController,
   	          public conn:ConnectivityService,
+              public modalCtrl:ModalController,
   	          public geo:GoogleService) {
 
   }
@@ -48,6 +58,16 @@ export class SearchLocationPage {
    for (var i = 0; i < locations.length; i++ ) {
 
       ptypes ='';
+     
+      if (this.sing.getLocation().geo) {
+
+        let lat = parseFloat(locations[i].geometry.location.lat);
+        let lng = parseFloat(locations[i].geometry.location.lng);
+        let locPoint = {lat:lat,lng:lng};
+        let userPoint = {lat:this.geoLat,lng:this.geoLng};
+        let dist = this.geo.getDistance(locPoint,userPoint,true);
+        locations[i]['distance'] = Math.round(dist * 10) / 10;
+      }
       
       if (!locations[i].hasOwnProperty('opening_hours')) {
          locations[i]['opening_hours'] = {open_now:2};
@@ -76,14 +96,14 @@ export class SearchLocationPage {
   autoLocationSearch(event) {
     console.log(event);
     
-	if (event.type == "input") {
-	    this.geo.placesAutocomplete(event.target.value).subscribe((success)=>{
-	      this.predictions = success.predictions;
-	      this.predictionsLen = success.predictions.length;
-	      //console.log(this.predictions);
+  	if (event.type == "input") {
+  	    this.geo.placesAutocomplete(event.target.value).subscribe((success)=>{
+  	      this.predictions = success.predictions;
+  	      this.predictionsLen = success.predictions.length;
+  	      //console.log(this.predictions);
 
-      });
-	}
+        });
+  	}
   }
 
   autoSearchCancel(event){
@@ -96,8 +116,11 @@ export class SearchLocationPage {
 
   	if (!this.mapInitialised)
   	  this.loadGoogleMaps();
-  	else
+  	else {
+      this.clearMarkers();
   	  this.setLocationMarkers();
+      this.setBounds();
+    }
   }
 
   showLocalList() {
@@ -108,7 +131,10 @@ export class SearchLocationPage {
 
     Geolocation.getCurrentPosition().then((resp) => {
 
-      this.geo.placesNearByRadius(resp.coords.latitude,resp.coords.longitude,50000)
+      this.geoLat = resp.coords.latitude;
+      this.geoLng = resp.coords.longitude;
+
+      this.geo.placesNearByRadius(this.geoLat,this.geoLng)
         .subscribe((success)=>{
            
            this.locations = this.fixLocations(success.results);
@@ -121,6 +147,8 @@ export class SearchLocationPage {
   }
 
   getMoreLocal(infiniteScroll) {
+
+    this.infScroll = infiniteScroll; 
 
     setTimeout(() => {
       this.geo.placesNearByNextToken(this.nextNearByToken).subscribe((success)=>{
@@ -137,15 +165,15 @@ export class SearchLocationPage {
         }
 
         infiniteScroll.complete();
-        //console.log(locationsNext);
 
+        
         if (!success.hasOwnProperty('next_page_token')) {
           infiniteScroll.enable(false);
         }
-
+        
       });
     }, 1000);
-  }  
+  }
 
   getLocationDetail(location) {
 
@@ -177,47 +205,59 @@ export class SearchLocationPage {
   }  
 
   showLocationFilter() {
+    let modal = this.modalCtrl.create(SearchLocationFilterPage,{filter:this.filter});
+    modal.onDidDismiss(filter => {
+      //console.log('filter',filter);
 
+      if (filter!=null) {
+
+        this.filter = filter;
+        this.geo.placesNearByRadius(this.geoLat,
+                                    this.geoLng,
+                                    this.filter.distance,
+                                    this.filter).subscribe((resp)=>{
+
+          // console.log('resp',resp);
+           this.locations = [];
+           this.locations = this.fixLocations(resp.results);
+           this.nextNearByToken = resp.next_page_token;
+           //this.infScroll.enable(true);
+           console.log('nextToken',this.nextNearByToken);
+           if (this.showMap && this.markers.length) {
+              this.clearMarkers();
+              this.setLocationMarkers();
+           }
+
+        });
+      }
+
+    });
+    modal.present(); 
+  }
+
+  setBounds() {
+    setTimeout(() => {
+      google.maps.event.trigger(this.map, 'resize');
+        var bounds = new google.maps.LatLngBounds();
+        for (var i = 0; i < this.markers.length; i++) {
+          bounds.extend(this.markers[i].getPosition());
+        }
+        this.map.fitBounds(bounds);
+
+    }, 500);
   }
 
   initMap() {
 
     this.mapInitialised = true;
-    let markers = [];//some array
-    let records;
-   
-    let mapOptions = {
-      mapTypeId: google.maps.MapTypeId.ROADMAP
-    };
-
-    var im = 'images/icons/bluecircle.png';
-
-    this.map = new google.maps.Map(this.mapElement.nativeElement,mapOptions);
-
-    markers = this.setLocationMarkers();
-
 
     let options = {timeout: 10000, enableHighAccuracy: false, maximumAge:3000};
     Geolocation.getCurrentPosition(options).then((resp) => {         
 
         let myLat = resp.coords.latitude;
         let myLng = resp.coords.longitude;
-        let myLatLng = new google.maps.LatLng(myLat,myLng);
+        this.setLocationMap(myLat,myLng)
 
-        var userMarker = new google.maps.Marker({
-            position: myLatLng,
-            map: this.map,
-            title: 'My Current Location',
-            animation: google.maps.Animation.DROP,
-            icon: im
-        });
-        markers.push(userMarker);
-
-	    var bounds = new google.maps.LatLngBounds();
-	    for (var i = 0; i < markers.length; i++) {
-	      bounds.extend(markers[i].getPosition());
-	    }
-	    this.map.fitBounds(bounds);
 	    this.loading.dismiss();     
         
 
@@ -226,44 +266,77 @@ export class SearchLocationPage {
     });
   }
 
+  clearMarkers() {
+    for (var i = 0; i < this.markers.length; i++) {
+      if (this.markers[i].title != "My Current Location")
+        this.markers[i].setMap(null);
+    }
+    this.markers = [];
+  }
+
   setLocationMarkers() {
 
-  	let markers = [];//some array
-	var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-	var labelIndex = 0;
+    this.markers = [];//some array
+    let records;
+    let infowindow = new google.maps.InfoWindow();
 
     for (let i = 0; i < this.locations.length; i++) {
 
     	let lat = parseFloat(this.locations[i].geometry.location.lat);
     	let lng = parseFloat(this.locations[i].geometry.location.lng);
     	let locName = this.locations[i].name;
-    	let placeType = this.locations[i].place_types;
-
+      let locLabel = String(i+1);
     	let latLng = new google.maps.LatLng(lat,lng);
-        let infowindow = new google.maps.InfoWindow();
+     
 
-        if ( labelIndex >= 26)
-        	labelIndex = 0;
-
-        var marker = new google.maps.Marker({
+      var marker = new google.maps.Marker({
           position: latLng,
           title: locName,
-          label: String(i+1),
+          label: locLabel,
           map: this.map
-        });
-        //marker.setMap(this.map);
-        markers.push(marker);
+      });
+      //marker.setMap(this.map);
+      this.markers.push(marker);
 
+      let temp = this;
 	    google.maps.event.addListener(marker, 'click', (function(marker, i) {
 	        return function() {
-	          infowindow.setContent(`<h5>${locName}</h5><p>${placeType}</p>`);
-	          infowindow.open(this.map, marker);
+            temp.showInfoWindow(temp.locations[i]);
 	        }
-	    })(marker, i));
+	    })(marker, i));	    
     }
+    return this.markers;  	
+  }
 
-    return markers;
+  setLocationMap(myLat,myLng) {
 
+    this.markers = [];//some array
+    let records; 
+	  var im = 'images/icons/bluecircle.png'; 
+
+    let mapOptions = {
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+
+    this.map = new google.maps.Map(this.mapElement.nativeElement,mapOptions);
+    this.markers = this.setLocationMarkers();
+
+    let myLatLng = new google.maps.LatLng(myLat,myLng);
+
+    var userMarker = new google.maps.Marker({
+        position: myLatLng,
+        map: this.map,
+        title: 'My Current Location',
+        animation: google.maps.Animation.DROP,
+        icon: im
+    });
+    this.markers.push(userMarker);    
+
+    var bounds = new google.maps.LatLngBounds();
+    for (var i = 0; i < this.markers.length; i++) {
+      bounds.extend(this.markers[i].getPosition());
+    }
+    this.map.fitBounds(bounds);
       
   }
 
@@ -310,6 +383,46 @@ export class SearchLocationPage {
 	    }
     }
   }  
+
+  showMarkerKey() {
+  	let popover = this.popCtrl.create(SearchLocationKeyPage,{locations:this.locations});
+  	popover.present();
+
+    popover.onDidDismiss(success=>{
+      //console.log(success);
+      if (success!=null) {
+        let lat = parseFloat(success.geometry.location.lat);
+        let lng = parseFloat(success.geometry.location.lng);
+
+        var laLatLng = new google.maps.LatLng(lat,lng);
+        this.map.panTo(laLatLng);
+        this.map.setZoom(18);
+      }
+    });
+  }
+
+  showInfoWindow(location) {
+    let alert = this.alertCtrl.create({
+      title: location.name,
+      message: location.place_types,
+      buttons: [
+        {
+          text: 'Close',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancel clicked');
+          }
+        },
+        {
+          text: 'View Detail',
+          handler: () => {
+            this.getLocationDetail(location);
+          }
+        }
+      ]
+    });
+    alert.present();    
+  }
 
   addConnectivityListeners(){
  

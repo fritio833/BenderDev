@@ -1,0 +1,100 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>Brewery</ion-title>  
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <ion-card>
+	  <ion-grid>
+		<ion-row>
+		  <ion-col width-33>
+		    <img [src]="brewery?.brewery.images.squareMedium" />
+		  </ion-col>
+		  <ion-col width-67>
+		    <ion-card-title>{{brewery?.name}}</ion-card-title>		    
+		    <p>{{brewery?.locationTypeDisplay}}</p>
+		    <p>{{brewery?.streetAddress}}</p>
+		    <p>{{brewery?.locality}}, {{brewery?.region}}</p>
+		    <p *ngIf="brewery.brewery.establishedn!=null">
+		    	Established in {{brewery?.brewery.established}}
+		    </p>
+		    <p>
+              <span *ngIf="brewery.openToPublic == 'Y'"> Open to Public</span>
+              <span *ngIf="brewery.openToPublic == 'N'"> Not Open to Public</span>
+		    </p>
+		    <p *ngIf="brewery.isClosed == 'Y'">
+		      <ion-badge color="danger">Closed Permanently</ion-badge>
+		    </p>	    
+		  </ion-col>
+		</ion-row>
+	  </ion-grid>
+	  <ion-grid>
+	    <ion-row>
+	        <ion-col>
+		      <button outline block ion-button icon-left (click)="showMap(brewery)">
+		        <ion-icon name="pin"></ion-icon>
+		        LOCATE
+		      </button>
+		    </ion-col>
+		    <ion-col>
+		      <button outline block ion-button icon-left (click)='saveBeerToFavorites(beer?.id)'>
+		        <ion-icon name="heart"></ion-icon>
+		        SAVE
+		      </button>
+		    </ion-col>
+		    <ion-col>
+		      <button outline block ion-button icon-left (click)='reviewBeer(beer)'>
+		        <ion-icon name="create"></ion-icon>
+		        REVIEW
+		      </button>
+		    </ion-col>
+	    </ion-row>
+	    <ion-row>
+	      <ion-col>
+			<button color="secondary" ion-button block full (click)='checkIn(beer)'>
+			    CHECK-IN
+			</button>
+	      </ion-col>
+	    </ion-row>
+	    <ion-row>
+	      <ion-col>
+			<a ion-button icon-left block full href="tel:{{brewery?.phone}}">
+			  <ion-icon name="call"></ion-icon>
+			  Call {{brewery?.phone}}
+			</a>
+	      </ion-col>
+	    </ion-row>	    
+	  </ion-grid>	  
+  </ion-card>
+  <div class="card-head" *ngIf="breweryBeers.length">
+    <p><ion-icon name="beer"></ion-icon>&nbsp;{{brewery?.name}} Beer List</p>
+  </div>  
+  <ion-card *ngIf="breweryBeers.length">
+    <ion-list>
+      <button ion-item *ngFor="let beer of breweryBeers" (click)="getBeerDetail(beer)">
+	      <ion-avatar item-left>
+	      	<img [src]="beer.labels.icon" />
+	      </ion-avatar>
+	      <h2>{{beer.nameDisplay}}</h2>
+	      <p>{{beer?.style.shortName}}</p>
+	      <ion-icon name="arrow-forward" item-right></ion-icon>
+      </button>
+    </ion-list>
+  </ion-card>
+  <div class="card-head" *ngIf="breweryHours">
+    <p><ion-icon name="beer"></ion-icon>&nbsp;Brewery Hours of Operation</p>
+  </div>
+  <ion-card *ngIf="breweryHours">
+    <ion-card-content>
+      <pre>{{breweryHours}}</pre>
+    </ion-card-content>   
+  </ion-card>      
+  <div class="card-head" *ngIf="breweryDescription">
+    <p><ion-icon name="beer"></ion-icon>&nbsp;Brewery Description</p>
+  </div>  
+  <ion-card *ngIf="breweryDescription">
+    <ion-card-content>
+      {{breweryDescription}}
+    </ion-card-content>   
+  </ion-card>  
+</ion-content>

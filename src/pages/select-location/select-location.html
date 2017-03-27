@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-toolbar>
+    	<ion-searchbar (ionInput)="autoLocationSearch($event)"
+    	               placeholder="City Name">
+    	</ion-searchbar>    
+	    <ion-buttons start>
+	        <button ion-button icon-only (click)="cancel()">
+	          <ion-icon name="close"></ion-icon>
+	        </button>
+	    </ion-buttons>
+    </ion-toolbar>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <ion-list>
+    <button ion-item *ngFor="let city of citiesPredictions; let i = index;" (click)="selectCity(city)">
+      <ion-icon name="locate" item-left></ion-icon>  
+      <h2 class="loc-name">
+      {{city.description}}
+      </h2>
+      <ion-icon name="arrow-forward" item-right></ion-icon>
+    </button>
+    <button ion-item *ngIf="!sing.getLocation().geo" (click)="setCurrentLocation()">
+      <ion-icon name="compass" item-left></ion-icon>
+      <h2>Current Location</h2>
+    </button>
+  </ion-list>
+</ion-content>

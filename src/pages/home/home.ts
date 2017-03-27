@@ -13,6 +13,7 @@ import { TackMapPage } from '../tack-map/tack-map';
 import { SearchStartPage } from '../search-start/search-start';
 import { SearchBeerPage } from '../search-beer/search-beer';
 import { SearchLocationPage } from '../search-location/search-location';
+import { SearchBreweriesPage } from '../search-breweries/search-breweries';
 
 
 
@@ -90,6 +91,9 @@ export class HomePage {
         case 'locations':
           this.navCtrl.push(SearchLocationPage);
           break;
+        case 'breweries':
+          this.navCtrl.push(SearchBreweriesPage);
+          break;          
         default: console.log('not valid search');
       }      
     });

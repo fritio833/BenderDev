@@ -28,29 +28,29 @@
 	  </ion-item>
 	  <ion-item>
 	  	<ion-label>Organic Beer</ion-label>
-	  	<ion-checkbox item-right [(ngModel)]="filter.isOrganic"></ion-checkbox>
+	  	<ion-toggle item-right [(ngModel)]="filter.isOrganic"></ion-toggle>
 	  </ion-item>
 	  <ion-item>
 	  	<ion-label>Show Beers with Labels</ion-label>
-	  	<ion-checkbox item-right [(ngModel)]="filter.showLabels"></ion-checkbox>
+	  	<ion-toggle item-right [(ngModel)]="filter.showLabels"></ion-toggle>
 	  </ion-item>
 	  <ion-item>
         <ion-label>
-            <div>Min. Alcohol by Volume (ABV)</div> 
-            <div align="center">
-            	<ion-badge *ngIf="filter.minABV!=null">{{filter.minABV}}%</ion-badge>
-            </div>
+            Min. Alcohol by Volume (ABV)            	
         </ion-label>
+        <ion-badge item-right *ngIf="filter.minABV!=null">{{filter.minABV}}%</ion-badge>
+      </ion-item>
+      <ion-item>
         <ion-range min="1" max="15" step="1" [(ngModel)]="filter.minABV"></ion-range>
-	  </ion-item> 
+	  </ion-item>
 	  <ion-item>
         <ion-label>
-        	<div>Min. International Bittering Unit (IBU)</div>
-            <div align="center">
-            	<ion-badge color="secondary" *ngIf="filter.minIBU!=null">{{filter.minIBU}}</ion-badge>
-            </div>
+            Min. International Bittering Unit (IBU)            	
         </ion-label>
-        <ion-range color="secondary" min="1" max="100" step="1" [(ngModel)]="filter.minIBU"></ion-range>
+        <ion-badge item-right color="secondary" *ngIf="filter.minIBU!=null">{{filter.minIBU}}</ion-badge>
+      </ion-item>
+      <ion-item>
+         <ion-range color="secondary" min="1" max="100" step="1" [(ngModel)]="filter.minIBU"></ion-range>
 	  </ion-item>
 	  <ion-item>	  
 	    <ion-label>Sort by Beer Name</ion-label>

@@ -1,0 +1,69 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-buttons start>
+        <button ion-button icon-only (click)="cancel()">
+          <ion-icon name="close"></ion-icon>
+        </button>
+    </ion-buttons>  
+    <ion-title>Place Filter</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <ion-list radio-group [(ngModel)]="filter.placeType">
+    <ion-item>
+      <ion-label>Show Bars</ion-label>
+      <ion-radio value="bar"></ion-radio>
+    </ion-item>
+    <ion-item>
+      <ion-label>Show Convenience Stores</ion-label>
+      <ion-radio value="convenience_store"></ion-radio>
+    </ion-item>    
+    <ion-item>
+      <ion-label>Show Night Clubs</ion-label>
+      <ion-radio value="night_club"></ion-radio>
+    </ion-item>
+    <ion-item>
+      <ion-label>Show Grocery Stores</ion-label>
+      <ion-radio value="grocery_or_supermarket"></ion-radio>
+    </ion-item>
+    <ion-item>
+      <ion-label>Show Liquor Stores</ion-label>
+      <ion-radio value="liquor_store"></ion-radio>
+    </ion-item>
+    <ion-item>
+      <ion-label>Show Restaurants</ion-label>
+      <ion-radio value="restaurants"></ion-radio>
+    </ion-item>
+  </ion-list>
+  <ion-list>
+    <ion-item>
+      <ion-label>Show Only Open locations</ion-label>
+      <ion-toggle [(ngModel)]="filter.isOpen"></ion-toggle>
+    </ion-item>       
+    <ion-item>
+      <ion-label>Show Affordable</ion-label>
+      <ion-toggle [(ngModel)]="filter.affordable"></ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-label>Show Expensive</ion-label>
+      <ion-toggle [(ngModel)]="filter.expensive"></ion-toggle>
+    </ion-item>
+	<ion-item>
+      <ion-label>
+        	Distance from origin
+      </ion-label>
+      <ion-badge item-right color="secondary" *ngIf="filter.distance!=null">
+    	  {{filter.distance}} meters
+      </ion-badge>   
+    </ion-item>
+    <ion-item>
+      <ion-range color="secondary" min="100" max="50000" step="100" [(ngModel)]="filter.distance">
+      </ion-range>        
+	</ion-item>               
+  </ion-list>
+</ion-content>
+<ion-footer>
+	<button ion-button full (click)="applyPlaceFilter()">
+	  DONE
+	</button>
+</ion-footer>

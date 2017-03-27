@@ -91,6 +91,51 @@ export class BreweryService {
     }
   }
 
+  findBreweriesByName(name) {
+    return this.http.get(this.breweryDbUrl 
+           + 'search/?key=' 
+           + this.breweryDbAPI 
+           + '&q=' + name
+           + '&type=brewery')
+           .map(res => res.json());    
+  }
+
+  findBreweriesByCity(city) {
+    return this.http.get(this.breweryDbUrl 
+           + 'locations/?key=' 
+           + this.breweryDbAPI 
+           + '&locality=' + city)
+           .map(res => res.json());
+  }
+
+  findBreweriesByGeo(lat,lng) {
+
+    return this.http.get(this.breweryDbUrl 
+           + 'search/geo/point?lat='
+           + lat
+           + '&lng='
+           + lng
+           + "&radius=20" 
+           + '&key='           
+           + this.breweryDbAPI).map(res => res.json());
+  }
+
+  loadBreweryById(breweryId) {
+    return this.http.get(this.breweryDbUrl 
+         + 'brewery/' 
+         + breweryId 
+         + '/?key=' + this.breweryDbAPI)
+        .map(res => res.json());    
+  }
+
+  loadBreweryBeers(breweryId) {
+    return this.http.get(this.breweryDbUrl 
+         + 'brewery/' 
+         + breweryId 
+         + '/beers?key=' + this.breweryDbAPI)
+        .map(res => res.json());    
+  }
+
   loadBeerById(beerId)  {
 
     return this.http.get(this.breweryDbUrl 

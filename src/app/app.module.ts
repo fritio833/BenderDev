@@ -43,6 +43,11 @@ import { SearchStartPage } from '../pages/search-start/search-start';
 import { SearchBeerPage } from '../pages/search-beer/search-beer';
 import { SearchLocationPage } from '../pages/search-location/search-location';
 import { SearchBeerFilterPage } from '../pages/search-beer-filter/search-beer-filter';
+import { SearchLocationKeyPage } from '../pages/search-location-key/search-location-key';
+import { SearchLocationFilterPage } from '../pages/search-location-filter/search-location-filter';
+import { SearchBreweriesPage } from '../pages/search-breweries/search-breweries';
+import { BreweryDetailPage } from '../pages/brewery-detail/brewery-detail';
+import { SelectLocationPage } from '../pages/select-location/select-location';
 
 @NgModule({
   declarations: [
@@ -76,7 +81,12 @@ import { SearchBeerFilterPage } from '../pages/search-beer-filter/search-beer-fi
     SearchStartPage,
     SearchBeerPage,
     SearchLocationPage,
-    SearchBeerFilterPage
+    SearchBeerFilterPage,
+    SearchLocationKeyPage,
+    SearchLocationFilterPage,
+    SearchBreweriesPage,
+    BreweryDetailPage,
+    SelectLocationPage
 
   ],
   imports: [
@@ -115,7 +125,12 @@ import { SearchBeerFilterPage } from '../pages/search-beer-filter/search-beer-fi
     SearchStartPage,
     SearchBeerPage,
     SearchLocationPage,
-    SearchBeerFilterPage
+    SearchBeerFilterPage,
+    SearchLocationKeyPage,
+    SearchLocationFilterPage,
+    SearchBreweriesPage,
+    BreweryDetailPage,
+    SelectLocationPage
   ],
   providers: [{provide: ErrorHandler, 
               useClass: IonicErrorHandler},

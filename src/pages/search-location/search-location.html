@@ -6,7 +6,15 @@
     	               placeholder="Place Name"
     	               (ionClear)="autoSearchCancel($event)">
     	</ion-searchbar>
-    	<ion-buttons end>
+    	<ion-buttons left>
+	      <button [hidden]="!showMap" ion-button icon-only (click)="showMarkerKey()">
+	        <div>
+	        	<ion-icon name="pin"></ion-icon>
+	        	<label>Key</label>
+	        </div>
+	      </button>
+    	</ion-buttons>
+    	<ion-buttons end>    	
 	      <button [hidden]="showMap" ion-button icon-only (click)="showLocalMap()">
 	        <div>
 	        	<ion-icon name="map"></ion-icon>
@@ -19,7 +27,7 @@
 	        	<label>List</label>
 	        </div>
 	      </button>	      
-	      <button ion-button icon-only (click)="showBeerFilter()">
+	      <button [hidden]="showMap" ion-button icon-only (click)="showLocationFilter()">
 	        <div>
 	        	<ion-icon name="options"></ion-icon>
 	        	<label>Filters</label>
@@ -56,7 +64,8 @@
       </h2>
       <p>{{location.place_types}}</p>
       <p>{{ location.vicinity }}</p>
-      <h3 [hidden]="location.rating==null">Score: {{location.rating}}</h3>
+      <!---- <h3 [hidden]="location.rating==null">Score: {{location.rating}}</h3> ---->
+      <h3>{{location.distance}} miles away</h3>
       <span *ngIf="location.opening_hours.open_now==1">
         <ion-badge color="secondary">Open</ion-badge>
       </span>

@@ -13,8 +13,15 @@ export class SingletonService {
   public realName:string = '';
   public token:string = '';
   public description:string = '';
-  public geoCity = '';
-  public geoState = '';
+  public geoCity = null;
+  public geoState = null;
+  public geoLat = null;
+  public geoLng = null;
+
+  public selectCity = null;
+  public selectState = null;
+  public selectLat = null;
+  public selectLng = null;
   
   // App configuration.  API keys, webservice url, etc. 
   public breweryDbAPIKey:string = '3c7ec73417afb44ae7a4450482f99d70';
@@ -44,5 +51,40 @@ export class SingletonService {
 
   public lat = 0;
   public lng = 0;
+
+  constructor() {}
+
+  getLocation() {
+    let loc:any;    
+    if (this.selectCity != null && this.selectState != null) {
+      loc = {city:this.selectCity,
+             state:this.selectState,
+             lat:this.selectLat,
+             lng:this.selectLng,
+             geo:false};
+    } else {
+      loc = {city:this.geoCity,
+             state:this.geoState,
+             lat:this.geoLat,
+             lng:this.geoLng,
+             geo:true};
+    }
+    return loc;
+  }
+
+  getSelectCity() {
+    if (this.selectCity != null) {
+      return this.selectCity;
+    } else {
+      return this.geoCity;
+    }
+  }
+
+  setCurrentLocation() {
+    this.selectCity = null;
+    this.selectState = null;
+    this.selectLat = null;
+    this.selectLng = null;
+  }
 
 }

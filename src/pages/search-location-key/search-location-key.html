@@ -1,0 +1,16 @@
+<ion-content>
+<ion-list>
+	<button ion-item *ngFor="let key of locations;let i = index;" (click)="selectLocation(key)">
+	  <ion-grid>
+	    <ion-row>
+	      <ion-col width-20>
+	      	<b>{{i+1}}</b>
+	      </ion-col>
+	      <ion-col width-80>
+	      	{{key.name}}
+	      </ion-col>
+	    </ion-row>
+	  </ion-grid>
+	</button>
+</ion-list>
+</ion-content>

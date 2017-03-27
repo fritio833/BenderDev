@@ -1,14 +1,12 @@
 import { Component, ViewChild } from '@angular/core';
 
 import { Platform, MenuController, Nav, AlertController,ToastController } from 'ionic-angular';
-import { StatusBar, Splashscreen } from 'ionic-native';
+import { StatusBar, Splashscreen, Geolocation } from 'ionic-native';
 
 import { HelloIonicPage } from '../pages/hello-ionic/hello-ionic';
 import { SingletonService } from '../providers/singleton-service';
 import { GoogleService } from '../providers/google-service';
 import { ConnectivityService } from '../providers/connectivity-service';
-
-import { Geolocation } from 'ionic-native';
 
 import { LoginPage } from '../pages/login/login';
 import { HomePage } from '../pages/home/home';
@@ -114,7 +112,6 @@ export class MyApp {
               this.sing.geoState = success.state;
               console.log('Geolocation with high accuracy.');
             });
-          
          }
       }).catch((error) => {
         console.log('Error getting location using high accuracy', error);
