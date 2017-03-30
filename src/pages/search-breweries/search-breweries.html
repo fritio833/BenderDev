@@ -32,13 +32,13 @@
   </ion-navbar>
 </ion-header>
 <ion-content class="white-background">
-<div [hidden]="!brewerySearchLen || showMap">
+<div [hidden]="!qBreweryAuto.length || showMap">
   <ion-list>
     <ion-item>
       <p><ion-icon name="search"></ion-icon>&nbsp;Search Results.</p>
     </ion-item>
     <ion-item>
-      <button ion-item *ngFor="let result of brewerySearch" (click) = "getLocationDetail(result)">
+      <button ion-item *ngFor="let result of brewerySearch" (click)="getDetail(result)">
           <h2 class="loc-name">{{result.name}}</h2>
           <p>{{result.type}}</p>
           <ion-icon name="arrow-forward" item-right></ion-icon>
@@ -46,7 +46,7 @@
     </ion-item>
   </ion-list>
 </div>
-<div [hidden]="brewerySearchLen || showMap"> 
+<div [hidden]="qBreweryAuto.length || showMap"> 
   <ion-list>
     <ion-item>
       <p>Breweries in {{sing.getSelectCity()}}</p>

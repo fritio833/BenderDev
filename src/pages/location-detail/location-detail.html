@@ -62,6 +62,23 @@
 			</ion-row>			
 		</ion-grid>
 	</ion-card>
+	<div *ngIf="breweryBeers.length">
+		<div class="card-head">
+		  <p><ion-icon name="beer"></ion-icon>&nbsp;Beer List</p>
+		</div>	
+	  <ion-card>
+	    <ion-list>
+	      <button ion-item *ngFor="let beer of breweryBeers" (click)="getBeerDetail(beer)">
+		      <ion-avatar item-left>
+		      	<img [src]="beer.labels.icon" />
+		      </ion-avatar>
+		      <h2>{{beer.nameDisplay}}</h2>
+		      <p>{{beer?.style.shortName}}</p>
+		      <ion-icon name="arrow-forward" item-right></ion-icon>
+	      </button>
+	    </ion-list>
+	  </ion-card>
+	</div>
 	<div [hidden]="locationReviews == null">
 		<div class="card-head">
 		  <p><ion-icon name="happy"></ion-icon>&nbsp;{{location?.name}} Reviews</p>

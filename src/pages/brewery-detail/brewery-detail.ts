@@ -34,6 +34,13 @@ export class BreweryDetailPage {
     } else {
       this.breweryHours = null;	
     }
+
+    if (!this.brewery.hasOwnProperty('images')) {
+      this.brewery['brewery']['images'] = {icon:'images/no-image.jpg',
+                                           medium:'images/no-image.jpg',
+                                           squareMedium:'images/no-image.jpg', 
+                                           large:'images/no-image.jpg'};      
+    }
     
 
     if (this.breweryBeers.hasOwnProperty('data')) {
@@ -57,7 +64,7 @@ export class BreweryDetailPage {
   	    this.breweryBeers[i]['style'] = {shortName:''};	
   	  }
   	}
-  }
+  } 
 
   showMap(beer) {
     

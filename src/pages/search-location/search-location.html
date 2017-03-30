@@ -56,16 +56,27 @@
 <div [hidden]="locations==null || predictionsLen || showMap">
   <ion-list>
     <ion-item>
-      <p>Sorted by proximity in {{sing.geoCity}}</p>
+      <p *ngIf="searchType=='nearbysearch'">Sorted by proximity in {{sing.geoCity}}</p>
+      <p *ngIf="searchType=='textsearch'">{{fixPlaceType(placeType)}} in {{sing.geoCity}}</p>
     </ion-item>
     <button ion-item *ngFor="let location of locations; let i = index;" (click) = "getLocationDetail(location)">
       <h2 class="loc-name">
       {{ location.name }}
       </h2>
-      <p>{{location.place_types}}</p>
-      <p>{{ location.vicinity }}</p>
-      <!---- <h3 [hidden]="location.rating==null">Score: {{location.rating}}</h3> ---->
-      <h3>{{location.distance}} miles away</h3>
+      <h3 *ngIf="location.rating!=null">
+        <rating [(ngModel)]="location.rating" readOnly="true" max="5"></rating>
+      </h3>
+      <h3 *ngIf="location.rating==null">
+        No reviews
+      </h3>      
+      <p>
+         {{location.place_types}}
+        <span *ngIf="location.price_level">&#8226; {{priceLevel(location.price_level)}}</span>
+      </p>
+      <p>
+         {{ location.vicinity }}&nbsp;
+         <span *ngIf="sing.getLocation().geo">&#8226; {{location.distance}} mi</span>
+      </p>
       <span *ngIf="location.opening_hours.open_now==1">
         <ion-badge color="secondary">Open</ion-badge>
       </span>

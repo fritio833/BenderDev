@@ -1,11 +1,15 @@
 import { Component, ViewChild } from '@angular/core';
 import { NavController, NavParams, ModalController, LoadingController, PopoverController, ToastController, AlertController } from 'ionic-angular';
 import { Geolocation } from 'ionic-native';
+import { Ionic2RatingModule } from 'ionic2-rating';
 
 import { GoogleService } from '../../providers/google-service';
-import { LocationDetailPage } from '../location-detail/location-detail';
+import { BreweryService } from '../../providers/brewery-service';
 import { SingletonService } from '../../providers/singleton-service';
 import { ConnectivityService } from '../../providers/connectivity-service';
+
+import { LocationDetailPage } from '../location-detail/location-detail';
+import { BreweryDetailPage } from '../brewery-detail/brewery-detail';
 import { SearchLocationKeyPage } from '../search-location-key/search-location-key';
 import { SearchLocationFilterPage } from '../search-location-filter/search-location-filter';
 
@@ -33,9 +37,11 @@ export class SearchLocationPage {
   public geoLat:any;
   public geoLng:any;
   public infScroll:any;
+  public placeType:any = null;
+  public searchType:any;
 
   constructor(public navCtrl: NavController, 
-  	          public navParams: NavParams,
+  	          public params: NavParams,
   	          public toastCtrl:ToastController,
   	          public sing:SingletonService,
   	          public loadingCtrl:LoadingController,
@@ -43,12 +49,46 @@ export class SearchLocationPage {
   	          public popCtrl:PopoverController,
   	          public conn:ConnectivityService,
               public modalCtrl:ModalController,
+              public beerAPI:BreweryService, 
   	          public geo:GoogleService) {
+
+    this.placeType = params.get('placeType');
+
+    if (this.placeType == null)
+      this.placeType = "all";
+
+    this.searchType = params.get('searchType');
 
   }
 
   doSearchLocation(evt) {
   	console.log(evt);
+  }
+
+  priceLevel(price) {
+    let str = '';
+    switch(price) {
+      case 1: str = '$'; break;
+      case 2: str = '$$'; break;
+      case 3: str = '$$$'; break;
+      case 4: str = '$$$$'; break;
+      default: str = '';
+    }
+    return str;
+  }
+
+  fixPlaceType(placeType) {
+    let pType = '';
+    switch(placeType) {
+      case 'bar': pType = 'Bars'; break;
+      case 'convenience_store': pType = 'Convenience Stores'; break;
+      case 'night_club': pType = 'Night Clubs'; break;
+      case 'grocery_or_supermarket': pType = 'Grocery Stores'; break;
+      case 'liquor_store': pType = 'Liquor Stores'; break;
+      case 'restaurant': pType = 'Restaurants'; break;
+      default: pType = placeType;
+    }
+    return pType;
   }
 
   fixLocations(locations) {
@@ -76,6 +116,12 @@ export class SearchLocationPage {
       } else {
          locations[i].opening_hours.open_now = 0;
       }
+
+      if (!locations[i].hasOwnProperty('vicinity') && locations[i].hasOwnProperty('formatted_address')) {
+        locations[i]['vicinity'] = locations[i]['formatted_address'];  
+      }
+
+      locations[i]['vicinity'] = locations[i]['vicinity'].slice(0, locations[i]['vicinity'].indexOf(',')); 
     
       for (var j = 0; j < locations[i].types.length; j++) {
           
@@ -84,17 +130,20 @@ export class SearchLocationPage {
               || locations[i].types[j] == 'convenience_store'
               || locations[i].types[j] == 'gas_station'
               || locations[i].types[j] == 'liquor_store'
+              || locations[i].types[j] == 'restaurant'
               || locations[i].types[j] == 'grocery_or_supermarket') {
             ptypes += locations[i].types[j] + ', ';
+            break;
           }
       }
-      locations[i].place_types = ptypes.replace(/,\s*$/, "").replace(/_/g, " ");
+      locations[i].place_types = ptypes.replace(/,\s*$/, "").replace(/_/g, " ").replace(/\b[a-z]/g,function(f){return f.toUpperCase();});
     }
+    //console.log(locations);
     return locations;
   }
 
   autoLocationSearch(event) {
-    console.log(event);
+    //console.log(event);
     
   	if (event.type == "input") {
   	    this.geo.placesAutocomplete(event.target.value).subscribe((success)=>{
@@ -134,24 +183,47 @@ export class SearchLocationPage {
       this.geoLat = resp.coords.latitude;
       this.geoLng = resp.coords.longitude;
 
-      this.geo.placesNearByRadius(this.geoLat,this.geoLng)
-        .subscribe((success)=>{
-           
-           this.locations = this.fixLocations(success.results);
-           this.nextNearByToken = success.next_page_token;
-        });
+      if (this.searchType == 'textsearch') {
+
+           this.geo.reverseGeocodeLookup(resp.coords.latitude,resp.coords.longitude)
+             .subscribe((success)=>{
+              this.sing.geoCity = success.city;
+              this.sing.geoState = success.state;
+              this.geo.searchByPlaceType(success.city+' '+success.state,this.placeType)
+                .subscribe((locs)=>{
+                  //console.log(success); 
+                  this.locations = this.fixLocations(locs.results);
+                  this.nextNearByToken = locs.next_page_token;
+                });              
+              //console.log('Geolocation with high accuracy.');
+            });
+
+      } else {
+
+        this.geo.placesNearByRadius(this.geoLat,this.geoLng)
+          .subscribe((success)=>{
+             
+             this.locations = this.fixLocations(success.results);
+             this.nextNearByToken = success.next_page_token;
+          });
+      }
        
     }).catch((error) => {
       console.log('Error getting location', error);
     });
+
   }
 
   getMoreLocal(infiniteScroll) {
 
-    this.infScroll = infiniteScroll; 
+    if (this.nextNearByToken == null) {
+      infiniteScroll.complete();
+      return;
+    }
 
     setTimeout(() => {
-      this.geo.placesNearByNextToken(this.nextNearByToken).subscribe((success)=>{
+
+      this.geo.getNextToken(this.nextNearByToken,this.searchType).subscribe((success)=>{
 
         let locationsNext:any;
 
@@ -168,9 +240,9 @@ export class SearchLocationPage {
 
         
         if (!success.hasOwnProperty('next_page_token')) {
-          infiniteScroll.enable(false);
+          //infiniteScroll.enable(false);
+          this.nextNearByToken = null;
         }
-        
       });
     }, 1000);
   }
@@ -179,21 +251,59 @@ export class SearchLocationPage {
 
     this.geo.placeDetail(location.place_id).subscribe((resp)=>{
 
-      //console.log(resp.result.types);
+      this.isBrewery(resp.result).then(status=>{
+        //console.log('is brewery',status);
+        if (!status) {
+          for (var i=0;i<resp.result.types.length;i++) {
 
-      for (var i=0;i<resp.result.types.length;i++) {
-
-          if (resp.result.types[i].match('night_club|food|bar|grocery_or_supermarket|liquor_store|gas_station|convenience_store')) {
-            this.navCtrl.push(LocationDetailPage,{location:resp.result});
-            return;
+            if (resp.result.types[i].match('night_club|food|bar|grocery_or_supermarket|liquor_store|gas_station|convenience_store')) {
+                this.navCtrl.push(LocationDetailPage,{location:resp.result});
+                return;
+            }
           }
-      }
-      console.log(resp.result.types);
-      this.presentToast('Not a place that would sell alcoholic beverages');
+          console.log(resp.result.types);
+          this.presentToast('Not a place that would sell alcoholic beverages');
+        }
 
+      });   
     });
 
   }
+
+  isBrewery(location) {
+    return new Promise(resolve =>{
+      /*
+      let locLat = location.geometry.location.lat;
+      let locLng = location.geometry.location.lng;
+      let isBreweryFlg:boolean = false;
+
+      this.beerAPI.findBreweriesByGeo(locLat,locLng,1).subscribe((brewery)=>{
+
+        if (brewery.hasOwnProperty('data')) {
+
+          for (let i=0;i<brewery.data.length;i++) {
+
+            let breweryAPIName = brewery.data[i].brewery.nameShortDisplay.toLowerCase();
+            let locationName = location.name.toLowerCase();
+            //console.log('test:'+breweryAPIName+'|'+locationName,locationName.indexOf(breweryAPIName));
+   
+            // brewery found.  Get beers.
+            if (locationName.indexOf(breweryAPIName) !== -1) {
+              //console.log('brewery',brewery.data[i]);
+              this.beerAPI.loadBreweryBeers(brewery.data[i].breweryId).subscribe((beers)=>{
+                  //console.log('beers',beers);
+                  this.navCtrl.push(BreweryDetailPage,{brewery:brewery.data[i],beers:beers});                  
+              });
+              resolve(true);
+            }
+          }
+        }
+        resolve(false);
+      });
+      */
+      resolve(false);
+    });
+  }  
 
   presentToast(msg) {
     let toast = this.toastCtrl.create({
@@ -205,30 +315,49 @@ export class SearchLocationPage {
   }  
 
   showLocationFilter() {
-    let modal = this.modalCtrl.create(SearchLocationFilterPage,{filter:this.filter});
+    let modal = this.modalCtrl.create(SearchLocationFilterPage,
+                                      { 
+                                        filter:this.filter,
+                                        placeType:this.placeType}
+                                      );
     modal.onDidDismiss(filter => {
       //console.log('filter',filter);
 
       if (filter!=null) {
 
         this.filter = filter;
-        this.geo.placesNearByRadius(this.geoLat,
-                                    this.geoLng,
-                                    this.filter.distance,
-                                    this.filter).subscribe((resp)=>{
 
-          // console.log('resp',resp);
-           this.locations = [];
-           this.locations = this.fixLocations(resp.results);
-           this.nextNearByToken = resp.next_page_token;
-           //this.infScroll.enable(true);
-           console.log('nextToken',this.nextNearByToken);
-           if (this.showMap && this.markers.length) {
-              this.clearMarkers();
-              this.setLocationMarkers();
-           }
+        if (this.searchType == 'textsearch' ) {
 
-        });
+          this.placeType = this.filter.placeType;
+
+          this.geo.searchByPlaceType(this.sing.geoCity+' '+this.sing.geoState,
+                                      this.filter.placeType,
+                                      this.filter).subscribe((resp)=>{
+             this.locations = [];
+             this.locations = this.fixLocations(resp.results);
+             this.nextNearByToken = resp.next_page_token;
+             //console.log('nextToken',this.nextNearByToken);
+             if (this.showMap && this.markers.length) {
+                this.clearMarkers();
+                this.setLocationMarkers();
+             }
+          });
+        } else {
+          this.geo.placesNearByRadius(this.geoLat,
+                                      this.geoLng,
+                                      this.filter.distance,
+                                      this.filter).subscribe((resp)=>{
+             this.locations = [];
+             this.locations = this.fixLocations(resp.results);
+             this.nextNearByToken = resp.next_page_token;
+             //console.log('nextToken',this.nextNearByToken);
+             if (this.showMap && this.markers.length) {
+                this.clearMarkers();
+                this.setLocationMarkers();
+             }
+          });
+        }
       }
 
     });

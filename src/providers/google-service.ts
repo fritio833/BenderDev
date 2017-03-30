@@ -159,21 +159,49 @@ export class GoogleService {
     //grocery_or_supermarket ?
   }
 
+  searchByPlaceType(cityState,placeType,filter?) {
+ 
+     let _open_now = "";
+     let _affordability = "";
+
+    if (filter!=null) {
+
+      if (filter.isOpen!=null && filter.isOpen)
+        _open_now = "&opennow=true";
+
+      if (filter.affordable!=null && filter.affordable)
+        _affordability = "&minprice=" + filter.affordable;
+
+    }     
+
+     return this.http.get(this.googlePlacesURL 
+        + 'textsearch/json?query='
+        + cityState
+        + _open_now
+        + '&type=' + placeType
+        + '&key=' 
+        + this.googlePlacesAPIKey)
+        .map(res => res.json());
+
+  }
+
   placesNearByRadius(lat,lng,radius?,filter?) {
 
     let _type = "&types=night_club|bar|grocery_or_supermarket|liquor_store|gas_station|convenience_store";
     let _rankby = "";
     let _radius = "";
     let _open_now = "";
+    let _affordability = "";
 
-    console.log('radius',radius);
-    console.log('filter',filter);
+    //console.log('radius',radius);
+    //console.log('filter',filter);
 
     if (radius == null) {
       _rankby = "&rankby=distance";
     } else {
       _radius = "&radius=" + radius;
     }
+
 
     if (filter!=null) {
 
@@ -183,6 +211,9 @@ export class GoogleService {
       //set place types by filter
       if (filter.placeType!=null)
        _type = "&types=" + filter.placeType;
+
+      if (filter.affordable!=null && filter.affordable)
+        _affordability = "&minprice=" + filter.affordable;     
          
     }
 
@@ -195,6 +226,7 @@ export class GoogleService {
         + _radius
         + _rankby
         + _open_now
+        + _affordability
         + '&key=' 
         + this.googlePlacesAPIKey)
         .map(res => res.json());
@@ -202,6 +234,14 @@ export class GoogleService {
 
   placesNearByNextToken(nextToken) {
     return this.http.get(this.googlePlacesURL + 'nearbysearch/json?pagetoken='
+        + nextToken
+        + '&key=' + this.googlePlacesAPIKey)
+        .map(res => res.json());
+  }
+
+  getNextToken(nextToken,searchType) {
+    //nearbysearch 
+    return this.http.get(this.googlePlacesURL + searchType + '/json?pagetoken='
         + nextToken 
         + '&key=' + this.googlePlacesAPIKey)
         .map(res => res.json());

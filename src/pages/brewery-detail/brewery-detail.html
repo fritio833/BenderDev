@@ -1,6 +1,6 @@
 <ion-header>
   <ion-navbar color="primary">
-    <ion-title>Brewery</ion-title>  
+    <ion-title>{{brewery?.brewery.name}}</ion-title>  
   </ion-navbar>
 </ion-header>
 <ion-content>
@@ -10,12 +10,11 @@
 		  <ion-col width-33>
 		    <img [src]="brewery?.brewery.images.squareMedium" />
 		  </ion-col>
-		  <ion-col width-67>
-		    <ion-card-title>{{brewery?.name}}</ion-card-title>		    
+		  <ion-col width-67>		    
 		    <p>{{brewery?.locationTypeDisplay}}</p>
 		    <p>{{brewery?.streetAddress}}</p>
 		    <p>{{brewery?.locality}}, {{brewery?.region}}</p>
-		    <p *ngIf="brewery.brewery.establishedn!=null">
+		    <p *ngIf="brewery.brewery.established!=null">
 		    	Established in {{brewery?.brewery.established}}
 		    </p>
 		    <p>
@@ -24,7 +23,8 @@
 		    </p>
 		    <p *ngIf="brewery.isClosed == 'Y'">
 		      <ion-badge color="danger">Closed Permanently</ion-badge>
-		    </p>	    
+		    </p>
+		    <p>{{brewery?.website}}</p>	    
 		  </ion-col>
 		</ion-row>
 	  </ion-grid>
@@ -67,7 +67,7 @@
 	  </ion-grid>	  
   </ion-card>
   <div class="card-head" *ngIf="breweryBeers.length">
-    <p><ion-icon name="beer"></ion-icon>&nbsp;{{brewery?.name}} Beer List</p>
+    <p><ion-icon name="beer"></ion-icon>&nbsp;Brewery Beer List</p>
   </div>  
   <ion-card *ngIf="breweryBeers.length">
     <ion-list>

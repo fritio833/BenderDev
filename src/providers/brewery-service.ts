@@ -108,14 +108,20 @@ export class BreweryService {
            .map(res => res.json());
   }
 
-  findBreweriesByGeo(lat,lng) {
+  findBreweriesByGeo(lat,lng,radius?) {
+
+    let _radius = 25;
+
+    if (radius != null) {
+      _radius = radius;
+    }
 
     return this.http.get(this.breweryDbUrl 
            + 'search/geo/point?lat='
            + lat
            + '&lng='
            + lng
-           + "&radius=20" 
+           + "&radius=" + _radius 
            + '&key='           
            + this.breweryDbAPI).map(res => res.json());
   }
@@ -127,6 +133,20 @@ export class BreweryService {
          + '/?key=' + this.breweryDbAPI)
         .map(res => res.json());    
   }
+
+  loadBreweryLocations(breweryId) {
+    return this.http.get(this.breweryDbUrl 
+         + 'brewery/'+breweryId+'/locations'
+         + '/?key=' + this.breweryDbAPI)
+        .map(res => res.json());
+  }
+
+  loadLocationById(locationId) {
+    return this.http.get(this.breweryDbUrl 
+         + 'location/'+locationId
+         + '/?key=' + this.breweryDbAPI)
+        .map(res => res.json());
+  }  
 
   loadBreweryBeers(breweryId) {
     return this.http.get(this.breweryDbUrl 

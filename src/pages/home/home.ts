@@ -89,11 +89,14 @@ export class HomePage {
           this.navCtrl.push(SearchBeerPage); 
           break;
         case 'locations':
-          this.navCtrl.push(SearchLocationPage);
+          this.navCtrl.push(SearchLocationPage,{searchType:'nearbysearch'});
           break;
         case 'breweries':
           this.navCtrl.push(SearchBreweriesPage);
-          break;          
+          break;
+        case 'bars':
+          this.navCtrl.push(SearchLocationPage,{placeType:'bar',searchType:'textsearch'});
+          break;                  
         default: console.log('not valid search');
       }      
     });

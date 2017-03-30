@@ -32,6 +32,7 @@ export class SearchBreweriesPage {
   public apiKey: any = 'AIzaSyAKs0BGHgtV5I--IvIwsGkD3c_EFV0yXtY';  
   public city:string;
   public markers:any;
+  public qBreweryAuto:string = "";
 
   constructor(public navCtrl: NavController, 
   	          public navParams: NavParams,
@@ -63,10 +64,43 @@ export class SearchBreweriesPage {
   }
 
   getDetail(brewery) {
-    this.beerAPI.loadBreweryBeers(brewery.breweryId).subscribe((beers)=>{
-        //console.log('beers',beers);
-        this.navCtrl.push(BreweryDetailPage,{brewery:brewery,beers:beers});
-    });    
+    //console.log(brewery);
+    let breweryId;
+    let foundBrewpub:number = -1;
+        
+    if (!brewery.hasOwnProperty('breweryId') && brewery.hasOwnProperty('id')) {
+
+      this.beerAPI.loadBreweryLocations(brewery.id).subscribe((success)=>{
+
+        for (let i = 0; i < success.data.length; i++) {
+          if (success.data[i].locationType == 'brewpub' || success.data[i].openToPublic == 'Y') {
+            foundBrewpub = i;
+            break;
+          }
+        }
+
+        if (foundBrewpub == -1) {
+          foundBrewpub = 0;
+        }
+
+        this.beerAPI.loadLocationById(success.data[foundBrewpub].id).subscribe((pub)=>{
+          //console.log('pub',pub);
+          
+          this.beerAPI.loadBreweryBeers(pub.data.breweryId).subscribe((beers)=>{
+              //console.log('beers',beers);
+              this.navCtrl.push(BreweryDetailPage,{brewery:pub.data,beers:beers});
+          });
+          
+        });
+      });
+      
+    } else { 
+
+      this.beerAPI.loadBreweryBeers(brewery.breweryId).subscribe((beers)=>{
+          //console.log('beers',beers);
+          this.navCtrl.push(BreweryDetailPage,{brewery:brewery,beers:beers});
+      });
+    }
   }
 
   fixBreweries(breweries) {
@@ -86,16 +120,19 @@ export class SearchBreweriesPage {
   } 
 
   autoBrewerySearch(event) {
+
+    this.qBreweryAuto = event.target.value;
+
   	if (event.type == "input" && event.target.value.length) {
   	    this.beerAPI.findBreweriesByName(event.target.value).subscribe((success)=>{
   	      // console.log(success);
   	      if (success.hasOwnProperty('data')) {
-	  	    this.brewerySearch = success.data;
-	  	    //console.log(this.brewerySearch);
-	  	    this.brewerySearchLen = success.data.length;  	      	
+	  	      this.brewerySearch = success.data;
+	  	      console.log(this.brewerySearch);
+	  	      this.brewerySearchLen = success.data.length;  	      	
   	      } else {
-	  	    this.brewerySearch = new Array();
-	  	    this.brewerySearchLen = 0;  	      	
+	  	      this.brewerySearch = new Array();
+	  	      this.brewerySearchLen = 0;  	      	
   	      }
 
         });

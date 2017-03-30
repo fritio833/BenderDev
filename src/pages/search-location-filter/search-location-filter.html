@@ -32,34 +32,75 @@
     </ion-item>
     <ion-item>
       <ion-label>Show Restaurants</ion-label>
-      <ion-radio value="restaurants"></ion-radio>
+      <ion-radio value="restaurant"></ion-radio>
     </ion-item>
   </ion-list>
   <ion-list>
     <ion-item>
-      <ion-label>Show Only Open locations</ion-label>
+      <ion-label>Open Now</ion-label>
       <ion-toggle [(ngModel)]="filter.isOpen"></ion-toggle>
-    </ion-item>       
+    </ion-item>
+    <!----
     <ion-item>
-      <ion-label>Show Affordable</ion-label>
-      <ion-toggle [(ngModel)]="filter.affordable"></ion-toggle>
+      <ion-label>
+        Rating at least
+      </ion-label>
     </ion-item>
     <ion-item>
-      <ion-label>Show Expensive</ion-label>
-      <ion-toggle [(ngModel)]="filter.expensive"></ion-toggle>
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <button [color]="filter.rating==null?'primary':'light'" 
+                    (click)="setRating(null)" block ion-button>
+              Any
+            </button>
+          </ion-col>
+          <ion-col>
+            <button [color]="filter.rating==2?'primary':'light'" 
+                    (click)="setRating(2)" block ion-button icon-right>
+              2 <ion-icon name="star"></ion-icon>
+            </button>
+          </ion-col>
+          <ion-col>
+            <button [color]="filter.rating==3?'primary':'light'" 
+                    (click)="setRating(3)" block ion-button icon-right>
+              3<ion-icon name="star"></ion-icon>
+            </button>
+          </ion-col>
+          <ion-col>
+            <button [color]="filter.rating==4?'primary':'light'" 
+                    (click)="setRating(4)" block ion-button icon-right>
+              4<ion-icon name="star"></ion-icon>
+            </button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
     </ion-item>
-	<ion-item>
+    ---->
+    <ion-item>
+      <ion-label>
+          Affordability
+      </ion-label>
+      <div id="money" item-right>
+        {{showMoney(filter.affordable)}}
+      </div>   
+    </ion-item>
+    <ion-item>
+      <ion-range min="1" max="4" step="1" [(ngModel)]="filter.affordable">
+      </ion-range>        
+    </ion-item>    
+	  <ion-item *ngIf="placeType == 'all'">
       <ion-label>
         	Distance from origin
       </ion-label>
-      <ion-badge item-right color="secondary" *ngIf="filter.distance!=null">
-    	  {{filter.distance}} meters
-      </ion-badge>   
+      <h2 item-right *ngIf="filter.distance!=null">
+    	  {{convertDistance(filter.distance)}} miles
+      </h2>   
     </ion-item>
-    <ion-item>
-      <ion-range color="secondary" min="100" max="50000" step="100" [(ngModel)]="filter.distance">
+    <ion-item *ngIf="placeType == 'all'">
+      <ion-range color="secondary" min="100" max="25000" step="100" [(ngModel)]="filter.distance">
       </ion-range>        
-	</ion-item>               
+	  </ion-item>      
   </ion-list>
 </ion-content>
 <ion-footer>

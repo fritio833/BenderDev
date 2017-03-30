@@ -13,7 +13,7 @@
 	  <ion-col width-67>
 	    <ion-card-title>{{beer?.name}}</ion-card-title>
 	    <p>{{beer?.breweries[0].name}}</p>
-	    <p>{{beer?.style.category.name}}</p>
+	    <p>{{beer?.style.shortName}}</p>
 	    <p>
 	      <span *ngIf="beer?.abv!=null">{{beer?.abv}}% ABV</span> 
 	      <span *ngIf="beer?.abv!=null && beer?.ibu!=null">&#9726;</span> 

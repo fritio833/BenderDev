@@ -1,9 +1,12 @@
 import { Component, ViewChild } from '@angular/core';
 import { NavController, NavParams, LoadingController, ModalController } from 'ionic-angular';
-import { LocationService } from '../../providers/location-service';
-import { GoogleService } from '../../providers/google-service';
 import { Geolocation } from 'ionic-native';
 import { Ionic2RatingModule } from 'ionic2-rating';
+
+import { LocationService } from '../../providers/location-service';
+import { GoogleService } from '../../providers/google-service';
+import { BreweryService } from '../../providers/brewery-service';
+
 import { LocationMapPage } from '../location-map/location-map';
 
 
@@ -27,12 +30,14 @@ export class LocationDetailPage {
   public locationLng:any;
   public locationReviews:any;
   public loading:any;
+  public breweryBeers = new Array();
 
-  constructor(public navCtrl: NavController, 
-  	          public params: NavParams,
+  constructor(public navCtrl:NavController, 
+  	          public params:NavParams,
               public loadingCtrl:LoadingController,
   	          public loc:LocationService,
               public modalCtrl:ModalController,
+              public beerAPI:BreweryService,
   	          public geo:GoogleService) {
 
     //this.placeId = params.get("placeId");
@@ -57,6 +62,47 @@ export class LocationDetailPage {
                                         locName:this.location.name
                                       });
     modal.present();
+  }
+
+  fixBreweryBeers() {
+
+    for (var i = 0; i < this.breweryBeers.length; i++) {
+      if (!this.breweryBeers[i].hasOwnProperty('labels')) {
+        this.breweryBeers[i]['labels'] = {icon:'images/no-image.jpg',medium:'images/no-image.jpg'};
+      }
+      if (!this.breweryBeers[i].hasOwnProperty('style')) {
+        this.breweryBeers[i]['style'] = {shortName:''};  
+      }
+    }
+  }
+
+  isBrewery() {
+
+    this.beerAPI.findBreweriesByGeo(this.locationLat,this.locationLng,1).subscribe((brewery)=>{
+
+      if (brewery.hasOwnProperty('data')) {
+
+        for (let i=0;i<brewery.data.length;i++) {
+
+          let breweryAPIName = brewery.data[i].brewery.nameShortDisplay.toLowerCase();
+          let locationName = this.location.name.toLowerCase();
+ 
+          // brewery found.  Get beers.
+          if (locationName.indexOf(breweryAPIName) !== -1) {
+            //console.log('test:'+breweryAPIName+'|'+locationName,locationName.indexOf(breweryAPIName));
+            this.beerAPI.loadBreweryBeers(brewery.data[i].brewery.id).subscribe((beers)=>{
+              
+              if (beers.hasOwnProperty('data')) {
+                this.breweryBeers = beers.data;
+                this.fixBreweryBeers();
+              }
+              //console.log(beers);
+            });
+          }
+        }
+        //console.log('brewery',brewery);
+      }
+    });
   }
 
   ionViewDidLoad() {
@@ -108,6 +154,7 @@ export class LocationDetailPage {
 
     this.location.place_types = ptypes.replace(/,\s*$/, "").replace(/_/g, " ");
     this.loading.dismiss();
+    console.log('location',this.location);
 
   }
 
