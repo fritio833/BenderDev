@@ -1,0 +1,78 @@
+<ion-header>
+  <ion-navbar color="primary">  
+    <ion-title>Detail</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content>  
+	<ion-grid class="background-home" [ngStyle]="getBackgroundImg(locationPhoto)">
+		<ion-row>
+			<ion-col>
+			  <div class="loc-area">
+			    <div>
+				    <p id="header">{{location?.name}}</p>
+				    <p id="loc-rating" [hidden]="!locationRating">
+				      <rating [(ngModel)]="locationRating" readOnly="true" max="5"></rating>
+				    </p>
+				    <p id="ptype">{{fixPlaceType(location?.place_types)}}</p>
+			    </div>
+			  </div>
+			  <div align="right">
+				<p [hidden]="locationOpen || locationOpen==null">
+					<ion-badge color="dark">Currently Closed</ion-badge>
+				</p>
+				<p [hidden]="!locationOpen || locationOpen==null">
+					<ion-badge color="dark">Currently Open</ion-badge>
+				</p>			  	
+			  </div>
+			</ion-col>
+		</ion-row>
+    </ion-grid>
+  <ion-card>
+    <ion-item>
+      <p>Details</p>
+    </ion-item>
+      <ion-list>
+        <ion-item *ngIf="location.price_level">
+          <p>{{priceLevel(location.price_level)}}</p>
+        </ion-item>
+        <div align="center">
+          <button *ngIf="location.website" ion-button icon-left (click)="goToPlaceWebsite(location.website)">
+            <ion-icon name="globe"></ion-icon>
+              Visit Website
+          </button>
+          <button *ngIf="location.international_phone_number" ion-button icon-left (click)="callIt(international_phone_number)">
+            <ion-icon name="call"></ion-icon>
+              Call {{location?.formatted_phone_number}}
+          </button>
+        </div>             
+      </ion-list>
+  </ion-card>
+  <ion-card>
+    <ion-item>
+		 <p>{{location?.name}} Store Hours</p>
+    </ion-item>
+    <ion-item>
+  		<p [hidden]="locationOpen">
+  			<ion-badge color="danger">Currently Closed</ion-badge>
+  		</p>
+  		<p [hidden]="!locationOpen">
+  			<ion-badge color="secondary">Currently Open</ion-badge>
+  		</p>
+    </ion-item>
+		<ion-item *ngFor="let hours of locationHours">
+			<p>{{hours}}</p>
+		</ion-item>
+  </ion-card>
+    <ion-card>
+      <ion-item>
+         <p>{{location.vicinity}}</p>
+      </ion-item>
+        <img [src]="getGoogleStaticMap()" (click)="goToNavApp()" />       
+      <ion-item (click)="goToNavApp()">
+        <button ion-button icon-left clear item-right>
+          <ion-icon name="navigate"></ion-icon>
+          Start
+        </button>
+      </ion-item>
+    </ion-card> 
+</ion-content>

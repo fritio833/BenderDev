@@ -18,6 +18,7 @@ export class GoogleService {
   public googleGeocodeURL:string;
   public googlePlacesURL:string;
   public googlePlacesAPIKey:string;
+  public googleStaticMapAPIKey:string;
   public lat:number;
   public lng:number;
 
@@ -26,6 +27,7 @@ export class GoogleService {
     //console.log('Hello GoogleService Provider');
     this.googleGeocodeAPIKey = sing.googleGeocodeAPIKey;
     this.googlePlacesAPIKey = sing.googlePlacesAPIKey;
+    this.googleStaticMapAPIKey = sing.googleStaticMapAPIKey;
 
     if (this.platform.is('cordova')) {
       this.googlePlacesURL = 'https://maps.googleapis.com/maps/api/place/';
@@ -287,6 +289,27 @@ export class GoogleService {
         + '&types=(cities)&key=' 
         + this.googlePlacesAPIKey)
         .map(res => res.json());    
+  }
+
+  getStaticMap(lat,lng,width?,height?) {
+    let _width = 640;
+    let _height = 320;
+
+    if (width!=null) {
+      _width = width;
+    }
+
+    if (height!=null) {
+      _height = height;
+    }
+
+    return "https://maps.googleapis.com/maps/api/staticmap?zoom=16&size="
+            +_width+"x"+_height
+            +"&maptype=roadmap&markers=color:red%7C"+
+            lat+","
+            +lng
+            +"&key="
+            +this.googleStaticMapAPIKey;
   }
 
   rad(x) {

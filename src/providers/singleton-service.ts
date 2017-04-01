@@ -29,6 +29,7 @@ export class SingletonService {
   public beermappingAPIKey:string = '345ed2357f37f2d46eb2f1cfdc4b3646';
   public googleGeocodeAPIKey:string = 'AIzaSyA4dIwMeqXekFajK1uIesJn53LzkyZ_kU4';
   public googlePlacesAPIKey: string = 'AIzaSyDJ5qz7QX1yXkX2c444v5v0ziSPg15PLjM';
+  public googleStaticMapAPIKey: string = 'AIzaSyCDIPt-NJwC23kzmYJ5ZTYTMd9brpBVbCk';
 
   //Testing. Dev Flags to simulate geolocation
   public test = false;

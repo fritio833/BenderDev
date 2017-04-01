@@ -99,7 +99,7 @@ export class SearchLocationPage {
 
       ptypes ='';
      
-      if (this.sing.getLocation().geo) {
+      //if (this.sing.getLocation().geo) {
 
         let lat = parseFloat(locations[i].geometry.location.lat);
         let lng = parseFloat(locations[i].geometry.location.lng);
@@ -107,7 +107,7 @@ export class SearchLocationPage {
         let userPoint = {lat:this.geoLat,lng:this.geoLng};
         let dist = this.geo.getDistance(locPoint,userPoint,true);
         locations[i]['distance'] = Math.round(dist * 10) / 10;
-      }
+      //}
       
       if (!locations[i].hasOwnProperty('opening_hours')) {
          locations[i]['opening_hours'] = {open_now:2};
@@ -178,6 +178,8 @@ export class SearchLocationPage {
 
   getLocal() {
 
+    this.showLoading('Loading. Please wait...');
+
     Geolocation.getCurrentPosition().then((resp) => {
 
       this.geoLat = resp.coords.latitude;
@@ -194,8 +196,12 @@ export class SearchLocationPage {
                   //console.log(success); 
                   this.locations = this.fixLocations(locs.results);
                   this.nextNearByToken = locs.next_page_token;
-                });              
-              //console.log('Geolocation with high accuracy.');
+                  this.loading.dismiss().catch(() => {});
+                },(error)=>{
+                  console.log(error);
+                  this.loading.dismiss().catch(() => {}); 
+                  //console.log('Geolocation with high accuracy.');
+                });
             });
 
       } else {
@@ -205,6 +211,10 @@ export class SearchLocationPage {
              
              this.locations = this.fixLocations(success.results);
              this.nextNearByToken = success.next_page_token;
+             this.loading.dismiss().catch(() => {});
+          },(error)=>{
+            console.log(error);
+            this.loading.dismiss().catch(() => {});
           });
       }
        
@@ -324,8 +334,10 @@ export class SearchLocationPage {
       //console.log('filter',filter);
 
       if (filter!=null) {
+        this.showLoading('Loading. Please wait...');
 
         this.filter = filter;
+        this.locations = [];
 
         if (this.searchType == 'textsearch' ) {
 
@@ -342,6 +354,7 @@ export class SearchLocationPage {
                 this.clearMarkers();
                 this.setLocationMarkers();
              }
+             this.loading.dismiss().catch(() => {});
           });
         } else {
           this.geo.placesNearByRadius(this.geoLat,
@@ -356,6 +369,7 @@ export class SearchLocationPage {
                 this.clearMarkers();
                 this.setLocationMarkers();
              }
+             this.loading.dismiss().catch(() => {});
           });
         }
       }
@@ -387,7 +401,7 @@ export class SearchLocationPage {
         let myLng = resp.coords.longitude;
         this.setLocationMap(myLat,myLng)
 
-	    this.loading.dismiss();     
+	    this.loading.dismiss().catch(() => {});
         
 
     }).catch((error) => {
@@ -470,7 +484,7 @@ export class SearchLocationPage {
   }
 
   loadGoogleMaps() {
-    this.showLoading();
+    this.showLoading('Loading map. Please wait...');
     this.addConnectivityListeners();
  
     if (typeof google == "undefined" || typeof google.maps == "undefined" ) {
@@ -591,10 +605,9 @@ export class SearchLocationPage {
     console.log("enable map");
   }  
 
-  showLoading() {
+  showLoading(msg) {
     this.loading = this.loadingCtrl.create({
-      content: 'Loading map. Please wait...',
-      duration:2000
+      content: msg
     });
     this.loading.present();
   }  

@@ -48,6 +48,7 @@ import { SearchLocationFilterPage } from '../pages/search-location-filter/search
 import { SearchBreweriesPage } from '../pages/search-breweries/search-breweries';
 import { BreweryDetailPage } from '../pages/brewery-detail/brewery-detail';
 import { SelectLocationPage } from '../pages/select-location/select-location';
+import { LocationDetailsMorePage } from '../pages/location-details-more/location-details-more';
 
 @NgModule({
   declarations: [
@@ -75,6 +76,7 @@ import { SelectLocationPage } from '../pages/select-location/select-location';
     MyRatingsPage,
     LocationResultsPage,
     LocationDetailPage,
+    LocationDetailsMorePage,
     CheckinPage,
     TackMapPage,
     LocationMapPage,
@@ -119,6 +121,7 @@ import { SelectLocationPage } from '../pages/select-location/select-location';
     MyRatingsPage,
     LocationResultsPage,
     LocationDetailPage,
+    LocationDetailsMorePage,
     CheckinPage,
     TackMapPage,
     LocationMapPage,

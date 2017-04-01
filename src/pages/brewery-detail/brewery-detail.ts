@@ -23,6 +23,8 @@ export class BreweryDetailPage {
   	this.brewery = params.get('brewery');
     this.breweryBeers = params.get('beers');
 
+    console.log('brewery',this.brewery);
+
     if (this.brewery.hasOwnProperty('brewery')) {
       this.breweryDescription = this.brewery.brewery.description;
     } else {
@@ -35,7 +37,8 @@ export class BreweryDetailPage {
       this.breweryHours = null;	
     }
 
-    if (!this.brewery.hasOwnProperty('images')) {
+    if (!this.brewery.brewery.hasOwnProperty('images')) {
+      
       this.brewery['brewery']['images'] = {icon:'images/no-image.jpg',
                                            medium:'images/no-image.jpg',
                                            squareMedium:'images/no-image.jpg', 
@@ -57,9 +60,11 @@ export class BreweryDetailPage {
   fixBreweryBeers() {
 
   	for (var i = 0; i < this.breweryBeers.length; i++) {
+      
   	  if (!this.breweryBeers[i].hasOwnProperty('labels')) {
   	  	this.breweryBeers[i]['labels'] = {icon:'images/no-image.jpg',medium:'images/no-image.jpg'};
   	  }
+
   	  if (!this.breweryBeers[i].hasOwnProperty('style')) {
   	    this.breweryBeers[i]['style'] = {shortName:''};	
   	  }

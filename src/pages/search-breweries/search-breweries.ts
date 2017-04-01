@@ -64,7 +64,7 @@ export class SearchBreweriesPage {
   }
 
   getDetail(brewery) {
-    //console.log(brewery);
+    console.log(brewery);
     let breweryId;
     let foundBrewpub:number = -1;
         
@@ -100,7 +100,9 @@ export class SearchBreweriesPage {
           //console.log('beers',beers);
           this.navCtrl.push(BreweryDetailPage,{brewery:brewery,beers:beers});
       });
+      
     }
+    
   }
 
   fixBreweries(breweries) {

@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavController, NavParams, LoadingController, ModalController } from 'ionic-angular';
+import { NavController, NavParams, LoadingController, ModalController, Platform } from 'ionic-angular';
 import { Geolocation } from 'ionic-native';
 import { Ionic2RatingModule } from 'ionic2-rating';
 
@@ -8,7 +8,10 @@ import { GoogleService } from '../../providers/google-service';
 import { BreweryService } from '../../providers/brewery-service';
 
 import { LocationMapPage } from '../location-map/location-map';
+import { LocationDetailsMorePage } from '../location-details-more/location-details-more';
+import { CheckinPage } from '../checkin/checkin';
 
+declare var window;
 
 @Component({
   selector: 'page-location-detail',
@@ -31,6 +34,8 @@ export class LocationDetailPage {
   public locationReviews:any;
   public loading:any;
   public breweryBeers = new Array();
+  public locationPhotosArray = new Array();
+  public showPhotos:boolean = false;
 
   constructor(public navCtrl:NavController, 
   	          public params:NavParams,
@@ -38,19 +43,19 @@ export class LocationDetailPage {
   	          public loc:LocationService,
               public modalCtrl:ModalController,
               public beerAPI:BreweryService,
+              public platform:Platform,
   	          public geo:GoogleService) {
 
     //this.placeId = params.get("placeId");
     this.location = params.get("location");
-    this.showLoading();
+    //this.showLoading('Loading. Please wait...');
   }
 
 
 
-  showLoading() {
+  showLoading(msg) {
     this.loading = this.loadingCtrl.create({
-      content: 'Loading. Please wait...',
-      duration:2000
+      content: msg
     });
     this.loading.present();
   }
@@ -64,6 +69,18 @@ export class LocationDetailPage {
     modal.present();
   }
 
+  getBackgroundImg(pic) {
+    let img:any;
+    img = {backgroundImage:''};
+   
+    if(pic == null)
+      return;
+    else {
+      img.backgroundImage = 'url('+pic+')';
+      return img;
+    }
+  }
+
   fixBreweryBeers() {
 
     for (var i = 0; i < this.breweryBeers.length; i++) {
@@ -74,6 +91,11 @@ export class LocationDetailPage {
         this.breweryBeers[i]['style'] = {shortName:''};  
       }
     }
+  }
+
+  viewMore() {
+     this.navCtrl.push(LocationDetailsMorePage,{location:this.location,
+                                                photo:this.locationPhoto}); 
   }
 
   isBrewery() {
@@ -105,26 +127,84 @@ export class LocationDetailPage {
     });
   }
 
+  fixPlaceType(placeType) {
+    let pType = '';
+    switch(placeType) {
+      case 'bar': pType = 'Bar'; break;
+      case 'convenience_store': pType = 'Convenience Store'; break;
+      case 'night_club': pType = 'Night Clubs'; break;
+      case 'grocery_or_supermarket': pType = 'Grocery Store'; break;
+      case 'liquor_store': pType = 'Liquor Store'; break;
+      case 'restaurant': pType = 'Restaurant'; break;
+      case 'gas_station': pType = 'Gas Station'; break;
+      default: pType = placeType;
+    }
+    return pType;
+  }
+
+  callIt(phoneNo) {
+    phoneNo = encodeURIComponent(phoneNo);
+    window.location = "tel:"+phoneNo;
+  }
+
+  checkIn() {
+    let modal = this.modalCtrl.create(CheckinPage,{ location:this.location});
+    modal.present();    
+  }
+
+  getGoogleStaticMap() {
+    return this.geo.getStaticMap(this.locationLat,this.locationLng);
+  }
+
+  goToNavApp() {
+      let destination = this.locationLat + ',' + this.locationLng;
+
+      if(this.platform.is('ios')){
+        window.open('maps://?q=' + destination, '_system');
+      } else {
+        let label = encodeURIComponent(this.location.name);
+        window.open('geo:0,0?q=' + destination + '(' + label + ')', '_system');
+      }    
+  }
+
+  showAllPhotos() {
+
+   this.showLoading('Loading Pictures');
+   this.getPlacePhotos().then(success=>{
+      this.showPhotos = true;
+      this.loading.dismiss();
+   });
+
+  }
+
+  getPlacePhotos() {
+    return new Promise(resolve => {
+
+      for (let i = 1; i < this.locationPhotosArray.length; i++) {
+
+        this.geo.placePhotos(this.locationPhotosArray[i].photo_reference).subscribe((photo)=>{
+            this.locationPhotosArray[i]['url'] = photo.url;
+            if (i == (this.locationPhotosArray.length-1))
+              resolve(true);
+        });
+      }
+    });
+  }
+
   ionViewDidLoad() {
 
     console.log('ionViewDidLoad LocationDetailPage');
 
     this.locationRating = this.location.rating;
 
-    if (this.location.hasOwnProperty('opening_hours')) {
-      this.locationHours = this.location.opening_hours.weekday_text;
-      this.locationOpen = this.location.opening_hours.open_now;
-    }
-    else {
-      this.locationHours = null;
-      this.locationOpen = null;
-    }
-
     // get picture
     if (this.location.hasOwnProperty('photos')) {
       this.geo.placePhotos(this.location.photos[0].photo_reference).subscribe((photo)=>{
         this.locationPhoto = photo.url;
       });
+    } else {
+      // this.locationPhoto = '../images/bar3.jpg';
+      this.locationPhoto = null;
     }
 
     // get lat, lng
@@ -137,7 +217,11 @@ export class LocationDetailPage {
     if (this.location.hasOwnProperty('reviews')) {
       this.locationReviews = this.location.reviews;
     }
-    //console.log('resp',this.location);
+
+    // get photo array
+    if (this.location.hasOwnProperty('photos')) {
+      this.locationPhotosArray = this.location.photos;
+    }     
 
     let ptypes ='';
     
@@ -153,7 +237,6 @@ export class LocationDetailPage {
     }
 
     this.location.place_types = ptypes.replace(/,\s*$/, "").replace(/_/g, " ");
-    this.loading.dismiss();
     console.log('location',this.location);
 
   }
