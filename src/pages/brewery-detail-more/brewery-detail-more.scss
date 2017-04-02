@@ -1,5 +1,4 @@
-page-brewery-detail {
-
+page-brewery-detail-more {
 	ul {
 	  padding: 0px;
 
@@ -14,7 +13,7 @@ page-brewery-detail {
 	  }
 	}
 
-  .item-inner {
+  .botton-border-item {
      border-bottom: 1px solid #dedede !important;
   }
 
@@ -76,16 +75,6 @@ page-brewery-detail {
     ion-col {
       margin: 0 !important;
     }
-  }
-
-  .butt {
-    margin-left:0;
-    margin-right:0;  
-  }
-
-  label {
-     display:block;
-     font-size: 13px;
   }
 
 }

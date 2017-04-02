@@ -47,6 +47,7 @@ import { SearchLocationKeyPage } from '../pages/search-location-key/search-locat
 import { SearchLocationFilterPage } from '../pages/search-location-filter/search-location-filter';
 import { SearchBreweriesPage } from '../pages/search-breweries/search-breweries';
 import { BreweryDetailPage } from '../pages/brewery-detail/brewery-detail';
+import { BreweryDetailMorePage } from '../pages/brewery-detail-more/brewery-detail-more';
 import { SelectLocationPage } from '../pages/select-location/select-location';
 import { LocationDetailsMorePage } from '../pages/location-details-more/location-details-more';
 
@@ -88,6 +89,7 @@ import { LocationDetailsMorePage } from '../pages/location-details-more/location
     SearchLocationFilterPage,
     SearchBreweriesPage,
     BreweryDetailPage,
+    BreweryDetailMorePage,
     SelectLocationPage
 
   ],
@@ -133,6 +135,7 @@ import { LocationDetailsMorePage } from '../pages/location-details-more/location
     SearchLocationFilterPage,
     SearchBreweriesPage,
     BreweryDetailPage,
+    BreweryDetailMorePage,
     SelectLocationPage
   ],
   providers: [{provide: ErrorHandler, 

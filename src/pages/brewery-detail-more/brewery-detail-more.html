@@ -1,0 +1,148 @@
+<ion-header>
+  <ion-navbar color="primary">  
+    <ion-title>Detail</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content> 
+	<ion-grid class="background-home" [ngStyle]="getBackgroundImg(locationPhoto)">
+		<ion-row>
+			<ion-col>
+			  <div class="loc-area">
+			    <div>
+				    <p id="header">{{brewery?.brewery.name}}</p>
+				    <p id="loc-rating" *ngIf="brewery.brewery.images.icon!=null">
+				        <img [src]="brewery?.brewery.images.icon" />
+				    </p>
+				    <p id="loc-rating" [hidden]="!locationRating">
+				      <rating [(ngModel)]="locationRating" readOnly="true" max="5"></rating>
+				    </p>
+				    <p id="ptype">
+				      <span>{{brewery?.locationTypeDisplay}}</span>
+                      <span *ngIf="brewery.brewery.established!=null">
+                        &#8226; Est. {{brewery?.brewery.established}}
+                      </span>
+                      <span *ngIf="brewery.openToPublic">                      
+			              <span *ngIf="brewery.openToPublic == 'Y'">&#8226; Open to Public</span>
+			              <span *ngIf="brewery.openToPublic == 'N'">&#8226; Not Open to Public</span>
+                      </span>
+				    </p>
+			    </div>
+			  </div>
+			  <div align="right">
+				<p [hidden]="locationOpen || locationOpen==null">
+					<ion-badge color="dark">Currently Closed</ion-badge>
+				</p>
+				<p [hidden]="!locationOpen || locationOpen==null">
+					<ion-badge color="dark">Currently Open</ion-badge>
+				</p>			  	
+			  </div>
+			</ion-col>
+		</ion-row>
+    </ion-grid>
+    <ion-grid class="square">
+		<ion-row>
+		  <ion-col class="chk-btn" full ion-button icon-left color="check" (click)='checkIn()'>
+		    <ion-icon name="checkmark"></ion-icon>
+		  	CHECK-IN
+		  </ion-col>
+		</ion-row>
+    </ion-grid>
+  <div>    
+	  <ion-card>
+	    <ion-item>
+          <p>
+            {{brewery?.streetAddress}} 
+            {{brewery?.locality}}, {{brewery?.region}} 
+            {{brewery?.postalCode}} {{brewery?.countryIsoCode}}
+          </p>
+	    </ion-item>
+        <img [src]="getGoogleStaticMap()" (click)="goToNavApp()" />       
+		  <ion-item (click)="goToNavApp()">
+		    <button ion-button icon-left clear item-right>
+		      <ion-icon name="navigate"></ion-icon>
+		      Start
+		    </button>
+		  </ion-item>
+	  </ion-card>
+   </div>    
+  <ion-card>
+    <ion-list> 
+	  <ion-item class="botton-border-item">
+	      <p>Details</p>
+	  </ion-item>
+        <ion-item>
+          <ion-label>Brewery Type</ion-label>
+          <p item-right>{{brewery?.locationTypeDisplay}}</p>
+        </ion-item>
+        <ion-item *ngIf="brewery.isClosed!=null">
+          <ion-label>Open for Business</ion-label>
+	          <p item-right *ngIf="brewery.isClosed=='Y'">
+	             No
+	          </p>
+	          <p item-right *ngIf="brewery.isClosed=='N'">
+	             Yes
+	          </p> 
+        </ion-item>        
+        <ion-item *ngIf="brewery.openToPublic!=null">
+          <ion-label>Brewery Open to Public</ion-label>
+          <p item-right *ngIf="brewery.openToPublic=='Y'">
+             Yes
+          </p>
+          <p item-right *ngIf="brewery.openToPublic=='N'">
+             No
+          </p> 
+        </ion-item>      
+        <ion-item *ngIf="brewery.brewery.established!=null">
+          <ion-label>Year Established</ion-label>
+          <p item-right>{{brewery?.brewery.established}}</p>
+        </ion-item>
+        <ion-item *ngIf="brewery.brewery.isOrganic!=null">
+          <ion-label>Organic Brewery</ion-label>
+          <p item-right *ngIf="brewery.brewery.isOrganic=='Y'">
+             Yes
+          </p>
+          <p item-right *ngIf="brewery.brewery.isOrganic=='N'">
+             No
+          </p>          
+        </ion-item>
+        <ion-item *ngIf="brewery.brewery.updateDate!=null">
+          <ion-label>Brewery Updated</ion-label>
+          <p item-right>{{brewery.brewery.updateDate}}</p>
+        </ion-item>                
+        <ion-item *ngIf="location.price_level">
+          <ion-label>Cost</ion-label>
+          <p item-right>{{priceLevel(location.price_level)}}</p>
+        </ion-item>            
+      </ion-list>
+        <div align="center">
+          <button *ngIf="location.website" ion-button icon-left (click)="goToPlaceWebsite(location.website)">
+            <ion-icon name="globe"></ion-icon>
+              Visit Website
+          </button>
+          <button *ngIf="location.international_phone_number" ion-button icon-left (click)="callIt(international_phone_number)">
+            <ion-icon name="call"></ion-icon>
+              Call {{location?.formatted_phone_number}}
+          </button>
+        </div>       
+  </ion-card>    
+    <ion-card *ngIf="breweryDescription">
+      <ion-item class="botton-border-item"><p>Description</p></ion-item>
+      <ion-item text-wrap><p>{{breweryDescription}}</p></ion-item>
+    </ion-card>
+  <ion-card *ngIf="locationHours">
+    <ion-item class="botton-border-item">
+		 <p>{{brewery?.brewery.name}} Hours</p>
+    </ion-item>
+	<ion-item *ngFor="let hours of locationHours">
+	  <p>{{hours}}</p>
+	</ion-item>
+  </ion-card>
+  <ion-card *ngIf="breweryHours">
+    <ion-item class="botton-border-item">
+		 <p>{{brewery?.brewery.name}} Hours</p>
+    </ion-item>
+	<ion-item>
+		<pre>{{breweryHours}}</pre>}}
+	</ion-item>
+  </ion-card>  
+</ion-content>

@@ -124,8 +124,8 @@ export class LocationDetailsMorePage {
     }
    
 
-    console.log('photo',this.locationPhoto);
-    console.log('loc',this.location);
+    //console.log('photo',this.locationPhoto);
+    //console.log('loc',this.location);
 
   }
 

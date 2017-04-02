@@ -65,6 +65,26 @@ page-location-details-more {
     width: 100% !important;
     padding: 0 0 0 0 !important;
 
-  }	
+    .loc-btns {
+      height: 6rem !important;
+      box-shadow: inherit !important;            
+    }
 
+    .border-right {
+      border-right: 1px solid #999999;
+    }
+
+    .chk-btn {
+      box-shadow: inherit !important;
+      height: 4.75rem;
+    }
+
+    ion-col {
+      margin: 0 !important;
+    }
+  }
+  
+  .botton-border-item {
+     border-bottom: 1px solid #dedede !important;
+  }
 }

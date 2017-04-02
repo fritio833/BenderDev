@@ -54,7 +54,7 @@
     </ion-item>
     <button ion-item *ngFor="let brew of breweries; let i = index;" (click)="getDetail(brew)">
       <ion-avatar item-left>
-      	<img [src]="brew.brewery.images.icon" />
+      	<img *ngIf="brew.brewery.images.icon!=null" [src]="brew.brewery.images.icon" />
       </ion-avatar>
       <h2 class="loc-name">
       {{brew.brewery.name}}

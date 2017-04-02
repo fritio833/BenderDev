@@ -27,8 +27,16 @@
 			</ion-col>
 		</ion-row>
     </ion-grid>
+    <ion-grid class="square">
+    <ion-row>
+      <ion-col class="chk-btn" full ion-button icon-left color="check" (click)='checkIn()'>
+        <ion-icon name="checkmark"></ion-icon>
+        CHECK-IN
+      </ion-col>
+    </ion-row>
+    </ion-grid>    
   <ion-card>
-    <ion-item>
+    <ion-item class="botton-border-item">
       <p>Details</p>
     </ion-item>
       <ion-list>
@@ -48,7 +56,7 @@
       </ion-list>
   </ion-card>
   <ion-card>
-    <ion-item>
+    <ion-item class="botton-border-item">
 		 <p>{{location?.name}} Store Hours</p>
     </ion-item>
     <ion-item>

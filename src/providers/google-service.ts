@@ -189,14 +189,18 @@ export class GoogleService {
 
   placesNearByRadius(lat,lng,radius?,filter?) {
 
-    let _type = "&types=night_club|bar|grocery_or_supermarket|liquor_store|gas_station|convenience_store";
-    let _rankby = "";
-    let _radius = "";
-    let _open_now = "";
-    let _affordability = "";
+    let _type = '&types=night_club|bar|grocery_or_supermarket|liquor_store|gas_station|convenience_store';
+    let _rankby = '';
+    let _radius = '';
+    let _open_now = '';
+    let _affordability = '';
+    let _name = '';
 
     //console.log('radius',radius);
     //console.log('filter',filter);
+
+    if (name != null)
+      _name = '&keyword=' + name;
 
     if (radius == null) {
       _rankby = "&rankby=distance";
@@ -229,6 +233,7 @@ export class GoogleService {
         + _rankby
         + _open_now
         + _affordability
+        + _name
         + '&key=' 
         + this.googlePlacesAPIKey)
         .map(res => res.json());
@@ -246,6 +251,19 @@ export class GoogleService {
     return this.http.get(this.googlePlacesURL + searchType + '/json?pagetoken='
         + nextToken 
         + '&key=' + this.googlePlacesAPIKey)
+        .map(res => res.json());
+  }
+
+  getPlaceByOrigin(name,lat,lng) {
+    return this.http.get(this.googlePlacesURL 
+        + 'nearbysearch/json?location='
+        + lat 
+        + ',' 
+        + lng
+        + '&keyword='
+        + name
+        +'&rankby=distance&key=' 
+        + this.googlePlacesAPIKey)
         .map(res => res.json());
   }
 

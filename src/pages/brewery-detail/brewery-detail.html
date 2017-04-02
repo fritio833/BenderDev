@@ -1,9 +1,154 @@
 <ion-header>
   <ion-navbar color="primary">
-    <ion-title>{{brewery?.brewery.name}}</ion-title>  
+    <ion-title>Brewery</ion-title>  
   </ion-navbar>
 </ion-header>
 <ion-content>
+	<ion-grid class="background-home" [ngStyle]="getBackgroundImg(locationPhoto)">
+		<ion-row>
+			<ion-col>
+			  <div class="loc-area">
+			    <div>
+				    <p id="header">{{brewery?.brewery.name}}</p>
+				    <p id="loc-rating" *ngIf="brewery.brewery.images.icon!=null">
+				        <img [src]="brewery?.brewery.images.icon" />
+				    </p>
+				    <p id="loc-rating" [hidden]="!locationRating">
+				      <rating [(ngModel)]="locationRating" readOnly="true" max="5"></rating>
+				    </p>
+				    <p id="ptype">
+				      <span>{{brewery?.locationTypeDisplay}}</span>
+                      <span *ngIf="brewery.brewery.established!=null">
+                        &#8226; Est. {{brewery?.brewery.established}}
+                      </span>
+                      <span *ngIf="brewery.openToPublic">                      
+			              <span *ngIf="brewery.openToPublic == 'Y'">&#8226; Open to Public</span>
+			              <span *ngIf="brewery.openToPublic == 'N'">&#8226; Not Open to Public</span>
+                      </span>
+				    </p>
+			    </div>
+			  </div>
+			  <div align="right">
+				<p [hidden]="locationOpen || locationOpen==null">
+					<ion-badge color="dark">Currently Closed</ion-badge>
+				</p>
+				<p [hidden]="!locationOpen || locationOpen==null">
+					<ion-badge color="dark">Currently Open</ion-badge>
+				</p>			  	
+			  </div>
+			</ion-col>
+		</ion-row>
+    </ion-grid>
+    <ion-grid class="square">
+		<ion-row>
+		  <ion-col class="loc-btns border-right" color="light" full ion-button (click)='callIt(location?.international_phone_number)'>
+		    <div> 
+			    <ion-icon name="call"></ion-icon>
+			    <label>Call</label>
+		    </div>
+		  </ion-col>		  
+		  <ion-col class="loc-btns border-right" color="light" full ion-button (click)='viewMap()'>
+		    <div> 
+			    <ion-icon name="heart"></ion-icon>
+			    <label>Save</label>
+		    </div>              
+		  </ion-col>
+		  <ion-col class="loc-btns border-right" color="light" full ion-button (click)='viewDrinks()'>	            		  	
+		    <div> 
+			    <ion-icon name="book"></ion-icon>
+			    <label>Menu</label>
+		    </div>              
+		  </ion-col>
+		  <ion-col class="loc-btns" color="light" full ion-button (click)='viewMore()'>	  	
+		    <div> 
+			    <ion-icon name="paper"></ion-icon>
+			    <label>Detail</label>
+		    </div>              
+		  </ion-col>		  		  
+		</ion-row>
+		<ion-row>
+		  <ion-col class="chk-btn" full ion-button icon-left color="check" (click)='checkIn()'>
+		    <ion-icon name="checkmark"></ion-icon>
+		  	CHECK-IN
+		  </ion-col>
+		</ion-row>
+    </ion-grid>
+  <div *ngIf="breweryBeers.length">
+    <ion-card>
+      <ion-item>
+        <p>Beer List</p>
+      </ion-item>
+        <div *ngFor="let beer of breweryBeers; let i=index" (click)="getBeerDetail(beer)">
+	      	<ion-item *ngIf="i < 5">
+		      	<ion-thumbnail item-left>
+		      		<img *ngIf="beer.labels.icon!='zzz'" [src]="beer.labels.medium" />
+		      	</ion-thumbnail>		      	
+			    <h2>{{beer.nameDisplay}}</h2>
+			     <p>{{beer?.style.shortName}}</p>
+			     <ion-icon name="arrow-forward" item-right></ion-icon>
+		     </ion-item>
+      	</div>
+      	<div *ngIf="breweryBeers.length > 5" align="center">
+	      <ion-item item-content>
+            <button ion-button (click)="showDrinkMenu()">
+              Show More
+            </button>
+	      </ion-item>
+		</div>      	
+    </ion-card>
+  </div>
+  <div>    
+	  <ion-card>
+	    <ion-item>
+          <p>
+            {{brewery?.streetAddress}} 
+            {{brewery?.locality}}, {{brewery?.region}} 
+            {{brewery?.postalCode}} {{brewery?.countryIsoCode}}
+          </p>
+	    </ion-item>
+        <img [src]="getGoogleStaticMap()" (click)="goToNavApp()" />       
+		  <ion-item (click)="goToNavApp()">
+		    <button ion-button icon-left clear item-right>
+		      <ion-icon name="navigate"></ion-icon>
+		      Start
+		    </button>
+		  </ion-item>
+	  </ion-card>
+   </div>
+	<div *ngIf="locationPhotosArray.length > 1">
+	  <ion-card>
+        <ion-item>
+          <p>Photos</p>          
+        </ion-item>
+	    <span *ngFor="let photo of locationPhotosArray">
+   			<img *ngIf="photo.url" [src]="photo.url">
+	    </span>
+	    <div align="center">
+	    	<button *ngIf="!showPhotos" ion-button icon-left (click)="showAllPhotos()" item-right>
+	    	  <ion-icon name="images"></ion-icon>
+	    	  Show {{locationPhotosArray.length - 1}} Photos
+	    	</button>
+    	</div>
+	  </ion-card>
+	</div>
+	<div [hidden]="locationReviews == null">
+	  <ion-card>
+        <ion-item>
+          <p>Reviews</p>
+        </ion-item>
+        <ion-item *ngFor="let review of locationReviews" text-wrap>
+          <p>{{review?.text}}</p>
+		    <div align="right" [hidden]="review.rating == 0">  	
+		    	<rating [(ngModel)]="review.rating" readOnly="true" max="5"></rating>
+		    </div>
+		    <div align="right">
+		      <p>{{review.author_name}}</p>
+		      <p>{{review.relative_time_description}}</p>
+		    </div>          
+        </ion-item> 
+	  </ion-card>		
+	</div>	   
+   <!----
   <ion-card>
 	  <ion-grid>
 		<ion-row>
@@ -66,6 +211,8 @@
 	    </ion-row>	    
 	  </ion-grid>	  
   </ion-card>
+  ---->
+  <!----
   <div class="card-head" *ngIf="breweryBeers.length">
     <p><ion-icon name="beer"></ion-icon>&nbsp;Brewery Beer List</p>
   </div>  
@@ -81,6 +228,9 @@
       </button>
     </ion-list>
   </ion-card>
+  ---->
+
+  <!----
   <div class="card-head" *ngIf="breweryHours">
     <p><ion-icon name="beer"></ion-icon>&nbsp;Brewery Hours of Operation</p>
   </div>
@@ -96,5 +246,6 @@
     <ion-card-content>
       {{breweryDescription}}
     </ion-card-content>   
-  </ion-card>  
+  </ion-card>
+  ---->  
 </ion-content>
