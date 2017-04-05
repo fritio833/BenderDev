@@ -36,6 +36,7 @@ export class SelectLocationPage {
   selectCity(city) {
   	//console.log('city',city);
   	this.geo.placeDetail(city.place_id).subscribe((success)=>{
+      console.log('resp',success);  
   		let cityState = this.geo.fixCityState(success);
   		this.sing.selectCity = cityState.city;
   		this.sing.selectState = cityState.state;

@@ -53,7 +53,7 @@
 			    <label>Save</label>
 		    </div>              
 		  </ion-col>
-		  <ion-col class="loc-btns border-right" color="light" full ion-button (click)='viewDrinks()'>	            		  	
+		  <ion-col class="loc-btns border-right" color="light" full ion-button (click)='showDrinkMenu()'>
 		    <div> 
 			    <ion-icon name="book"></ion-icon>
 			    <label>Menu</label>
@@ -90,9 +90,11 @@
       	</div>
       	<div *ngIf="breweryBeers.length > 5" align="center">
 	      <ion-item item-content>
-            <button ion-button (click)="showDrinkMenu()">
-              Show More
-            </button>
+	        <div align="center">
+	            <button ion-button (click)="showDrinkMenu()">
+	              Show More
+	            </button>
+            </div>
 	      </ion-item>
 		</div>      	
     </ion-card>
@@ -118,7 +120,7 @@
 	<div *ngIf="locationPhotosArray.length > 1">
 	  <ion-card>
         <ion-item>
-          <p>Photos</p>          
+          <p>Brewery Photos</p>          
         </ion-item>
 	    <span *ngFor="let photo of locationPhotosArray">
    			<img *ngIf="photo.url" [src]="photo.url">

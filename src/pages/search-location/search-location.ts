@@ -99,7 +99,7 @@ export class SearchLocationPage {
 
       ptypes ='';
      
-      //if (this.sing.getLocation().geo) {
+      if (this.sing.getLocation().geo) {
 
         let lat = parseFloat(locations[i].geometry.location.lat);
         let lng = parseFloat(locations[i].geometry.location.lng);
@@ -107,7 +107,7 @@ export class SearchLocationPage {
         let userPoint = {lat:this.geoLat,lng:this.geoLng};
         let dist = this.geo.getDistance(locPoint,userPoint,true);
         locations[i]['distance'] = Math.round(dist * 10) / 10;
-      //}
+      }
       
       if (!locations[i].hasOwnProperty('opening_hours')) {
          locations[i]['opening_hours'] = {open_now:2};

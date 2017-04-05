@@ -154,7 +154,7 @@ export class GoogleService {
         + lat 
         + ',' 
         + lng 
-        + '&types=night_club|bar|grocery_or_supermarket|restaurant|liquor_store|gas_station|convenience_store&radius=100&&key=' 
+        + '&types=night_club|bar|food|grocery_or_supermarket|restaurant|liquor_store|gas_station|convenience_store&radius=200&&key=' 
         + this.googlePlacesAPIKey)
         .map(res => res.json());    
 

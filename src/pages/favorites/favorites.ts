@@ -1,12 +1,13 @@
-import { Component, ApplicationRef } from '@angular/core';
-import { NavController, NavParams, ToastController } from 'ionic-angular';
+import { Component } from '@angular/core';
+import { NavController, NavParams, ToastController, ModalController, ActionSheetController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 
 
 import { SingletonService } from '../../providers/singleton-service';
+import { BreweryService } from '../../providers/brewery-service';
 
 import { BeerDetailPage } from '../beer-detail/beer-detail';
-import { HelloIonicPage } from '../hello-ionic/hello-ionic';
+import { CheckinPage } from '../checkin/checkin';
 
 /*
   Generated class for the Favorites page.
@@ -23,41 +24,93 @@ export class FavoritesPage {
   public beers = new Array();
   public choice:string;
 
-  constructor(public navCtrl: NavController, 
-              public navParams: NavParams,
+  constructor(public navCtrl:NavController, 
+              public navParams:NavParams,
               public sing:SingletonService, 
-              public storage:Storage, 
-              public toastCtrl: ToastController, 
-              public appRef:ApplicationRef) {
+              public storage:Storage,
+              public beerAPI:BreweryService,
+              public actionCtrl:ActionSheetController,
+              public modalCtrl:ModalController,
+              public toastCtrl:ToastController) {
     this.choice = "beerlist";  
   }
 
   getBeerDetail(beerDbId) {
-
     this.navCtrl.push(BeerDetailPage,{beerId:beerDbId,favorites:true});
+  }
+  
+  checkinBeer(beer) {
+    this.beerAPI.loadBeerById(beer.id).subscribe(resp=>{
+      console.log('beer',resp);
+      if (resp.hasOwnProperty('data')) {
+        let modal = this.modalCtrl.create(CheckinPage,{checkinType:'beer',beer:resp.data});
+        modal.onDidDismiss(()=> {
+          
+        });
+        modal.present();        
+      }
+    });
+  }
+
+  getBeerActions(beer) {
+    //console.log(beer);
     
+    let actionSheet = this.actionCtrl.create({
+      title: beer.name,
+      buttons: [
+        {
+          text: 'Check-in',
+          handler: () => {
+            this.checkinBeer(beer);
+          }
+        },{
+          text: 'Locate',
+          handler: () => {
+            // TODO: Find beers locally
+            // this.removeBeerFromFavorites(beer.id);            
+          }
+        },{
+          text: 'Details',
+          handler: () => {
+            this.getBeerDetail(beer.id);
+          }
+        },{
+          text: 'Suggestions',
+          handler:() => {
+            console.log('Suggestions Clicked');
+          }
+        },{
+          text: 'Cancel',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancel clicked');
+          }
+        }
+      ]
+    });
+    actionSheet.present();
   }  
 
   removeBeerFromFavorites(beerId) {
        
-        this.storage.get("beers").then((beerArray)=>{   
+    this.storage.get("beers").then((beerArray)=>{   
 
-          for (let i = 0; i < beerArray.length; i++) {
+      for (let i = 0; i < beerArray.length; i++) {
+      
+        if (beerArray[i].id == beerId ){
           
-            if (beerArray[i].id == beerId ){
-              this.presentToast(beerArray[i].name + " removed from favorites.");
-              beerArray.splice(i,1);
-              this.storage.set('beers',beerArray).then(()=>{
-                 this.appRef.tick();              
-              });
+          beerArray.splice(i,1);
 
-              return;
-            }
-          }          
+          this.storage.set('beers',beerArray).then(()=>{
+             this.presentToast(beerArray[i].name + " removed from favorites.");
+             this.ionViewDidLoad();              
+          });
 
-        });
+          return;
+        }
+      }          
 
-
+    });
   }
 
   presentToast(msg) {
@@ -76,16 +129,11 @@ export class FavoritesPage {
 
       this.storage.get('beers').then((beerArray)=>{
         this.beers = beerArray;
+        //console.log(this.beers);
       });      
     
     });
-
   }
-
-  doSearch() {
-    this.navCtrl.push(HelloIonicPage); 
-  }
-
 
   ionViewWillEnter() { 
 

@@ -5,6 +5,8 @@ import { GoogleService } from '../../providers/google-service';
 import { BeerDetailPage } from '../beer-detail/beer-detail';
 import { LocationMapPage } from '../location-map/location-map';
 import { BreweryDetailMorePage } from '../brewery-detail-more/brewery-detail-more';
+import { DrinkMenuPage } from '../drink-menu/drink-menu';
+import { CheckinPage } from '../checkin/checkin';
 
 declare var window: any;
 declare var cordova: any;
@@ -120,6 +122,19 @@ export class BreweryDetailPage {
     phoneNo = encodeURIComponent(phoneNo);
     window.location = "tel:"+phoneNo;
   }
+
+  checkIn(brewery) {
+    
+    let modal = this.modalCtrl.create(CheckinPage,{
+                                                    checkinType:'brewery',
+                                                    brewery:this.brewery
+                                                  });
+    modal.onDidDismiss(()=> {
+      // this.getBeerReviews();
+    });
+    modal.present();
+    
+  }
   
   goToNavApp() {
       let destination = this.brewery.latitude + ',' + this.brewery.longitude;
@@ -182,11 +197,11 @@ export class BreweryDetailPage {
   }
 
   showDrinkMenu() {
-
+    this.navCtrl.push(DrinkMenuPage,{beers:this.breweryBeers,brewery:this.brewery});
   }
 
   getBeerDetail(beer) {
-     this.navCtrl.push(BeerDetailPage,{beerId:beer.id});
+    this.navCtrl.push(BeerDetailPage,{beerId:beer.id});
   }
 
   ionViewDidLoad() {

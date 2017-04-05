@@ -159,7 +159,7 @@ export class BeerDetailPage {
 
   checkIn(beer) {
     
-    let modal = this.modalCtrl.create(CheckinPage,{beer:beer});
+    let modal = this.modalCtrl.create(CheckinPage,{checkinType:'beer',beer:beer});
     modal.onDidDismiss(()=> {
       this.getBeerReviews();
     });

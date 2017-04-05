@@ -3,6 +3,7 @@ import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { MyApp } from './app.component';
 import { Ionic2RatingModule } from 'ionic2-rating';
+import { AngularFireModule, AuthProviders, AuthMethods } from 'angularfire2';
 
 import { FbProvider } from '../providers/fb-provider';
 import { BreweryService } from '../providers/brewery-service';
@@ -50,6 +51,16 @@ import { BreweryDetailPage } from '../pages/brewery-detail/brewery-detail';
 import { BreweryDetailMorePage } from '../pages/brewery-detail-more/brewery-detail-more';
 import { SelectLocationPage } from '../pages/select-location/select-location';
 import { LocationDetailsMorePage } from '../pages/location-details-more/location-details-more';
+import { DrinkMenuPage } from '../pages/drink-menu/drink-menu';
+
+export const firebaseConfig = {
+    apiKey: "AIzaSyCd-WZs4O8gNx9qVlwwyRdK6_qY60WuQl0",
+    authDomain: "bender-1487426215149.firebaseapp.com",
+    databaseURL: "https://bender-1487426215149.firebaseio.com",
+    projectId: "bender-1487426215149",
+    storageBucket: "bender-1487426215149.appspot.com",
+    messagingSenderId: "925035513978"    
+}
 
 @NgModule({
   declarations: [
@@ -90,12 +101,14 @@ import { LocationDetailsMorePage } from '../pages/location-details-more/location
     SearchBreweriesPage,
     BreweryDetailPage,
     BreweryDetailMorePage,
-    SelectLocationPage
+    SelectLocationPage,
+    DrinkMenuPage
 
   ],
   imports: [
     IonicModule.forRoot(MyApp),
-    Ionic2RatingModule
+    Ionic2RatingModule,
+    AngularFireModule.initializeApp(firebaseConfig)
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -136,7 +149,8 @@ import { LocationDetailsMorePage } from '../pages/location-details-more/location
     SearchBreweriesPage,
     BreweryDetailPage,
     BreweryDetailMorePage,
-    SelectLocationPage
+    SelectLocationPage,
+    DrinkMenuPage
   ],
   providers: [{provide: ErrorHandler, 
               useClass: IonicErrorHandler},

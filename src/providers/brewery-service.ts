@@ -183,4 +183,11 @@ export class BreweryService {
         .map(res => res.json());    
   }
 
+  loadBeerGlassware() {
+    return this.http.get(this.breweryDbUrl 
+         + 'glassware/'
+         + '?key=' + this.breweryDbAPI)
+        .map(res => res.json());    
+  }
+
 }

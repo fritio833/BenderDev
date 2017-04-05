@@ -1,5 +1,106 @@
 page-checkin {
+
+  ul {
+	padding: 0px;
+
+	&.rating li {
+	  padding: 5px 10px;
+	  background: none;
+	  color: #ffb400;
+	  ion-icon {
+	    font-size: 20px;
+	  }
+	}
+  }
+
   #fb-share {
     width:50px;
   }
+
+  #beer-header-info {
+    padding-left:10px;
+  }
+
+  .label {
+    margin-top:5px;
+    margin-bottom:5px;
+  }
+
+  ion-slide {
+    //width: 40%!important;
+  }
+
+  .slide-overlay {
+    background: rgba(0, 0, 0, 0.80);
+  }
+
+  .slide-text {
+    text-align:center;
+	text-shadow: black 0.1em 0.1em 0.2em;
+	padding: 10px;
+  }
+
+  #loadingLocation {
+    height:250px;
+  }
+
+  #locSlider {
+    height:250px !important;
+    padding-bottom:20px;
+  }
+
+  ion-spinner {
+    width:60px;
+    height:60px;
+  }
+
+  .camera {
+    padding:20px;
+    text-align:center;
+  }
+
+  ion-label {
+    font-weight:bold;
+    color:#000000 !important;
+  }
+
+  .item-inner {
+    border:none !important;
+	border-bottom-color: transparent !important;
+	box-shadow: none !important;    
+  }
+
+  .botton-border-item {
+     border-bottom: 1px solid #dedede !important;
+     padding-bottom:20px;
+  }
+  
+  ion-textarea {
+    border:1px solid #dedede !important;
+  }
+
+  .chk-btn {
+    height: 4.75rem;
+  }
+
+  .white-background {
+    background-color: #ffffff;
+  }  
+
+  .slide-item {
+    background-color:#01796f;
+    height: 250px !important;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: right 0px;
+    
+    h2 {
+      font-size:15px;
+      color:#ffffff;
+    }
+    p {
+      font-size:12px;
+      color:#ffffff; 
+    }
+  }  
 }

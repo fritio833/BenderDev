@@ -1,0 +1,27 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>{{brewery.brewery.name}} Beer List</ion-title>  
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <div *ngIf="breweryBeers.length">
+    <ion-card>
+      <ion-item>
+        <p>Beer List</p>
+        <p item-right>{{breweryBeers.length}} Beers</p>
+      </ion-item>
+        <div *ngFor="let beer of breweryBeers; let i=index" (click)="getBeerDetail(beer)">
+	      	<ion-item>
+		      	<ion-thumbnail item-left>
+		      		<img *ngIf="beer.labels.icon!='zzz'" [src]="beer.labels.medium" />
+		      	</ion-thumbnail>		      	
+			    <h2>{{beer.nameDisplay}}</h2>
+			     <p>{{beer?.style.shortName}}</p>
+			     <p *ngIf="beer.abv">{{beer?.abv}}% ABV</p>
+			     <p *ngIf="beer.available">Available {{beer.available.name}}</p>
+			     <ion-icon name="arrow-forward" item-right></ion-icon>
+		     </ion-item>
+      	</div>      	
+    </ion-card>
+  </div>
+</ion-content>

@@ -17,6 +17,7 @@ export class SingletonService {
   public geoState = null;
   public geoLat = null;
   public geoLng = null;
+  public isAdmin = true;
 
   public selectCity = null;
   public selectState = null;
@@ -32,15 +33,15 @@ export class SingletonService {
   public googleStaticMapAPIKey: string = 'AIzaSyCDIPt-NJwC23kzmYJ5ZTYTMd9brpBVbCk';
 
   //Testing. Dev Flags to simulate geolocation
-  public test = false;
+  public test = true;
 
   //ABC Liquore Store 1930 Thomasville Rd, Tallahassee FL
   //public lat = 30.466237;
   //public lng = -84.269281;
 
   // Fermintation Lounge
-  //public lat = 30.433812;
-  //public lng = -84.286296;
+  public lat = 30.433812;
+  public lng = -84.286296;
 
   //McGuire's Pensacola
   //public lat = 30.418049;
@@ -50,8 +51,8 @@ export class SingletonService {
   //public lat = 30.464105;
   //public lng = -84.298067;
 
-  public lat = 0;
-  public lng = 0;
+  //public lat = 0;
+  //public lng = 0;
 
   constructor() {}
 
