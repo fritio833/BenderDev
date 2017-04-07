@@ -148,7 +148,7 @@ export class LocationDetailPage {
   }
 
   checkIn() {
-    let modal = this.modalCtrl.create(CheckinPage,{ location:this.location});
+    let modal = this.modalCtrl.create(CheckinPage,{ location:this.location,checkinType:'place'});
     modal.present();    
   }
 

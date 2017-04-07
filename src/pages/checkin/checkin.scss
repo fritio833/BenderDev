@@ -66,13 +66,19 @@ page-checkin {
 
   .item-inner {
     border:none !important;
-	border-bottom-color: transparent !important;
-	box-shadow: none !important;    
+	  border-bottom-color: transparent !important;
+	  box-shadow: none !important;    
   }
 
   .botton-border-item {
      border-bottom: 1px solid #dedede !important;
      padding-bottom:20px;
+  }
+
+  #choose-beer {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #dedede !important;
   }
   
   ion-textarea {

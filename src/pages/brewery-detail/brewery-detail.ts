@@ -40,9 +40,9 @@ export class BreweryDetailPage {
   	this.brewery = params.get('brewery');
     this.breweryBeers = params.get('beers');
     this.location = params.get('place');
-    console.log('place',this.location);
+    //console.log('place',this.location);
 
-    console.log('brewery',this.brewery);
+    //console.log('brewery',this.brewery);
 
     if (this.brewery.hasOwnProperty('brewery')) {
       this.breweryDescription = this.brewery.brewery.description;
@@ -127,7 +127,9 @@ export class BreweryDetailPage {
     
     let modal = this.modalCtrl.create(CheckinPage,{
                                                     checkinType:'brewery',
-                                                    brewery:this.brewery
+                                                    brewery:this.brewery,
+                                                    location:this.location,
+                                                    beers:this.breweryBeers
                                                   });
     modal.onDidDismiss(()=> {
       // this.getBeerReviews();

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, ToastController, ModalController, ActionSheetController } from 'ionic-angular';
+import { NavController, NavParams, LoadingController, ToastController, ModalController, ActionSheetController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 
 
@@ -23,6 +23,7 @@ export class FavoritesPage {
 
   public beers = new Array();
   public choice:string;
+  public loading:any;
 
   constructor(public navCtrl:NavController, 
               public navParams:NavParams,
@@ -31,6 +32,7 @@ export class FavoritesPage {
               public beerAPI:BreweryService,
               public actionCtrl:ActionSheetController,
               public modalCtrl:ModalController,
+              public loadingCtrl:LoadingController,
               public toastCtrl:ToastController) {
     this.choice = "beerlist";  
   }
@@ -40,14 +42,16 @@ export class FavoritesPage {
   }
   
   checkinBeer(beer) {
+    this.showLoading();
     this.beerAPI.loadBeerById(beer.id).subscribe(resp=>{
+      this.loading.dismiss();
       console.log('beer',resp);
       if (resp.hasOwnProperty('data')) {
         let modal = this.modalCtrl.create(CheckinPage,{checkinType:'beer',beer:resp.data});
         modal.onDidDismiss(()=> {
           
         });
-        modal.present();        
+        modal.present();      
       }
     });
   }
@@ -134,6 +138,12 @@ export class FavoritesPage {
     
     });
   }
+
+  showLoading() {
+    this.loading = this.loadingCtrl.create({
+    });
+    this.loading.present();
+  }  
 
   ionViewWillEnter() { 
 

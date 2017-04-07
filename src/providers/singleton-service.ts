@@ -34,6 +34,8 @@ export class SingletonService {
 
   //Testing. Dev Flags to simulate geolocation
   public test = true;
+  //public lat = 0;
+  //public lng = 0;
 
   //ABC Liquore Store 1930 Thomasville Rd, Tallahassee FL
   //public lat = 30.466237;
@@ -51,8 +53,6 @@ export class SingletonService {
   //public lat = 30.464105;
   //public lng = -84.298067;
 
-  //public lat = 0;
-  //public lng = 0;
 
   constructor() {}
 

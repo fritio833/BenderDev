@@ -21,7 +21,7 @@ declare var GoogleMap;
 export class SearchBreweriesPage {
 
   @ViewChild('map') mapElement;
-  public breweries:any;
+  public breweries = new Array();
   public brewerySearch:any;
   public brewerySearchLen:number=0;
   public numPages:number;
@@ -67,6 +67,7 @@ export class SearchBreweriesPage {
     console.log(brewery);
     let breweryId;
     let foundBrewpub:number = -1;
+    this.showLoading('Loading Brewery...');
         
     if (!brewery.hasOwnProperty('breweryId') && brewery.hasOwnProperty('id')) {
 
@@ -94,15 +95,33 @@ export class SearchBreweriesPage {
         });
       });
       
-    } else { 
+    } else {
 
-      this.beerAPI.loadBreweryBeers(brewery.breweryId).subscribe((beers)=>{
-          //console.log('beers',beers);
-          this.navCtrl.push(BreweryDetailPage,{brewery:brewery,beers:beers});
+      // Use Google Places to associated with BreweryDB
+      let breweryName = encodeURIComponent(brewery.brewery.name);
+      console.log('breweryName',breweryName);
+      this.geo.getPlaceByOrigin(breweryName,brewery.latitude,brewery.longitude).subscribe(pub=>{
+        //console.log('pub',pub);
+        if (pub.results.length) {
+          //Get place detail
+          this.geo.placeDetail(pub.results[0].place_id).subscribe(detail=>{
+            //console.log('detail',detail);
+
+            this.beerAPI.loadBreweryBeers(brewery.breweryId).subscribe((beers)=>{
+                //console.log('beers',beers);
+                this.loading.dismiss();
+                this.navCtrl.push(BreweryDetailPage,{brewery:brewery,beers:beers,place:detail.result});
+            });
+          });
+        } else {
+            this.beerAPI.loadBreweryBeers(brewery.breweryId).subscribe((beers)=>{
+                //console.log('beers',beers);
+                this.loading.dismiss();
+                this.navCtrl.push(BreweryDetailPage,{brewery:brewery,beers:beers,place:null});
+            });          
+        }
       });
-      
     }
-    
   }
 
   fixBreweries(breweries) {
@@ -111,7 +130,7 @@ export class SearchBreweriesPage {
 
       // fix beers with no images
       if (!breweries[i]['brewery'].hasOwnProperty('images')) {
-        breweries[i]['brewery']['images'] = {icon:'images/no-image.jpg',
+        breweries[i]['brewery']['images'] = {icon:null,
                                              medium:'images/no-image.jpg',
                                              squareMedium:'images/no-image.jpg', 
                                              large:'images/no-image.jpg'};
@@ -146,6 +165,7 @@ export class SearchBreweriesPage {
 
   getBreweries() {
 
+    this.showLoading('Loading Breweries...');
     // Get breweries at user's current location
     if (this.sing.getLocation().geo){
 
@@ -164,9 +184,16 @@ export class SearchBreweriesPage {
 
 	      this.beerAPI.findBreweriesByGeo(resp.coords.latitude,resp.coords.longitude)
 	      .subscribe((breweries)=>{
-	        console.log(breweries);
-	      	this.breweries = this.fixBreweries(breweries.data);
-	      	this.numPages = breweries.numberOfPages;         
+	        //console.log(breweries);          
+          if (breweries.hasOwnProperty('data')) {
+            this.breweries = this.fixBreweries(breweries.data);
+            this.numPages = breweries.numberOfPages;            
+          } else {
+            this.breweries = new Array();
+            this.numPages = 0;
+            this.showNoBreweries();
+          }
+          this.loading.dismiss();        
 	      });
 
 	    }).catch((error) => {
@@ -175,9 +202,16 @@ export class SearchBreweriesPage {
     } else { // breweries from user's selected city
 	      this.beerAPI.findBreweriesByGeo(this.sing.getLocation().lat,this.sing.getLocation().lng)
 	      .subscribe((breweries)=>{
-	        console.log(breweries);
-	      	this.breweries = this.fixBreweries(breweries.data);
-	      	this.numPages = breweries.numberOfPages;         
+	        //console.log('cityBrew',breweries);
+          if (breweries.hasOwnProperty('data')) {
+            this.breweries = this.fixBreweries(breweries.data);
+            this.numPages = breweries.numberOfPages;            
+          } else {
+            this.breweries = new Array();
+            this.numPages = 0;
+            this.showNoBreweries();
+          }
+          this.loading.dismiss();         
 	      });    	
     }
   }
@@ -251,10 +285,7 @@ export class SearchBreweriesPage {
     };
 
     this.map = new google.maps.Map(this.mapElement.nativeElement,mapOptions);
-
     this.markers = this.setLocationMarkers();
-
-
 
     var bounds = new google.maps.LatLngBounds();
     for (var i = 0; i < this.markers.length; i++) {
@@ -319,7 +350,7 @@ export class SearchBreweriesPage {
   }  
 
   loadGoogleMaps() {
-    this.showLoading();
+    this.showLoading('Loading map. Please wait...');
     this.addConnectivityListeners();
  
     if (typeof google == "undefined" || typeof google.maps == "undefined" ) {
@@ -400,13 +431,35 @@ export class SearchBreweriesPage {
     console.log("enable map");
   }
 
-  showLoading() {
+  showLoading(msg) {
     this.loading = this.loadingCtrl.create({
-      content: 'Loading map. Please wait...',
-      duration:2000
+      content: msg
     });
     this.loading.present();
-  }      
+  }
+
+  showNoBreweries() {
+    let alert = this.alertCtrl.create({
+      title: 'Sorry',
+      message: 'No breweries located in '+this.sing.getSelectCity()+'.  If the brewery does exist, please tell us about it.',
+      buttons: [
+        {
+          text: 'Close',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancel clicked');
+          }
+        },
+        {
+          text: 'Submit Brewery',
+          handler: () => {
+            //this.getDetail(brewery);
+          }
+        }
+      ]
+    });
+    alert.present();    
+  }   
 
   showInfoWindow(brewery) {
 

@@ -9,31 +9,39 @@
   </ion-navbar>
 </ion-header>
 <ion-content class="white-background">
-  <ion-item>
-    <span item-left>
-      <ion-thumbnail>
-        <img [src]="beer.labels.medium" *ngIf="beer.labels.medium!=null && beer.labels.medium!=''" />
-      </ion-thumbnail>
-    </span>
-    <span id="beer-header-info" item-left>
-        <ion-label>{{beer.name}}</ion-label>
-        <p>{{beer?.breweries[0].name}}</p>
-        <p>{{beer?.style.shortName}}</p>
-    </span>
-  </ion-item>
-  <ion-item>
-    <ion-label>Rating</ion-label>
-    <span item-right><rating [(ngModel)]="beerRating" max="5"></rating></span>
-  </ion-item>
-  <ion-item class="botton-border-item">
-     <ion-range min="0" 
-                max="5" 
-                step="1" 
-                snaps="true" 
-                [(ngModel)]="beerRating">
-       
-     </ion-range>    
-  </ion-item>    
+  <div id="choose-beer" *ngIf="beer==null">
+    <button ion-item (click)="selectBeer()" text-wrap>      
+      <label>Select a Beer for {{locationName}}</label>
+      <ion-icon name="add-circle" color="secondary" item-right></ion-icon>
+    </button>
+  </div>
+  <div *ngIf="beer!=null">
+    <ion-item>
+      <span item-left>
+        <ion-thumbnail>
+          <img [src]="beer.labels.medium" *ngIf="beer.labels.medium!=null && beer.labels.medium!=''" />
+        </ion-thumbnail>
+      </span>
+      <span id="beer-header-info" item-left>
+          <ion-label>{{beer.name}}</ion-label>
+          <p>{{beer?.breweries[0].name}}</p>
+          <p>{{beer?.style.shortName}}</p>
+      </span>
+    </ion-item>
+    <ion-item>
+      <ion-label>Rating</ion-label>
+      <span item-right><rating [(ngModel)]="beerRating" max="5"></rating></span>
+    </ion-item>
+    <ion-item class="botton-border-item">
+       <ion-range min="0" 
+                  max="5" 
+                  step="1" 
+                  snaps="true" 
+                  [(ngModel)]="beerRating">
+         
+       </ion-range>    
+    </ion-item>
+  </div>
   <div *ngIf="locationsLen">
   <ion-item>
     <label>Location</label>
@@ -44,7 +52,7 @@
       <ion-spinner></ion-spinner>
     </div>
   </ion-item>  
-  <ion-slides id="locSlider" *ngIf="showLocationSlide" (ionSlideDidChange)="slideChanged()" pager="true">
+  <ion-slides id="locSlider" *ngIf="showLocationSlide" (ionSlideDidChange)="slideChanged()" pager="{{showPager}}">
     <ion-slide *ngFor="let location of locations" text-wrap>    
       <ion-item class="slide-item" [ngStyle]="getBackgroundImg(location.url)">
         <div class="slide-overlay">
@@ -54,7 +62,6 @@
             <p>{{location.place_types}}</p>
           </div>
         </div>
-        <div align="center"><button ion-button (click)="moreDetail()">Drinking Here</button></div>
       </ion-item>
     </ion-slide>           
   </ion-slides>

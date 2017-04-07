@@ -12,34 +12,46 @@
 <ion-content class="white-background">
   <ion-list>          
     <button ion-item (click)="doSearch('beers')">
-      <ion-icon name="beer" item-left></ion-icon>
+      <ion-label>
+        <ion-icon name="beer"></ion-icon>
         Search Beers
-       <ion-icon name="arrow-forward" item-right></ion-icon>
-    </button>             
-    <button ion-item (click)="doSearch('locations')">
-      <ion-icon name="locate" item-left></ion-icon>
-        Find Places Near Me
+      </ion-label>
        <ion-icon name="arrow-forward" item-right></ion-icon>
     </button>
     <button ion-item (click)="doSearch('breweries')">
-      <ion-icon name="pint" item-left></ion-icon>
+      <ion-label>
+        <ion-icon name="pint"></ion-icon>
         Find Breweries
+      </ion-label>
        <ion-icon name="arrow-forward" item-right></ion-icon>
+    </button>                 
+    <button ion-item (click)="doSearch('locations')">
+      <ion-label>
+        <ion-icon name="locate"></ion-icon>
+        Find Places Near Me
+      </ion-label>     
+      <ion-icon name="arrow-forward" item-right></ion-icon>
     </button>
     <button ion-item (click)="doSearch('bars')">
-      <ion-icon name="happy" item-left></ion-icon>
+      <ion-label>
+        <ion-icon name="happy"></ion-icon>
         Find Bars
+      </ion-label>
        <ion-icon name="arrow-forward" item-right></ion-icon>
     </button>
     <button ion-item (click)="doSearch('favorites')">
-      <ion-icon name="heart" item-left></ion-icon>
+      <ion-label>
+        <ion-icon name="heart"></ion-icon>
         My Favorite Drinks
+      </ion-label>
        <ion-icon name="arrow-forward" item-right></ion-icon>
     </button>
     <button ion-item (click)="doSearch('randombeers')">
-      <ion-icon name="ionic" item-left></ion-icon>
+      <ion-label>
+        <ion-icon name="ionic"></ion-icon>
         Random Beers
-       <ion-icon name="arrow-forward" item-right></ion-icon>
+      </ion-label>
+      <ion-icon name="arrow-forward" item-right></ion-icon>
     </button>          
   </ion-list>
 </ion-content>

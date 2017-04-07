@@ -1,0 +1,68 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-toolbar>
+    <ion-title>Select a Beer</ion-title>
+    <ion-buttons start>
+        <button ion-button icon-only (click)="cancel()">
+          <ion-icon name="close"></ion-icon>
+        </button>
+    </ion-buttons>
+    </ion-toolbar>
+  </ion-navbar>
+</ion-header>
+<ion-content class="white-background">
+  <ion-item>
+	<ion-input placeholder="Enter beer name" [(ngModel)]="beerName"></ion-input>
+	<button item-right ion-button (click)="findBeer()">Find a Beer</button>
+  </ion-item>
+  <ion-list *ngIf="beers.length">
+    <button ion-item *ngFor="let beer of beers" (click) = "setBeer(beer)">
+	      <ion-thumbnail item-left>
+	          <img [src]="beer.labels.medium" />
+	      </ion-thumbnail>
+	      <h2>{{ beer.name }}</h2>
+	      <p>{{ beer.style.shortName }}</p>      
+	      <ion-icon name="add-circle" color="secondary" item-right></ion-icon>
+    </button>
+  </ion-list>
+  <ion-list>
+	<button ion-item (click)="getFavoriteBeers()">
+	  <ion-label>
+	    <ion-icon name="heart" color="danger"></ion-icon>
+	    Add Beer from Favorites
+	  </ion-label>
+	  <ion-icon *ngIf="!toggleFavBeers" item-right name="arrow-dropleft-circle"></ion-icon>
+	  <ion-icon *ngIf="toggleFavBeers" item-right name="arrow-dropdown-circle"></ion-icon>
+	</button>	
+  </ion-list>
+  <ion-list *ngIf="toggleFavBeers">
+    <button ion-item *ngFor="let beer of favBeers" (click) = "setBeer(beer)">
+	      <ion-thumbnail item-left>
+	          <img [src]="beer.labels.medium" />
+	      </ion-thumbnail>
+	      <h2>{{ beer.name }}</h2>
+	      <p>{{ beer.style.shortName }}</p>      
+	      <ion-icon name="add-circle" color="secondary" item-right></ion-icon>
+    </button> 
+  </ion-list>
+  <ion-list>
+	<button ion-item (click)="getLocationBeers()">
+	  <ion-label>
+	    <ion-icon name="pin"></ion-icon>
+	     Beers from {{locationName}}
+	  </ion-label>
+	  <ion-icon *ngIf="!toggleLocationBeers" item-right name="arrow-dropleft-circle"></ion-icon>
+	  <ion-icon *ngIf="toggleLocationBeers" item-right name="arrow-dropdown-circle"></ion-icon>
+	</button>
+  </ion-list>
+  <ion-list *ngIf="toggleLocationBeers">
+    <button ion-item *ngFor="let beer of breweryBeers" (click) = "setBeer(beer)">
+	      <ion-thumbnail item-left>
+	          <img [src]="beer.labels.medium" />
+	      </ion-thumbnail>
+	      <h2>{{ beer.name }}</h2>
+	      <p>{{ beer.style.shortName }}</p>      
+	      <ion-icon name="add-circle" color="secondary" item-right></ion-icon>
+    </button>
+  </ion-list>  
+</ion-content>
