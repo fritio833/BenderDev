@@ -1,21 +1,14 @@
-<!--
-  Generated template for the CreateAccount page.
-
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
--->
-
 <ion-header>
-  <ion-navbar  color="primary">
+  <ion-navbar color="check">
     <ion-buttons start>
-        <button (click)="cancel()">
+        <button ion-button icon-only (click)="cancel()">
           <ion-icon name="close"></ion-icon>
         </button>
     </ion-buttons>
     <ion-title>Create Account</ion-title>
   </ion-navbar>
 </ion-header>
-<ion-content padding>
+<ion-content class="white-background">
   <form [formGroup] = "newUserForm" (submit)="saveUser()">
   	<ion-list inset no-lines>
       <ion-item>
@@ -51,10 +44,19 @@
 			</ion-item>
       <ion-item *ngIf="!newUserForm.controls.pword.valid && (newUserForm.controls.pword.dirty || submitAttempt)">
           <p class="warning">Please enter a valid password. Must be at least 5 characters.</p>
+      </ion-item>
+      <ion-item>
+          <ion-label floating>Confirm Password</ion-label>
+          <ion-input type="password" formControlName="repword" [class.invalid]="!newUserForm.controls.repword.valid && (newUserForm.controls.repword.dirty || submitAttempt)"></ion-input>         
+      </ion-item>
+      <ion-item *ngIf="!newUserForm.controls.repword.valid && (newUserForm.controls.repword.dirty || submitAttempt)">
+          <p class="warning">Confirmation password does not match.</p>
       </ion-item>                  
 			<ion-item>
-			    <ion-label floating>Your date of birth</ion-label>
-			    <ion-datetime displayFormat="MM/DD/YYYY" formControlName="birthDay">You must be of legal drinking age to register.</ion-datetime>
+			    <ion-label><button ion-button>Pick your date of birth</button></ion-label>
+			    <ion-datetime item-right displayFormat="MM/DD/YYYY" formControlName="birthDay">
+            You must be of legal drinking age to register.
+          </ion-datetime>
 			</ion-item>
       <ion-item *ngIf="!newUserForm.controls.birthDay.valid && (newUserForm.controls.birthDay.dirty || submitAttempt)">
           <p class="warning">You must be 18 to register.</p>
@@ -68,14 +70,12 @@
 			</ion-item>
       <ion-item *ngIf="!newUserForm.controls.agree.valid && (newUserForm.controls.agree.dirty || submitAttempt)">
           <p class="warning">Must agree to terms of service and privacy policy to proceed.</p>
-      </ion-item>       			
-			<ion-item>    
-         <div align="center">
-  					<button type="submit" ion-button icon-left round>
-  						<ion-icon name="log-in"></ion-icon>Join Bender
-  					</button>
-         </div>
-			</ion-item>				        		
+      </ion-item>
   	</ion-list>
+    <div align="center">
+      <button type="submit" ion-button icon-left>
+        <ion-icon name="log-in"></ion-icon>Join Drink Hoppy
+      </button>
+    </div>    
   </form>
 </ion-content>

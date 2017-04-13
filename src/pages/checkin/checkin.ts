@@ -510,6 +510,7 @@ export class CheckinPage {
 
         let timestamp = firebase.database.ServerValue.TIMESTAMP;
         locationData = {
+          breweryId:'',
           placeId:this.location.place_id,
           name:this.location.name,
           photo:this.location.url,
@@ -526,6 +527,12 @@ export class CheckinPage {
           dateCreated: timestamp
         }
 
+        if (this.checkinType == 'brewery') {
+          locationData['breweryId'] = this.brewery.id;
+          locationData['address'] = this.brewery.streetAddress;
+          locationData['zip'] = this.brewery.postalCode;
+        }
+
         if (this.beer != null) {
           locationData['beerId'] = this.beer.id;
           locationData['beerName'] = this.beer.name;
@@ -535,6 +542,9 @@ export class CheckinPage {
 
           if (this.beer.hasOwnProperty('labels')) {
             locationData['beerLabels'] = this.beer.labels;
+            locationData['beerLabelIcon'] = this.beer.labels.icon;
+            locationData['beerLabelMedium'] = this.beer.labels.medium;
+            locationData['beerLabelLarge'] = this.beer.labels.large;
 
             if (this.beer.labels.hasOwnProperty('medium'))
               locationData['beerIMG'] = this.beer.labels.medium;

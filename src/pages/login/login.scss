@@ -1,33 +1,33 @@
 page-login {
 
-  .fb-button {
-    width:200px;
-  }
+	.fb-button {
+	  width:200px;
+	}
+
+	button {
+	  width:250px;
+	  padding-botom:20px;
+	}
+
+	.btn {
+	  padding-top: 5px;
+	  padding-bottom:5px;
+	  text-align:center;
+	}
 
 	#home-content {
-	  background-image: url('../images/login-splash-black.png');
-	  background-repeat: no-repeat;
-	  background-size: cover;
-	  background-color: #000000;
+	  //background-image: url('../images/login-splash-black.png');
+	  //background-repeat: no-repeat;
+	  //background-size: cover;
+	  background-color: #01796f;
 	}
 
-	.login-input {
-	  background-color : #ffffff;
-	  width:350px;
-	  height:40px;
-	  margin-bottom:15px;
-	  padding-left:20px 20px;
-      box-sizing: border-box;	  
-      opacity: 0.75;
-      filter: alpha(opacity=50);
-      border: 2px solid #666666;
-	}
 
 	h1 {
-	  font-size: 60px;
+	  font-size: 50px;
 	  color: #ffffff;
 	  text-shadow: black 0.1em 0.1em 0.2em;
-	  padding:0px;
+	  padding-top:10px;
 	  margin:0px;
 	  position:relative;
 	  top: -5px;
@@ -46,7 +46,7 @@ page-login {
 
       font-size: 40p;
       color:#ffffff;
-      margin:20px;
+      margin:10px;
 
 	}
 
@@ -61,8 +61,32 @@ page-login {
       text-align:center;
     }
 
+    ion-item {
+      background: rgba(0, 0, 0, 0) !important;
+      padding-bottom:10px !important;
+      padding-right:20px !important;
+      padding-left:0px !important;
+    }
+
+    .item-inner {
+      border:none !important;
+	  border-bottom-color: transparent !important;
+	  box-shadow: none !important;    
+    }
+
     ion-input, ion-select, ion-textarea {
         background-color: #f2f2f2;
-        padding: 5px 10px;
-    } 
+        padding-left:50px;
+    }
+
+    .login-btn {
+
+    }
+
+    .label-icon {
+      position: absolute !important;
+      bottom: 9px !important;
+      left: 40px !important;
+    }
+
 }

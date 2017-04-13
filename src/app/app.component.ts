@@ -12,6 +12,7 @@ import { LoginPage } from '../pages/login/login';
 import { HomePage } from '../pages/home/home';
 import { FavoritesPage } from '../pages/favorites/favorites';
 import { ProfilePage } from '../pages/profile/profile';
+import { Storage } from '@ionic/storage';
 
 
 
@@ -40,6 +41,7 @@ export class MyApp {
     public toastCtrl: ToastController,
     public auth: AuthService,
     public geo:GoogleService,
+    public storage:Storage,
     public alertCtrl: AlertController,
     public conn:ConnectivityService
   ) {
@@ -69,8 +71,14 @@ export class MyApp {
     this.platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
-      //this.setSingletonData();
+      /*
+      this.auth.isLoggedIn().then((status)=>{
+        if (status)
+          this.getGeolocation();
+      });
+      */      
       this.getGeolocation();
+      
       StatusBar.styleDefault();
       Splashscreen.hide();
     });
@@ -85,9 +93,9 @@ export class MyApp {
 
   doLogout() {
   
-    this.auth.logout().subscribe(allowed => {
+    this.auth.logOut().then(allowed => {
       if (allowed) {
-        this.nav.setRoot(LoginPage); 
+        this.nav.setRoot(LoginPage);
         this.presentToast('Log out was successful');
         this.menu.close(); 
       }

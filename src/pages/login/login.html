@@ -1,12 +1,78 @@
 <ion-content id="home-content">
+<div align="center">
+  <h1>Drink Hoppy</h1>
+</div>
+<div class="btn">
+  <button color="facebook" ion-button icon-left (click)="loginFacebook()">
+    <ion-icon class="social-button" ios="logo-facebook" md="logo-facebook"></ion-icon>
+    Login with Facebook
+  </button>
+</div>
+<div class="btn">
+  <button color="twitter" item-right ion-button icon-left (click)="loginTwitter()">
+    <ion-icon class="social-button" ios="logo-twitter" md="logo-twitter"></ion-icon>
+    Login with Twitter
+  </button>
+</div>
+<div class="btn">
+  <button color="google" item-right ion-button icon-left (click)="loginGoogle()">
+    <ion-icon class="social-button" ios="logo-google" md="logo-google"></ion-icon>
+    Login with Google
+  </button>
+</div>
+<div align="center">
+  <h3 id="or-sep">OR</h3>
+</div>
+<form [formGroup] = "emailForm" (submit)="loginEmail()">
+  <ion-item class="form-input">
+    <ion-input formControlName="email" placeholder="Email" required type="text">    
+    </ion-input>
+    <ion-icon class="label-icon" name="mail" item-left></ion-icon>  
+  </ion-item>
+  <ion-item class="form-input">
+    <ion-input formControlName="password" placeholder="Password" required type="password"></ion-input>
+    <ion-icon class="label-icon" name="lock" item-left></ion-icon> 
+  </ion-item>
+  <div align="center">
+    <button type="submit" ion-button icon-left>
+      <ion-icon name="log-in"></ion-icon>Log In
+    </button>
+  </div>
+</form>
+  <div align="center">
+    <button type="submit" ion-button icon-left (click)="logMeOut()">
+      <ion-icon name="log-in"></ion-icon>Log Out
+    </button>
+  </div>
+<!----
 <ion-grid>
   <ion-row center class="black-bg">
         <ion-col>
-              <div align="center">
-                <h1>Bender</h1>
-                <h3><span id="slogan">Drink. Share. Be Merry.</span></h3>
-                <img class="fb-button" src="images/buttons/facebook.png" (click)="loginFB()" >             
-              </div>
+          <div align="center">
+            <h1>Drink Hoppy</h1>
+            <h3><span id="slogan">Drink. Share. Be Merry.</span></h3>
+                          
+            <img class="fb-button" src="images/buttons/facebook.png" (click)="loginFB()" >
+            
+            <div class="btn">
+              <button color="facebook" ion-button icon-left (click)="loginFacebook()">
+                <ion-icon class="social-button" ios="logo-facebook" md="logo-facebook"></ion-icon>
+                Login with Facebook
+              </button>
+            </div>
+            <div class="btn">
+              <button color="twitter" item-right ion-button icon-left (click)="loginTwitter()">
+                <ion-icon class="social-button" ios="logo-twitter" md="logo-twitter"></ion-icon>
+                Login with Twitter
+              </button>
+            </div>
+            <div class="btn">
+              <button color="google" item-right ion-button icon-left (click)="loginGoogle()">
+                <ion-icon class="social-button" ios="logo-google" md="logo-google"></ion-icon>
+                Login with Google
+              </button>
+            </div>            
+          </div>
         </ion-col>
     </ion-row>
     <ion-row>
@@ -32,28 +98,14 @@
     </ion-col>
   </ion-row>
 </ion-grid>
-
-<!----
-<ion-card>
-<ion-card-header>
-  Facebook Info
-</ion-card-header>
-<ion-card-content>
-  <ion-card padding [hidden]="id == ''">
-    <p>Name: {{name}}</p>
-    <p>Email: {{email}}</p>
-    <p>id: {{id}}</p>
-    <p>gender: {{gender}}</p>
-    <p>Birthday: {{birthday}}</p>
-    <img [src]="picture" />
-  </ion-card>
-</ion-card-content>
-</ion-card>
 ---->
 </ion-content>
 
 <ion-footer>
-  <ion-toolbar (click)="presentModal()">
-    <ion-title><div align="center">Come Join Us! Sign up.</div></ion-title>
+  <ion-toolbar>
+    <!---- <ion-title><div align="center">Come Join Us! Sign up.</div></ion-title> ---->
+    <button full ion-item (click)="presentModal()">
+      <ion-title><div align="center">Come Join Us! Sign up.</div></ion-title>
+    </button> 
   </ion-toolbar>
 </ion-footer>

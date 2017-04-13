@@ -1,5 +1,10 @@
 import { Injectable } from '@angular/core';
+import { Platform } from 'ionic-angular';
 import { Observable } from 'rxjs/Observable';
+import { AuthProviders, AuthMethods, AngularFire  } from 'angularfire2';
+import { Facebook } from 'ionic-native';
+import firebase from 'firebase';
+
 import 'rxjs/add/operator/map';
 import { Storage } from '@ionic/storage';
 
@@ -18,9 +23,188 @@ export class User {
  
 @Injectable()
 export class AuthService {
-  currentUser: User;
+  public currentUser: User;
+  public auth:any;
+  public userRef:any;
+  public userExistsRef:any;
+  public loggedIn:boolean;
 
-  constructor(public sing:SingletonService,public storage:Storage, public db:DbService) {}
+  constructor(public sing:SingletonService, 
+              public angFire:AngularFire,
+              public storage:Storage,
+              public platform:Platform,
+              public db:DbService) {
+    this.auth = firebase.auth();
+    this.userRef = firebase.database();
+    this.userExistsRef = firebase.database();
+
+    
+    firebase.auth().onAuthStateChanged((_currentUser) => {
+        if (_currentUser) {
+            console.log("User " + _currentUser.uid);
+            this.storage.set('uid',_currentUser.uid);
+            //console.log("currentUser",_currentUser);
+            //this.loggedIn = true;
+            
+        } else {
+            console.log("AUTH: User is logged out");
+            //this.loggedIn = false;
+        }
+    }); 
+  }
+
+  public loginEmail(credentials) {
+    var that = this;
+    return new Observable(observer => {
+      firebase.auth().signInWithEmailAndPassword(credentials.email,credentials.password).then(response=>{
+        this.updateUserData(response);
+        observer.next(true);
+      }).catch(error=> {
+        // Handle Errors here.
+        observer.error(error);        
+      });
+    });
+  }
+
+  public updateUserData(resp) {
+    let timestamp = firebase.database.ServerValue.TIMESTAMP;
+    let updateData = {dateLoggedIn:timestamp};
+
+    this.userRef.ref('users/' + resp.uid).update(updateData);    
+  }
+
+  public writeUserData(resp,provider,fbTok?,credName?) {
+    let timestamp = firebase.database.ServerValue.TIMESTAMP;
+    let displayName = null
+    //console.log('resp',resp);
+    if (credName!=null) {
+      displayName = credName;
+    } else {
+      displayName = resp.displayName;
+    }
+
+    this.userRef.ref('users/' + resp.uid).set({
+      uid:resp.uid,
+      name:displayName,
+      email:resp.email,
+      dateCreated:timestamp,
+      dateLoggedIn:timestamp,      
+      facebookToken:fbTok,
+      provider:provider,
+      emailVerified: resp.emailVerified,
+      checkins:0         
+    });
+  }
+   
+  public signupEmail(cred) {
+    return new Promise( resolve => {
+
+      firebase.auth().createUserWithEmailAndPassword(cred.email.value,cred.pword.value).then(resp=>{
+        //console.log('resp',resp);
+
+        this.writeUserData(resp,'email','',cred.name.value);
+ 
+        resolve(resp);
+      }).catch(error=> {
+        // Handle Errors here.
+        console.log('error',error);
+        resolve(error);
+      });
+
+    });
+  }
+  
+  /*
+  public signupEmail(cred) {
+    return new Promise( resolve => {
+      
+      this.angFire.auth.createUser({email:cred.email.value,password:cred.pword.value}).then(newUser=>{
+        let timestamp = firebase.database.ServerValue.TIMESTAMP;
+        console.log('newUser created',newUser);
+        // TODO: send sendPasswordResetEmail
+        this.auth.currentUser.sendEmailVerification();
+        //this.writeUserData(newUser.uid,cred.name.value,cred.email.value,)
+
+        this.userRef.ref('users/' + newUser.uid).set({
+          uid: newUser.uid,
+          username: cred.userName.value,
+          displayName: cred.name.value,
+          DOB: cred.birthDay.value, 
+          email: newUser.auth.email,
+          profilePicture: newUser.auth.photoURL,
+          dateCreated: timestamp,
+          checkins: 0,
+          emailVerified: newUser.auth.emailVerified
+        });
+
+        resolve(newUser);
+      }).catch(error=>{
+        console.log('error',error);
+        resolve(error);
+      });
+
+    });
+  }
+  */
+  public loginFacebook() {
+
+    return Observable.create(observer => {
+
+      if (this.platform.is('cordova')) {
+        Facebook.login(['public_profile','email']).then(facebookData => {
+          //console.log('facebookData',facebookData);
+
+          let provider = firebase.auth.FacebookAuthProvider.credential(facebookData.authResponse.accessToken);
+          firebase.auth().signInWithCredential(provider).then(firebaseData => {
+            //console.log('firebaseData',firebaseData);
+
+            this.userExistsRef.ref('users/').once('value',snapshot=>{
+              if (snapshot.hasChild(firebaseData.uid)) {
+                //alert('exists');
+                this.updateUserData(firebaseData);
+                observer.next(firebaseData);
+              } else {
+                //alert('does not exist');
+                this.writeUserData(firebaseData,'facebook',facebookData.authResponse.accessToken);
+                observer.next(firebaseData);                            
+              }
+            });
+          });
+        }, error => {
+          observer.error(error);
+        });
+      } else {
+          let provider = new firebase.auth.FacebookAuthProvider();
+          provider.addScope('user_birthday');
+          firebase.auth().signInWithPopup(provider).then(resp=>{
+
+          let providerFB = firebase.auth.FacebookAuthProvider.credential(resp.credential.accessToken);
+          firebase.auth().signInWithCredential(providerFB).then(firebaseData => {            
+            //console.log('fbresp',firebaseData);
+
+            this.userExistsRef.ref('users/').once('value',snapshot=>{
+              if (snapshot.hasChild(firebaseData.uid)) {
+                //alert('exists');
+                this.updateUserData(firebaseData);
+                observer.next(firebaseData);
+              } else {
+                //alert('does not exist');
+                this.writeUserData(firebaseData,'facebook',resp.credential.accessToken);
+                observer.next(firebaseData);                            
+              }
+            });
+            
+          });
+            //this.setLoggedIn(resp);
+          }).catch(error=>{
+            console.log('error facebook login',error);
+            observer.next(error);
+          });        
+      }
+
+    });
+
+  }
  
   public login(credentials) {
     if (credentials.email === null || credentials.password === null) {
@@ -55,28 +239,6 @@ export class AuthService {
 
               this.setSingletonData();
 
-              // If favorites exists and this is a new device, set favorites storage
-              // TODO:  Work on this later.  Code goes here.
-
-              /*
-              this.db.getFavoriteBeers(allowed.data.token).subscribe((beersObj)=>{
-
-                  console.log('beerObj',beersObj);
-                  
-                  
-                  if (beersObj.status) {
-                    
-                    let beersArray = new Array();
-                    let beers = JSON.parse(beersObj.data.beers);
-
-                    for (let i = 0; i < beers.length; i++) {
-                      beersArray.push(beers[i]);
-                    }
-                    this.storage.set('beers',beersArray);
-                  
-                  }   
-              });
-              */
             } else {
                access = false;
                console.log('login fail');
@@ -114,19 +276,13 @@ export class AuthService {
 
       this.storage.ready().then(()=>{
 
-        this.storage.get("loggedIn").then((status) =>{
+        this.storage.get("uid").then((status) =>{
             
             if (status == null ) {
-
-              this.sing.loggedIn = false;
               resolve(false);
-
             } else {
-
-              this.setSingletonData();
               this.sing.loggedIn = true;
               resolve(true);
-
             }
         });
 
@@ -164,6 +320,21 @@ export class AuthService {
     });    
   }  
  
+  public logOut() {
+    let sing = this.sing;
+    let stor = this.storage;
+    return new Promise(resolve=>{
+      firebase.auth().signOut().then(resp=>{
+          stor.remove('uid');
+          //console.log('logged out');
+          resolve(true);
+        }).catch(error=>{
+          resolve(false);
+          console.log('logout error',error);          
+        });
+    });
+  }
+
   public logout() {
     return Observable.create(observer => {
       this.currentUser = null;

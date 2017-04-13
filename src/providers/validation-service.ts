@@ -16,6 +16,14 @@ export class ValidationService {
         }
     }
 
+    static checkConfirmPassword(control) {
+        if (control.value == control.root.value['pword']) {
+            return null;
+        } else {
+            return { 'invalidConfirmPassword': true };
+        }        
+    }
+
     static ageValidator(control) {
   
         let age = 0;

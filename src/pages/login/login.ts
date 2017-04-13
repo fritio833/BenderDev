@@ -1,15 +1,18 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, AlertController, LoadingController,ModalController } from 'ionic-angular';
+import { NavController, ToastController, NavParams, AlertController, LoadingController, ModalController } from 'ionic-angular';
 import { Validators, FormBuilder } from '@angular/forms';
 import { Storage } from '@ionic/storage';
+import { AuthProviders, AuthMethods, AngularFire  } from 'angularfire2';
 
 import { FbProvider } from '../../providers/fb-provider';
 import { ValidationService } from '../../providers/validation-service';
 import { SingletonService } from '../../providers/singleton-service';
 import { AuthService } from '../../providers/auth-service';
 
+
 import { CreateAccountFinalPage }from '../create-account-final/create-account-final';
 import { HomePage } from '../home/home';
+
 
 
 @Component({
@@ -26,7 +29,7 @@ export class LoginPage {
   public gender:any;
   public birthday:any;
   public password:any;
-  public loginCredentials = {email: '', password: '', socialLogin: 0};
+  public loginCredentials = {email: '', password: ''};
   public loading:any;
 
   constructor(public navCtrl: NavController, 
@@ -36,7 +39,9 @@ export class LoginPage {
               public fb:FbProvider, 
               public storage: Storage,
               public sing: SingletonService,
-              public auth:AuthService, 
+              public auth:AuthService,
+              public toastCtrl:ToastController,
+              public angFire:AngularFire,
               public loadingCtrl: LoadingController, 
               public modalCtrl:ModalController) {
 
@@ -47,7 +52,6 @@ export class LoginPage {
       email : ['',Validators.required],
       password : ['',Validators.compose([Validators.required,Validators.maxLength(30)])]
     });
-
   }
 
   showCreateAccountFinal() {
@@ -63,16 +67,27 @@ export class LoginPage {
     modal.present();
   }
 
+  loginFacebook() {
+     this.auth.loginFacebook().subscribe(resp => {
+      //console.log('resp',resp);
+      if (!resp)
+        this.presentToast("Incorrect Login Credentials.");
+      else {
+        this.navCtrl.setRoot(HomePage);
+      }
+      //this.showError("Incorrect Login Credentials."); 
+    }, error => {
+      console.log('error',error);
+    });
+  }
+
   loginFB() {
 
     this.fb.loginAndroid().then(() => {
 
       this.fb.setCurrentUserProfileAndroid().then((success) => {
-          
-          this.navCtrl.setRoot(HomePage);
-
+        this.navCtrl.setRoot(HomePage);
       });
-
     });
   }
 
@@ -98,28 +113,22 @@ export class LoginPage {
 
     this.loginCredentials = { 
                                 email:this.emailForm.value.email,
-                                password:this.emailForm.value.password,
-                                socialLogin:0
+                                password:this.emailForm.value.password
                             };
-
+    
     if (this.emailForm.valid) {
-        this.showLoading();
-        this.auth.login(this.loginCredentials).subscribe(allowed => {
-          if (allowed) {
-            setTimeout(() => {
-            this.loading.dismiss();
+      this.auth.loginEmail(this.loginCredentials)
+        .subscribe(resp=>{
+          if(resp) {
             this.navCtrl.setRoot(HomePage);
-            });
-          } else {
-            this.showError("Check user name and passord.");
           }
-        },
-        error => {
-          this.showError(error);
-        });    
-      } else {
-        this.showError("Fields can't be left blank");
-      }
+          console.log('resp',resp);
+        },error=> {
+          console.log('error',error);
+          this.presentToast(error.message);
+        });
+     }   
+
   }
 
   // TODO:  Firebase email confirmation
@@ -127,6 +136,19 @@ export class LoginPage {
 
 
   }
+
+  logMeOut() {
+    this.auth.logOut();
+  }
+
+  presentToast(msg) {
+    let toast = this.toastCtrl.create({
+      message: msg,
+      position: 'middle',
+      duration: 3000
+    });
+    toast.present();
+  }  
 
   showLoading() {
     this.loading = this.loadingCtrl.create({
@@ -137,10 +159,11 @@ export class LoginPage {
   }
  
   showError(text) {
+    /*
     setTimeout(() => {
       this.loading.dismiss();
     });
- 
+    */
     let alert = this.alertCtrl.create({
       title: 'Login Failed',
       subTitle: text,

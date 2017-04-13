@@ -1,11 +1,11 @@
 import { Component, ViewChild } from '@angular/core';
 import { NavController, ToastController, ModalController } from 'ionic-angular';
+import { AngularFire, FirebaseListObservable } from 'angularfire2';
 import { Storage } from '@ionic/storage';
 import { Ionic2RatingModule } from 'ionic2-rating';
 import { Geolocation } from 'ionic-native';
 
 import { SingletonService } from '../../providers/singleton-service';
-import { AuthService } from '../../providers/auth-service';
 
 import { HelloIonicPage } from '../hello-ionic/hello-ionic';
 import { BeerDetailPage } from '../beer-detail/beer-detail';
@@ -15,50 +15,43 @@ import { SearchBeerPage } from '../search-beer/search-beer';
 import { SearchLocationPage } from '../search-location/search-location';
 import { SearchBreweriesPage } from '../search-breweries/search-breweries';
 
+import firebase from 'firebase';
 
-
-declare var google;
-/*
-  Generated class for the Home page.
-
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
-*/
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
 export class HomePage {
 
-  public choice:string;
   public beers = new Array();
   public reviews = new Array();
-  public profileIMG:any;
+  public profileIMG:string = 'images/default-profile.png';
+  public displayName:string = '';
+  public user:any;
   public drinkRating = 4;
   public locRating = 4.5;
 
   constructor(public navCtrl: NavController, 
   	          public sing:SingletonService,
-  	          public auth:AuthService,
               public modalCtrl:ModalController,
   	          public toastCtrl:ToastController,
   	          public storage:Storage) {
 
-  	this.choice = "home";
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        if (user.photoURL!=null)
+          this.profileIMG = user.photoURL;
+        if (user.displayName!=null)
+          this.displayName = user.displayName;
+        //console.log('user',user);
+      }
+    });
+       
   }
 
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad HomePage');
-
-    this.storage.ready().then(()=>{
-       this.storage.get('fbPic').then((val) =>{
-         console.log('profile pic: ' + val);
-         this.profileIMG = val;
-       })
-    });    
-
-    //this.initMap();
   }
 
   doSearch() {
