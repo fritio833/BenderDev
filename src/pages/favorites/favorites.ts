@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, LoadingController, ToastController, ModalController, ActionSheetController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
-
+import { AngularFire, FirebaseListObservable } from 'angularfire2';
+import firebase from 'firebase';
 
 import { SingletonService } from '../../providers/singleton-service';
 import { BreweryService } from '../../providers/brewery-service';
@@ -9,12 +10,7 @@ import { BreweryService } from '../../providers/brewery-service';
 import { BeerDetailPage } from '../beer-detail/beer-detail';
 import { CheckinPage } from '../checkin/checkin';
 
-/*
-  Generated class for the Favorites page.
 
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
-*/
 @Component({
   selector: 'page-favorites',
   templateUrl: 'favorites.html'
@@ -24,6 +20,9 @@ export class FavoritesPage {
   public beers = new Array();
   public choice:string;
   public loading:any;
+  public favBeerRef:any;
+  public favBeers: FirebaseListObservable<any>;
+  public uid:any;
 
   constructor(public navCtrl:NavController, 
               public navParams:NavParams,
@@ -32,9 +31,16 @@ export class FavoritesPage {
               public beerAPI:BreweryService,
               public actionCtrl:ActionSheetController,
               public modalCtrl:ModalController,
+              public angFire:AngularFire,
               public loadingCtrl:LoadingController,
               public toastCtrl:ToastController) {
-    this.choice = "beerlist";  
+    this.choice = "beerlist";
+
+    this.storage.ready().then(()=>{
+      this.storage.get('uid').then(uid=>{
+        this.favBeers = this.angFire.database.list('/favorite_beers/'+uid+'/');      
+      });
+    });    
   }
 
   getBeerDetail(beerDbId) {
@@ -96,25 +102,7 @@ export class FavoritesPage {
   }  
 
   removeBeerFromFavorites(beerId) {
-       
-    this.storage.get("beers").then((beerArray)=>{   
-
-      for (let i = 0; i < beerArray.length; i++) {
-      
-        if (beerArray[i].id == beerId ){
-          
-          beerArray.splice(i,1);
-
-          this.storage.set('beers',beerArray).then(()=>{
-             this.presentToast(beerArray[i].name + " removed from favorites.");
-             this.ionViewDidLoad();              
-          });
-
-          return;
-        }
-      }          
-
-    });
+    
   }
 
   presentToast(msg) {
@@ -128,15 +116,9 @@ export class FavoritesPage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad FavoritesPage');
-
-    this.storage.ready().then(()=>{
-
-      this.storage.get('beers').then((beerArray)=>{
-        this.beers = beerArray;
-        //console.log(this.beers);
-      });      
     
-    });
+    console.log('favbeers',this.favBeers);
+
   }
 
   showLoading() {

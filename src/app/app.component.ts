@@ -81,6 +81,7 @@ export class MyApp {
       
       StatusBar.styleDefault();
       Splashscreen.hide();
+
     });
   }
 
@@ -177,6 +178,5 @@ export class MyApp {
     });
     alert.present();
   }
-
 
 }

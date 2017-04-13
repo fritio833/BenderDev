@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Platform } from 'ionic-angular';
+import { Platform, App } from 'ionic-angular';
+
 import { Observable } from 'rxjs/Observable';
 import { AuthProviders, AuthMethods, AngularFire  } from 'angularfire2';
 import { Facebook } from 'ionic-native';
@@ -10,6 +11,9 @@ import { Storage } from '@ionic/storage';
 
 import { SingletonService } from './singleton-service';
 import { DbService } from './db-service';
+
+import { HomePage } from '../pages/home/home';
+import { LoginPage } from '../pages/login/login';
 
 export class User {
   name: string;
@@ -27,30 +31,31 @@ export class AuthService {
   public auth:any;
   public userRef:any;
   public userExistsRef:any;
-  public loggedIn:boolean;
+  public loggedIn:boolean = false;
 
-  constructor(public sing:SingletonService, 
+  constructor(public sing:SingletonService,
               public angFire:AngularFire,
               public storage:Storage,
               public platform:Platform,
+              public app:App,
               public db:DbService) {
     this.auth = firebase.auth();
     this.userRef = firebase.database();
     this.userExistsRef = firebase.database();
-
-    
+    let that = this;
+    /*    
     firebase.auth().onAuthStateChanged((_currentUser) => {
-        if (_currentUser) {
-            console.log("User " + _currentUser.uid);
-            this.storage.set('uid',_currentUser.uid);
-            //console.log("currentUser",_currentUser);
-            //this.loggedIn = true;
-            
+        if (_currentUser && !this.loggedIn) {
+          console.log("User " + _currentUser.uid);
+
+          this.app.getActiveNav().setRoot(HomePage);
+          this.loggedIn = true;
+          //this.storage.set('uid',_currentUser.uid);            
         } else {
-            console.log("AUTH: User is logged out");
-            //this.loggedIn = false;
+          console.log("AUTH: User is logged out");
         }
-    }); 
+    });
+    */
   }
 
   public loginEmail(credentials) {
@@ -58,6 +63,7 @@ export class AuthService {
     return new Observable(observer => {
       firebase.auth().signInWithEmailAndPassword(credentials.email,credentials.password).then(response=>{
         this.updateUserData(response);
+        this.storage.set('uid',response.uid);
         observer.next(true);
       }).catch(error=> {
         // Handle Errors here.
@@ -75,13 +81,19 @@ export class AuthService {
 
   public writeUserData(resp,provider,fbTok?,credName?) {
     let timestamp = firebase.database.ServerValue.TIMESTAMP;
-    let displayName = null
+    let displayName = null;
+    let photoURL = null;
     //console.log('resp',resp);
     if (credName!=null) {
       displayName = credName;
     } else {
       displayName = resp.displayName;
     }
+
+    if (resp.photoURL != null)
+      photoURL = resp.photoURL;
+    else
+      photoURL = '';
 
     this.userRef.ref('users/' + resp.uid).set({
       uid:resp.uid,
@@ -91,28 +103,30 @@ export class AuthService {
       dateLoggedIn:timestamp,      
       facebookToken:fbTok,
       provider:provider,
+      photo:photoURL,
       emailVerified: resp.emailVerified,
       checkins:0         
     });
   }
    
   public signupEmail(cred) {
-    return new Promise( resolve => {
+    return new Observable(observer => {
 
       firebase.auth().createUserWithEmailAndPassword(cred.email.value,cred.pword.value).then(resp=>{
         //console.log('resp',resp);
-
+        this.auth.currentUser.sendEmailVerification();
+        this.storage.set('uid',resp.uid);
         this.writeUserData(resp,'email','',cred.name.value);
- 
-        resolve(resp);
+        observer.next(resp);
       }).catch(error=> {
         // Handle Errors here.
         console.log('error',error);
-        resolve(error);
+        observer.error(error);
       });
 
     });
   }
+
   
   /*
   public signupEmail(cred) {
@@ -157,14 +171,14 @@ export class AuthService {
           let provider = firebase.auth.FacebookAuthProvider.credential(facebookData.authResponse.accessToken);
           firebase.auth().signInWithCredential(provider).then(firebaseData => {
             //console.log('firebaseData',firebaseData);
+            this.storage.set('uid',firebaseData.uid);
 
             this.userExistsRef.ref('users/').once('value',snapshot=>{
               if (snapshot.hasChild(firebaseData.uid)) {
-                //alert('exists');
                 this.updateUserData(firebaseData);
                 observer.next(firebaseData);
               } else {
-                //alert('does not exist');
+                this.auth.currentUser.sendEmailVerification();
                 this.writeUserData(firebaseData,'facebook',facebookData.authResponse.accessToken);
                 observer.next(firebaseData);                            
               }
@@ -181,21 +195,20 @@ export class AuthService {
           let providerFB = firebase.auth.FacebookAuthProvider.credential(resp.credential.accessToken);
           firebase.auth().signInWithCredential(providerFB).then(firebaseData => {            
             //console.log('fbresp',firebaseData);
+            this.storage.set('uid',firebaseData.uid);
 
             this.userExistsRef.ref('users/').once('value',snapshot=>{
               if (snapshot.hasChild(firebaseData.uid)) {
-                //alert('exists');
                 this.updateUserData(firebaseData);
                 observer.next(firebaseData);
               } else {
-                //alert('does not exist');
+                this.auth.currentUser.sendEmailVerification();
                 this.writeUserData(firebaseData,'facebook',resp.credential.accessToken);
                 observer.next(firebaseData);                            
               }
             });
             
           });
-            //this.setLoggedIn(resp);
           }).catch(error=>{
             console.log('error facebook login',error);
             observer.next(error);
@@ -273,6 +286,7 @@ export class AuthService {
 
   public isLoggedIn() {
     return new Promise((resolve) => {
+
 
       this.storage.ready().then(()=>{
 

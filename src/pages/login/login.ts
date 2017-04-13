@@ -63,8 +63,9 @@ export class LoginPage {
   }
 
   presentModal() {
-    let modal = this.modalCtrl.create(CreateAccountFinalPage);
-    modal.present();
+    this.navCtrl.push(CreateAccountFinalPage); 
+    //let modal = this.modalCtrl.create(CreateAccountFinalPage);
+    //modal.present();
   }
 
   loginFacebook() {
@@ -74,6 +75,7 @@ export class LoginPage {
         this.presentToast("Incorrect Login Credentials.");
       else {
         this.navCtrl.setRoot(HomePage);
+        console.log('facebook login');
       }
       //this.showError("Incorrect Login Credentials."); 
     }, error => {
@@ -121,6 +123,7 @@ export class LoginPage {
         .subscribe(resp=>{
           if(resp) {
             this.navCtrl.setRoot(HomePage);
+            console.log('login email');
           }
           console.log('resp',resp);
         },error=> {

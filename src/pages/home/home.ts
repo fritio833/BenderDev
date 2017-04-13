@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavController, ToastController, ModalController } from 'ionic-angular';
+import { NavController, MenuController, ToastController, ModalController } from 'ionic-angular';
 import { AngularFire, FirebaseListObservable } from 'angularfire2';
 import { Storage } from '@ionic/storage';
 import { Ionic2RatingModule } from 'ionic2-rating';
@@ -27,31 +27,50 @@ export class HomePage {
   public reviews = new Array();
   public profileIMG:string = 'images/default-profile.png';
   public displayName:string = '';
-  public user:any;
   public drinkRating = 4;
   public locRating = 4.5;
+  public profileRef:any;
+  public checkinCount:number;
+  public joinedDate:any;
+  public getProfile:boolean = true;
 
   constructor(public navCtrl: NavController, 
   	          public sing:SingletonService,
               public modalCtrl:ModalController,
   	          public toastCtrl:ToastController,
+              public menuCtrl: MenuController,
   	          public storage:Storage) {
 
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        if (user.photoURL!=null)
-          this.profileIMG = user.photoURL;
-        if (user.displayName!=null)
-          this.displayName = user.displayName;
-        //console.log('user',user);
-      }
-    });
-       
   }
 
+  getProfileData() {
+
+    this.storage.ready().then(()=>{
+      this.storage.get('uid').then(uid=>{
+        console.log('uid',uid);
+        if (uid != null) {
+          this.profileRef = firebase.database().ref('users/'+uid).once('value').then(snapshot => {
+            //console.log('snap',snapshot.val());
+           
+            this.checkinCount = snapshot.val().checkins;
+
+            let date = new Date(snapshot.val().dateCreated);
+            this.joinedDate = date.toDateString();
+          
+            this.displayName = snapshot.val().name;
+
+            if (snapshot.val().photo!=null && snapshot.val().photo !='')
+              this.profileIMG = snapshot.val().photo;
+            
+          });
+        }
+      });
+    });
+  }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad HomePage');
+    console.log('ionViewDidLoad HomePage'); 
+    this.getProfileData();
   }
 
   doSearch() {

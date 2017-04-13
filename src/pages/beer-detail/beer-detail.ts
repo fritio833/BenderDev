@@ -12,6 +12,8 @@ import { ReviewBeerPage } from '../review-beer/review-beer';
 import { CheckinPage } from '../checkin/checkin';
 import { Ionic2RatingModule } from 'ionic2-rating';
 
+import firebase from 'firebase';
+
 /*
   Generated class for the BeerDetail page.
 
@@ -32,6 +34,8 @@ export class BeerDetailPage {
   public beerReviews:any;
   public overallBeerRating:number;
   public beerReviewCount:number;
+  public favBeerRef:any;
+  public uid:any;
 
   constructor( public navCtrl: NavController, 
                public navParams: NavParams, 
@@ -44,6 +48,14 @@ export class BeerDetailPage {
 
     this.beerId = navParams.get('beerId');
     this.getLikeBeer(this.beerId);
+
+    this.storage.ready().then(()=>{
+      this.storage.get('uid').then(uid=>{
+        this.uid = uid;
+        this.favBeerRef = firebase.database();        
+      });
+    });
+
     //console.log("beerid",this.beerId);
 
   }
@@ -57,28 +69,7 @@ export class BeerDetailPage {
       this.loadBeer(this.beer);
       //console.log(this.beer);
       this.getBeerReviews();
-
-      //  Hide Save button if we saved this beer already
-
-      this.storage.ready().then(()=>{
-
-        this.storage.get("beers").then((beerArray)=>{
       
-          if (beerArray != null) {
-
-            for (let i = 0; i < beerArray.length; i++) {
-              if (beerArray[i].id == this.beer.id ){
-                this.hideSave = true;
-                return;
-              }
-            }
-          }
-          
-        });      
-    
-      }); 
-      
-
     });
   }
  
@@ -117,44 +108,9 @@ export class BeerDetailPage {
   }
 
   saveBeerToFavorites(beerId) {
-
-    var beers = new Array();
-
-    if (beerId == null) {
-
-      console.log('beerId is null');
-
-    } else {
-
-      this.storage.ready().then(()=>{
-
-        this.storage.get("beers").then((beerArray)=>{
-        
-            if (beerArray == null) {
-              
-              beers.push(this.beer);
-              this.storage.set('beers',beers);
-              this.presentToast(this.beer.name + " saved to favorites.");
-
-            } else {
-
-              for (let i = 0; i < beerArray.length; i++) {
-                if (beerArray[i].id == beerId ){
-                  this.presentToast(this.beer.name + " already saved.");
-                  console.log('beer already saved ' + beerArray[i].id + ' - ' + this.beer.id);
-                  return;
-                }
-              }
-
-              beerArray.push(this.beer);
-              this.storage.set('beers',beerArray);
-              this.presentToast(this.beer.name + " saved to favorites.");
-
-            }
-        });      
-    
-      });
-    }
+    this.beer['timestamp'] = firebase.database.ServerValue.TIMESTAMP;
+    this.favBeerRef.ref('/favorite_beers/'+this.uid+'/'+beerId).set(this.beer);
+    this.presentToast(this.beer.name + ' saved to favorites.');
   }
 
   checkIn(beer) {

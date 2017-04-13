@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, ViewController,ToastController } from 'ionic-angular';
-
+import { AngularFire, FirebaseListObservable } from 'angularfire2';
 import { Storage } from '@ionic/storage';
 
 import { BreweryService } from '../../providers/brewery-service';
@@ -12,25 +12,35 @@ import { BreweryService } from '../../providers/brewery-service';
 export class CheckinSelectBeerPage {
 
   public beerName:string;
-  public favBeers = new Array();
+  //public favBeers = new Array();
+  public favBeers: FirebaseListObservable<any>;
   public breweryBeers = new Array();
   public beers = new Array();
   public toggleFavBeers:boolean = false;
   public toggleLocationBeers:boolean = false;
   public locationName:string;
   public checkinType:string;
+  public uid:any;
 
   constructor(public navCtrl: NavController, 
   	          public view: ViewController,
   	          public storage:Storage,
   	          public beerAPI:BreweryService,
+              public angFire:AngularFire,
   	          public toastCtrl:ToastController,
   	          public params: NavParams) {
   	this.breweryBeers = params.get('breweryBeers');
   	this.locationName = params.get('name');
   	this.checkinType = params.get('checkinType');
-  	console.log('breweryBeers',this.breweryBeers);
-  	console.log('checkinType',this.checkinType);
+  	//console.log('breweryBeers',this.breweryBeers);
+  	//console.log('checkinType',this.checkinType);
+
+    this.storage.ready().then(()=>{
+      this.storage.get('uid').then(uid=>{
+        this.uid = uid;
+        //this.favBeers = this.angFire.database.list('/favorite_beers/'+uid+'/');      
+      });
+    });    
   }
 
   findBeer() {
@@ -102,14 +112,8 @@ export class CheckinSelectBeerPage {
   	else
   		this.toggleFavBeers = true;
 
-    this.storage.ready().then(()=>{
+    this.favBeers = this.angFire.database.list('/favorite_beers/'+this.uid+'/');
 
-      this.storage.get('beers').then((beerArray)=>{
-        this.favBeers = beerArray;
-        //console.log('fav',this.favBeers);
-      });      
-    
-    });
   }
 
   cancel() {

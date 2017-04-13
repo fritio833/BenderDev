@@ -28,38 +28,26 @@
   <p><ion-icon name="person"></ion-icon>&nbsp;Profile</p>
 </div>
 <ion-card>
-  <ion-card-content>
-    <ion-grid>
-      <ion-row>
-        <ion-col>
-          <ion-item no-lines>
-            <div align="center">
-              <ion-avatar>
-                <img [src]="profileIMG">
-              </ion-avatar>
-              <p>{{displayName}}</p>
-            </div>
-          </ion-item>
-        </ion-col>
-        <ion-col>
-          <ion-list>
-              <ion-item>
-                <div align="center">
-                  <button ion-button icon-left round (click)="goTackMap()">
-                     <ion-icon name="pin"></ion-icon>
-                        8 Beer Tacks
-                  </button>
-                </div>     
-              </ion-item>
-              <ion-item top>
-                <p class="center">Ranked #233</p>
-              </ion-item>
-          </ion-list>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-  </ion-card-content>
+  <ion-item no-lines>
+    <span item-left id="profile-left">
+      <div align="center">
+        <ion-avatar>
+          <img [src]="profileIMG">
+        </ion-avatar>
+        <p>{{displayName}}</p>
+        <p>Joined {{joinedDate}}</p>
+      </div>
+    </span>
+    <span item-left id="profile-right">
+      <button ion-button icon-left round (click)="goTackMap()">
+         <ion-icon name="pin"></ion-icon>
+            {{checkinCount}} Checkins
+      </button>
+      <!---- <p class="center">Ranked #233</p> ---->
+    </span>
+  </ion-item>
 </ion-card>
+<!----
 <div class="card-head">
   <p><ion-icon name="people"></ion-icon>&nbsp;Community</p>
 </div>
@@ -128,6 +116,7 @@
     </ion-grid>
   </ion-card-content>
 </ion-card>
+---->
 <div class="card-head">
   <p><ion-icon name="trophy"></ion-icon>&nbsp;Challenges</p>
 </div>

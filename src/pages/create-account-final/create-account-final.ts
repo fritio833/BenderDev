@@ -77,14 +77,17 @@ export class CreateAccountFinalPage {
    
     // Validation checked and we write to database
     if ( this.newUserForm.valid) {
-        console.log('form',this.newUserForm.controls);
-        this.auth.signupEmail(this.newUserForm.controls).then(resp => {
-          console.log('resp',resp);
+        //console.log('form',this.newUserForm.controls);
+        this.auth.signupEmail(this.newUserForm.controls).subscribe(resp => {
+          //console.log('resp',resp);
           if (resp.hasOwnProperty('uid')) {
              this.navCtrl.setRoot(HomePage);
+             console.log('log in by email signup');
            } else {
              this.presentAlert(resp['message']);
            }
+        },error => {
+          console.log('error',error);
         });
     } else {
       //TODO:  Prompt screen of errors

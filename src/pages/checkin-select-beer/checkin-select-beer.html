@@ -36,11 +36,12 @@
 	</button>	
   </ion-list>
   <ion-list *ngIf="toggleFavBeers">
-    <button ion-item *ngFor="let beer of favBeers" (click) = "setBeer(beer)">
+    <button ion-item *ngFor="let beer of favBeers | async" (click) = "setBeer(beer)">
 	      <ion-thumbnail item-left>
 	          <img [src]="beer.labels.medium" />
 	      </ion-thumbnail>
 	      <h2>{{ beer.name }}</h2>
+	      <p>{{ beer.breweries[0].name}}</p>
 	      <p>{{ beer.style.shortName }}</p>      
 	      <ion-icon name="add-circle" color="secondary" item-right></ion-icon>
     </button> 
