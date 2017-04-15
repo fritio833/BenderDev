@@ -1,0 +1,31 @@
+page-profile-edit {
+    .white-background {
+      background-color:#ffffff;
+    }
+
+    .item-inner,ion-item {
+        border:none !important;
+        border-bottom: 1px solid #dedede !important;      
+        box-shadow: none !important;    
+    }
+
+    ion-avatar img {     
+        width:100% !important;  
+        height : 100% !important;  
+        max-width: 80px !important;  //any size
+        max-height: 80px !important; //any size 
+    }
+
+    #change-avatar {
+        padding-top:25px;
+        padding-bottom:25px;
+        
+        .item-inner,ion-item {
+            border-bottom-color: transparent !important;
+        }
+    }
+
+    ion-avatar {
+        padding-bottom:5px;
+    }      
+}

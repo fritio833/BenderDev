@@ -32,6 +32,7 @@ export class AuthService {
   public userRef:any;
   public userExistsRef:any;
   public loggedIn:boolean = false;
+  public user:any;
 
   constructor(public sing:SingletonService,
               public angFire:AngularFire,
@@ -43,19 +44,20 @@ export class AuthService {
     this.userRef = firebase.database();
     this.userExistsRef = firebase.database();
     let that = this;
-    /*    
+    
     firebase.auth().onAuthStateChanged((_currentUser) => {
         if (_currentUser && !this.loggedIn) {
           console.log("User " + _currentUser.uid);
-
-          this.app.getActiveNav().setRoot(HomePage);
-          this.loggedIn = true;
-          //this.storage.set('uid',_currentUser.uid);            
+          this.user = _currentUser;            
         } else {
+          this.user = null;
           console.log("AUTH: User is logged out");
         }
     });
-    */
+  }
+
+  public getUser() {
+    return this.user;
   }
 
   public loginEmail(credentials) {

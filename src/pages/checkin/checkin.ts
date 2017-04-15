@@ -12,6 +12,7 @@ import { GoogleService } from '../../providers/google-service';
 import { BreweryService } from '../../providers/brewery-service';
 import { DbService } from '../../providers/db-service';
 import { SingletonService } from '../../providers/singleton-service';
+import { AuthService } from '../../providers/auth-service';
 
 import { CheckinSelectBeerPage } from '../checkin-select-beer/checkin-select-beer';
 
@@ -55,6 +56,7 @@ export class CheckinPage {
   public checkinPicSeq:number;
   public brewery:any;
   public beers:any;
+  public user:any;
 
   constructor(public navCtrl: NavController, 
   	          public params: NavParams,
@@ -67,6 +69,7 @@ export class CheckinPage {
               public platform:Platform,
               public sing:SingletonService,
               public beerAPI:BreweryService,
+              public auth:AuthService,
               public actionCtrl:ActionSheetController,
               public angFire:AngularFire,
               public loadingCtrl:LoadingController) {
@@ -176,14 +179,11 @@ export class CheckinPage {
    return new Promise(resolve=>{
     let checkinSeq = null;
     this.checkinPicSeqRef.transaction(value=>{
-      //console.log('val',(value||0)+1);
       checkinSeq = (value||0)+1;
       return (value||0)+1;
     },(complete)=>{
-      //console.log('complete',complete);
       resolve(checkinSeq);
     });
-
    });
   }
 
@@ -383,6 +383,7 @@ export class CheckinPage {
   ionViewDidLoad() {
 
     console.log('ionViewDidLoad CheckinPage');
+    this.user = this.auth.getUser();
 
     switch(this.checkinType) {
 
@@ -510,6 +511,7 @@ export class CheckinPage {
 
         let timestamp = firebase.database.ServerValue.TIMESTAMP;
         locationData = {
+          uid:this.user,
           breweryId:'',
           placeId:this.location.place_id,
           name:this.location.name,
@@ -556,6 +558,12 @@ export class CheckinPage {
             locationData['beerIMG'] = '';
           }
 
+          if (this.beer.hasOwnProperty('style')) {
+            locationData['beerStyleName'] = this.beer.style.name;
+            locationData['beerStyleShortName'] = this.beer.style.shortName;
+            locationData['beerCategoryName'] = this.beer.style.category.name;
+          }
+
           if (this.beer.hasOwnProperty('abv'))
             locationData['beerABV'] = this.beer.abv;
           else
@@ -592,7 +600,6 @@ export class CheckinPage {
         if (this.base64Image != null) { 
 
           this.getCheckinPicSeq().then(value=>{
-            //return (value||0)+1;
             let subDir = this.getImgSeqDirectory(value);
             this.checkinPictureRef.child(subDir.sub1)
               .child(subDir.sub2)

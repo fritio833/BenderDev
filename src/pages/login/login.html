@@ -40,70 +40,14 @@
   </div>
 </form>
   <div align="center">
-    <button type="submit" ion-button icon-left (click)="logMeOut()">
-      <ion-icon name="log-in"></ion-icon>Log Out
+    <button type="submit" small ion-button (click)="forgotPassword()">
+      Forgot Password
     </button>
   </div>
-<!----
-<ion-grid>
-  <ion-row center class="black-bg">
-        <ion-col>
-          <div align="center">
-            <h1>Drink Hoppy</h1>
-            <h3><span id="slogan">Drink. Share. Be Merry.</span></h3>
-                          
-            <img class="fb-button" src="images/buttons/facebook.png" (click)="loginFB()" >
-            
-            <div class="btn">
-              <button color="facebook" ion-button icon-left (click)="loginFacebook()">
-                <ion-icon class="social-button" ios="logo-facebook" md="logo-facebook"></ion-icon>
-                Login with Facebook
-              </button>
-            </div>
-            <div class="btn">
-              <button color="twitter" item-right ion-button icon-left (click)="loginTwitter()">
-                <ion-icon class="social-button" ios="logo-twitter" md="logo-twitter"></ion-icon>
-                Login with Twitter
-              </button>
-            </div>
-            <div class="btn">
-              <button color="google" item-right ion-button icon-left (click)="loginGoogle()">
-                <ion-icon class="social-button" ios="logo-google" md="logo-google"></ion-icon>
-                Login with Google
-              </button>
-            </div>            
-          </div>
-        </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col width-100 center>
-           <h3 id="or-sep">OR</h3>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col width-100>
-      
-        <form [formGroup] = "emailForm" (submit)="loginEmail()">
-            <ion-label floating>User Name or Email</ion-label>
-            <ion-input formControlName="email" placeholder="User Name or Email" required type="text"></ion-input>
-
-            <ion-label  floating>Password</ion-label>
-            <ion-input formControlName="password" placeholder="Password" required type="password" type="password"></ion-input>
-            <div align="center">
-              <button type="submit" ion-button round icon-left>
-                <ion-icon name="log-in"></ion-icon>Log In
-              </button>
-            </div>
-        </form>
-    </ion-col>
-  </ion-row>
-</ion-grid>
----->
 </ion-content>
 
 <ion-footer>
   <ion-toolbar>
-    <!---- <ion-title><div align="center">Come Join Us! Sign up.</div></ion-title> ---->
     <button full ion-item (click)="presentModal()">
       <ion-title><div align="center">Come Join Us! Sign up.</div></ion-title>
     </button> 

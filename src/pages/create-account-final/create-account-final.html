@@ -17,17 +17,7 @@
       </ion-item>
       <ion-item *ngIf="!newUserForm.controls.name.valid && (newUserForm.controls.name.dirty || submitAttempt)">
           <p class="warning">Please enter a valid name.</p>
-      </ion-item>      
-      <ion-item>
-          <ion-label floating>Username</ion-label>
-          <ion-input type="text" formControlName="userName" [class.invalid]="(!newUserForm.controls.userName.valid && submitAttempt) || duplicateUser"></ion-input>         
-      </ion-item>
-      <ion-item *ngIf="!newUserForm.controls.userName.valid && (newUserForm.controls.userName.dirty || submitAttempt)">
-          <p class="warning">Please enter a valid user name. Spaces not allowed. Only letters and numbers.</p>
-      </ion-item>
-      <ion-item *ngIf="duplicateUser">
-          <p class="warning">Found duplicate user.  Please choose another user name.</p>
-      </ion-item>               
+      </ion-item>              
      <ion-item>
           <ion-label floating>Email</ion-label>
           <ion-input type="text" formControlName="email" [class.invalid]="(!newUserForm.controls.email.valid && submitAttempt) || duplicateEmail"></ion-input>

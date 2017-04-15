@@ -30,6 +30,7 @@ import { MyPubPage } from '../pages/my-pub/my-pub';
 import { LoginPage } from '../pages/login/login';
 import { FavoritesPage } from '../pages/favorites/favorites';
 import { ProfilePage } from '../pages/profile/profile';
+import { ProfileEditPage } from '../pages/profile-edit/profile-edit';
 import { ReviewsPage } from '../pages/reviews/reviews';
 import { FriendsPage } from '../pages/friends/friends';
 import { ReviewBeerPage } from '../pages/review-beer/review-beer';
@@ -82,6 +83,7 @@ export const firebaseConfig = {
     LoginPage,
     FavoritesPage,
     ProfilePage,
+    ProfileEditPage,
     ReviewsPage,
     FriendsPage,
     ReviewBeerPage,
@@ -131,6 +133,7 @@ export const firebaseConfig = {
     LoginPage,
     FavoritesPage,
     ProfilePage,
+    ProfileEditPage,
     ReviewsPage,
     FriendsPage,
     ReviewBeerPage,

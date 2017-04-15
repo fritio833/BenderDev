@@ -8,7 +8,7 @@ import { FbProvider } from '../../providers/fb-provider';
 import { ValidationService } from '../../providers/validation-service';
 import { SingletonService } from '../../providers/singleton-service';
 import { AuthService } from '../../providers/auth-service';
-
+import firebase from 'firebase';
 
 import { CreateAccountFinalPage }from '../create-account-final/create-account-final';
 import { HomePage } from '../home/home';
@@ -24,7 +24,6 @@ export class LoginPage {
   public email:any;
   public emailForm:any;
   public name:any;
-  public id:any;
   public picture:any;
   public gender:any;
   public birthday:any;
@@ -63,9 +62,7 @@ export class LoginPage {
   }
 
   presentModal() {
-    this.navCtrl.push(CreateAccountFinalPage); 
-    //let modal = this.modalCtrl.create(CreateAccountFinalPage);
-    //modal.present();
+    this.navCtrl.push(CreateAccountFinalPage);
   }
 
   loginFacebook() {
@@ -83,22 +80,6 @@ export class LoginPage {
     });
   }
 
-  loginFB() {
-
-    this.fb.loginAndroid().then(() => {
-
-      this.fb.setCurrentUserProfileAndroid().then((success) => {
-        this.navCtrl.setRoot(HomePage);
-      });
-    });
-  }
-
-  logoutFB() {
-    
-    this.fb.logoutAndroid();
-
-  }
-
   showAlert(title,msg) {
 
       let alert = this.alertCtrl.create({
@@ -109,7 +90,6 @@ export class LoginPage {
       alert.present();
 
   }
-
 
   loginEmail() {
 
@@ -134,12 +114,6 @@ export class LoginPage {
 
   }
 
-  // TODO:  Firebase email confirmation
-  signupEmail() {
-
-
-  }
-
   logMeOut() {
     this.auth.logOut();
   }
@@ -160,13 +134,45 @@ export class LoginPage {
     });
     this.loading.present();
   }
+
+  sendResetEmail(email) {
+    firebase.auth().sendPasswordResetEmail(email).then(resp=> {
+      this.presentToast('Reset email sent to '+email);
+    }, function(error) {
+      console.log('error',error);
+      // An error happened.
+    });
+  }
+
+  forgotPassword() {
+    let prompt = this.alertCtrl.create({
+      title: 'Reset Password',
+      message: "Enter email to send reset email",
+      inputs: [
+        {
+          name: 'email',
+          placeholder:'Email'
+        },
+      ],
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        },
+        {
+          text: 'Send',
+          handler: data => {
+            //console.log('Saved clicked');
+            this.sendResetEmail(data.email);
+          }
+        }
+      ]
+    });
+    prompt.present();
+  }
  
   showError(text) {
-    /*
-    setTimeout(() => {
-      this.loading.dismiss();
-    });
-    */
+
     let alert = this.alertCtrl.create({
       title: 'Login Failed',
       subTitle: text,
@@ -174,6 +180,4 @@ export class LoginPage {
     });
     alert.present(prompt);
   }
-
-
 }

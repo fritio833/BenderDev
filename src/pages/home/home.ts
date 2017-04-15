@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavController, MenuController, ToastController, ModalController } from 'ionic-angular';
+import { NavController, LoadingController, ToastController, ModalController } from 'ionic-angular';
 import { AngularFire, FirebaseListObservable } from 'angularfire2';
 import { Storage } from '@ionic/storage';
 import { Ionic2RatingModule } from 'ionic2-rating';
@@ -14,6 +14,7 @@ import { SearchStartPage } from '../search-start/search-start';
 import { SearchBeerPage } from '../search-beer/search-beer';
 import { SearchLocationPage } from '../search-location/search-location';
 import { SearchBreweriesPage } from '../search-breweries/search-breweries';
+import { ProfilePage } from '../profile/profile';
 
 import firebase from 'firebase';
 
@@ -33,12 +34,13 @@ export class HomePage {
   public checkinCount:number;
   public joinedDate:any;
   public getProfile:boolean = true;
+  public loading:any;
 
   constructor(public navCtrl: NavController, 
   	          public sing:SingletonService,
               public modalCtrl:ModalController,
+              public loadingCtrl:LoadingController,
   	          public toastCtrl:ToastController,
-              public menuCtrl: MenuController,
   	          public storage:Storage) {
 
   }
@@ -48,6 +50,7 @@ export class HomePage {
     this.storage.ready().then(()=>{
       this.storage.get('uid').then(uid=>{
         console.log('uid',uid);
+        this.showLoading();
         if (uid != null) {
           this.profileRef = firebase.database().ref('users/'+uid).once('value').then(snapshot => {
             //console.log('snap',snapshot.val());
@@ -56,12 +59,13 @@ export class HomePage {
 
             let date = new Date(snapshot.val().dateCreated);
             this.joinedDate = date.toDateString();
-          
+            this.joinedDate = this.joinedDate.substring(4,this.joinedDate.length);
             this.displayName = snapshot.val().name;
 
             if (snapshot.val().photo!=null && snapshot.val().photo !='')
               this.profileIMG = snapshot.val().photo;
             
+            this.loading.dismiss();
           });
         }
       });
@@ -90,6 +94,10 @@ export class HomePage {
     this.navCtrl.push(TackMapPage);
   }
 
+  goToProfile() {
+    this.navCtrl.setRoot(ProfilePage);
+  }
+
   startSearch() {
 
     let modal = this.modalCtrl.create(SearchStartPage);
@@ -115,4 +123,10 @@ export class HomePage {
     modal.present();
   }
 
+  showLoading() {
+    this.loading = this.loadingCtrl.create({
+      content: 'Loading...'
+    });
+    this.loading.present();
+  }   
 }

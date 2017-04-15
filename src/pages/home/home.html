@@ -29,7 +29,7 @@
 </div>
 <ion-card>
   <ion-item no-lines>
-    <span item-left id="profile-left">
+    <span item-left id="profile-left" (click)="goToProfile()">
       <div align="center">
         <ion-avatar>
           <img [src]="profileIMG">
@@ -43,7 +43,6 @@
          <ion-icon name="pin"></ion-icon>
             {{checkinCount}} Checkins
       </button>
-      <!---- <p class="center">Ranked #233</p> ---->
     </span>
   </ion-item>
 </ion-card>

@@ -1,38 +1,55 @@
 <ion-header>
   <ion-navbar  color="primary">
-    <button ion-button menuToggle>
+	<button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>Bender</ion-title>
+    <ion-buttons left>
+	    <button ion-button (click)="editProfile()">
+	      EDIT
+	    </button>
+    </ion-buttons>
+   <ion-buttons right>
+       <button ion-button icon-only (click)="doSettings()">
+           <ion-icon name="settings"></ion-icon>
+       </button>            
+    </ion-buttons>    
   </ion-navbar>
 </ion-header>
-<ion-content padding>
-
-<ion-card>
-	<ion-card-content>
-	 	<ion-grid>
-	 	   <ion-row>
-	 	   		<ion-col width-33>
-		 	   		<div>
-		 	   			<div>	
-		 	   			<ion-item no-lines>
-		    				<ion-avatar item-left>
-		    					<img [src]="profileIMG">
-		    				</ion-avatar>
-		    			</ion-item>
-		    			</div>
-		 	   			<div align="left"><b>{{sing.realName}}</b></div>
-		 	   			<div align="left">{{sing.userName}}</div>
-		 	   		</div>
-	 	   		</ion-col>
-	 	   		<ion-col width-67>
-	 	   			<div align="left">
-	 	   				{{sing.description}}
-	 	   			</div>
-	 	   		</ion-col>
-	 	   </ion-row>
-	 	</ion-grid>
-	</ion-card-content>
- </ion-card>
-
+<ion-content class="white-background">
+	<ion-item id="profile-avatar" color="check">
+		<div align="center">
+			<ion-avatar item-right>
+				<img [src]="profileIMG">
+			</ion-avatar>
+			<p>{{displayName}}</p>
+		</div>
+	</ion-item>
+	<ion-item>
+		<ion-label>
+			Join Date
+		</ion-label>
+		<h2 item-right>{{joinedDate}}</h2>
+	</ion-item>
+	<ion-item>
+		<ion-label>
+			Number Check-ins
+		</ion-label>
+		<h2 item-right>{{checkinCount}}</h2>
+	</ion-item>
+	<ion-item>
+		<ion-label>
+			Email Verified
+		</ion-label>
+		<h2 *ngIf="isEmailVerified" item-right>Yes</h2>
+		<button ion-button *ngIf="!isEmailVerified" item-right (click)="sendVerifyEmail()">
+		  No. Send Verify Email
+		</button>
+	</ion-item>
+	<button ion-item (click)="goToFavorites()">
+		<ion-label>
+			<ion-icon name="search"></ion-icon>
+			Favorite Beers &amp; Locations
+		</ion-label>
+		<ion-icon name="arrow-forward" item-right></ion-icon>
+	</button>		
 </ion-content>

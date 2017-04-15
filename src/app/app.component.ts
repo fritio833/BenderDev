@@ -7,16 +7,15 @@ import { HelloIonicPage } from '../pages/hello-ionic/hello-ionic';
 import { SingletonService } from '../providers/singleton-service';
 import { GoogleService } from '../providers/google-service';
 import { ConnectivityService } from '../providers/connectivity-service';
+import {AuthService} from '../providers/auth-service';
 
 import { LoginPage } from '../pages/login/login';
 import { HomePage } from '../pages/home/home';
 import { FavoritesPage } from '../pages/favorites/favorites';
 import { ProfilePage } from '../pages/profile/profile';
 import { Storage } from '@ionic/storage';
+import { SearchStartPage } from '../pages/search-start/search-start';
 
-
-
-import {AuthService} from '../providers/auth-service';
 
 
 @Component({
@@ -60,7 +59,7 @@ export class MyApp {
     this.pages = [
       //{ title: 'My Pub', component: MyPubPage },
       { title: 'Home', component: HomePage },
-      { title: 'Search', component: HelloIonicPage },
+      { title: 'Search', component: SearchStartPage },
       { title: 'Favorites', component: FavoritesPage },
       { title: 'Profile', component: ProfilePage },
       { title: 'Settings', component: HomePage }

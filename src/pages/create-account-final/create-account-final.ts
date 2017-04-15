@@ -29,7 +29,6 @@ export class CreateAccountFinalPage {
   public newUserForm:any;
   public agree:boolean;
   public submitAttempt;
-  public duplicateUser:boolean;
   public duplicateEmail:boolean;
   public loading:any;
   public loginCredentials = {email: '', password: ''};
@@ -44,7 +43,6 @@ export class CreateAccountFinalPage {
               public alertCtrl: AlertController, 
               public auth:AuthService) {
 
-     this.duplicateUser = false;
      this.duplicateEmail = false;
 
   	 this.newUserForm = this.form.group({
@@ -60,10 +58,7 @@ export class CreateAccountFinalPage {
   	            Validators.maxLength(30)])],
       repword : ['',
                 Validators.compose([Validators.required,
-                ValidationService.checkConfirmPassword])],              
-  	  userName : ['',Validators.compose([Validators.required,
-  	                 Validators.maxLength(30),
-  	                 Validators.pattern('[0-9a-zA-Z]*')])]
+                ValidationService.checkConfirmPassword])]
   	});
 
  
@@ -82,12 +77,13 @@ export class CreateAccountFinalPage {
           //console.log('resp',resp);
           if (resp.hasOwnProperty('uid')) {
              this.navCtrl.setRoot(HomePage);
-             console.log('log in by email signup');
+             // console.log('log in by email signup');
            } else {
              this.presentAlert(resp['message']);
            }
         },error => {
           console.log('error',error);
+          this.presentAlert(error['message']);
         });
     } else {
       //TODO:  Prompt screen of errors

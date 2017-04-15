@@ -1,0 +1,37 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-buttons left>
+        <button ion-button icon-only (click)="close()">
+          <ion-icon name="close"></ion-icon>
+        </button>
+    </ion-buttons>   
+    <ion-title>Edit Profile</ion-title>
+    <ion-buttons right>
+        <button ion-button (click)="saveProfile()">
+          DONE
+        </button>
+    </ion-buttons>    
+  </ion-navbar>
+</ion-header>
+<ion-content class="white-background">
+  <ion-item id="change-avatar" color="check" (click)="changeProfileImg()">
+    <div align="center">
+			<ion-avatar>
+				<img [src]="profileIMG">
+			</ion-avatar>
+      <p>Change Avatar</p>
+    </div>
+  </ion-item>
+  <form [formGroup] = "profileForm" (submit)="saveProfile()">
+    <ion-list>
+      <ion-item>
+        <ion-label fixed>Display Name</ion-label>
+        <ion-input type="text" formControlName="name"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label fixed>Email</ion-label>
+        <ion-input type="text" formControlName="email"></ion-input>
+      </ion-item>      
+    </ion-list>
+  </form>
+</ion-content>
