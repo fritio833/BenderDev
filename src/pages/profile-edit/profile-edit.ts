@@ -206,11 +206,13 @@ export class ProfileEditPage {
               }
 
               user.updateProfile({
-                photoURL: photoURL
-              }).then(function() {
+                photoURL: resp.downloadURL
+              }).then(resp=> {
                 // Update successful.
+                console.log('resp',resp);
               }, function(error) {
                 // An error happened.
+                console.log('error',error);
               });
 
               this.presentToast("Avatar has been changed");

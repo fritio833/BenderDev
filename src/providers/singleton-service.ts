@@ -42,12 +42,12 @@ export class SingletonService {
   //public lng = -84.269281;
 
   // Fermintation Lounge
-  public lat = 30.433812;
-  public lng = -84.286296;
+  //public lat = 30.433812;
+  //public lng = -84.286296;
 
   //McGuire's Pensacola
-  //public lat = 30.418049;
-  //public lng = -87.202452;
+  public lat = 30.418049;
+  public lng = -87.202452;
 
   //Pug Mahone's
   //public lat = 30.464105;
@@ -88,5 +88,67 @@ export class SingletonService {
     this.selectLat = null;
     this.selectLng = null;
   }
+
+  timeDifference(current, previous, short?) {
+
+    var msPerMinute = 60 * 1000;
+    var msPerHour = msPerMinute * 60;
+    var msPerDay = msPerHour * 24;
+    var msPerMonth = msPerDay * 30;
+    var msPerYear = msPerDay * 365;
+
+    var elapsed = current - previous;
+
+    if (elapsed < msPerMinute) {
+        if (short)
+          return Math.round(elapsed/1000) + 's';
+        else
+         return Math.round(elapsed/1000) + ' seconds ago';   
+    }
+
+    else if (elapsed < msPerHour) {
+         if (short)
+           return Math.round(elapsed/msPerMinute) + 'm';
+         else
+           return Math.round(elapsed/msPerMinute) + ' minutes ago';   
+    }
+
+    else if (elapsed < msPerDay ) {
+         if (short)
+           return Math.round(elapsed/msPerHour ) + 'h';
+        else
+           return Math.round(elapsed/msPerHour ) + ' hours ago';   
+    }
+
+    else if (elapsed < msPerMonth) {
+        if (short)
+          return Math.round(elapsed/msPerDay) + 'd';
+        else
+          return 'approximately ' + Math.round(elapsed/msPerDay) + ' days ago';   
+    }
+
+    else if (elapsed < msPerYear) {
+        if (short)
+          return Math.round(elapsed/msPerMonth) + 'mo';
+        else
+          return 'approximately ' + Math.round(elapsed/msPerMonth) + ' months ago';   
+    }
+
+    else {
+        if (short)
+          return Math.round(elapsed/msPerYear ) + 'yr';
+        else
+          return 'approximately ' + Math.round(elapsed/msPerYear ) + ' years ago';   
+    }
+  }
+
+  getFormattedTime (fourDigitTime) {
+      var hours24 = parseInt(fourDigitTime.substring(0, 2),10);
+      var hours = ((hours24 + 11) % 12) + 1;
+      var amPm = hours24 > 11 ? 'PM' : 'AM';
+      var minutes = fourDigitTime.substring(2);
+
+      return hours + ':' + minutes + amPm;
+  };  
 
 }

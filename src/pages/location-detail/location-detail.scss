@@ -9,18 +9,21 @@ page-location-detail {
 	    color: #ffb400;
 
 	    ion-icon {
-	      font-size: 25px;
+	      font-size:25px;
 	    }
 	  }
 	}
 
 	.hours {
-		padding-top:10px;
+    color:#ffffff;
+    text-align:center;
+    font-size:12px;
 	}
 
 	.hours-head {
 		font-size:20px;
 		padding-top: 20px;
+    text-shadow: black 0.1em 0.1em 0.2em;
 	}
 
 	#map {
@@ -50,9 +53,9 @@ page-location-detail {
 
     #header {
       font-size: 22px;
-	  color: #ffffff;
-	  text-shadow: black 0.1em 0.1em 0.2em;
-	  text-align:center;
+	    color: #ffffff;
+	    text-shadow: black 0.1em 0.1em 0.2em;
+	    text-align:center;
     }
     #ptype {
 	  color: #ffffff;
@@ -63,10 +66,6 @@ page-location-detail {
 
   .loc-area #loc-rating {
     text-align:center;
-  }
-
-  .loc-area h1,p {
-  
   }
 
   .loc-area div {
@@ -109,4 +108,8 @@ page-location-detail {
      font-size: 13px;
    }
 
+  .card-head {
+     font-size: 20px;
+     padding-left: 10px;
+  }
 }

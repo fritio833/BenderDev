@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, ToastController, ModalController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
+import { AngularFire, FirebaseListObservable } from 'angularfire2';
 
 import { BreweryService } from '../../providers/brewery-service';
 import { SingletonService } from '../../providers/singleton-service';
@@ -14,12 +15,6 @@ import { Ionic2RatingModule } from 'ionic2-rating';
 
 import firebase from 'firebase';
 
-/*
-  Generated class for the BeerDetail page.
-
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
-*/
 @Component({
   selector: 'page-beer-detail',
   templateUrl: 'beer-detail.html',
@@ -35,6 +30,8 @@ export class BeerDetailPage {
   public overallBeerRating:number;
   public beerReviewCount:number;
   public favBeerRef:any;
+  public checkins:FirebaseListObservable<any>;
+  public checkinLen:number;
   public uid:any;
 
   constructor( public navCtrl: NavController, 
@@ -43,11 +40,12 @@ export class BeerDetailPage {
                public storage:Storage, 
                public toastCtrl:ToastController, 
                public sing:SingletonService,
-               public db:DbService, 
+               public db:DbService,
+               public angFire:AngularFire,
                public modalCtrl:ModalController) {
 
     this.beerId = navParams.get('beerId');
-    this.getLikeBeer(this.beerId);
+    //this.getLikeBeer(this.beerId);
 
     this.storage.ready().then(()=>{
       this.storage.get('uid').then(uid=>{
@@ -56,8 +54,17 @@ export class BeerDetailPage {
       });
     });
 
-    //console.log("beerid",this.beerId);
+    this.checkins =  this.angFire.database.list('/checkin/beers/'+this.beerId,{
+      query:{
+        orderByChild:'dateCreated'
+      }
+    }).map((array) => array.reverse()) as FirebaseListObservable<any[]>;;
 
+    // sort by date
+    this.checkins.subscribe(resp=>{
+      this.checkinLen = resp.length;
+      //console.log('resp',resp);   
+    });
   }
 
   ionViewDidLoad() {
@@ -127,16 +134,13 @@ export class BeerDetailPage {
 
      let beerRatingTotal:number = 0;
      this.beerReviewCount = 0;
-     // Get beer reviews by beer id
+     /*
      this.db.getBeerReviewsById(this.beerId).subscribe(success=>{
 
       this.beerReviews = success.data;
-      // console.log(this.beerReviews);
 
-      // Get overall Beer Ratings:  TODO: Create a backend make the calculation TABLE: beer_rating
       for (let i = 0; i < this.beerReviews.length; i++) {
 
-        // if the beer rating is zero, they never bothered to rate.  Ignore.
         if (parseInt(this.beerReviews[i].beer_rating)) {
           beerRatingTotal += parseInt(this.beerReviews[i].beer_rating);
           this.beerReviewCount++;  
@@ -146,7 +150,8 @@ export class BeerDetailPage {
       this.overallBeerRating = beerRatingTotal  / this.beerReviewCount;
 
 
-      });
+    });
+    */
   }
 
   removeBeerFromFavorites(beerId) {
@@ -179,33 +184,6 @@ export class BeerDetailPage {
       duration: 3000
     });
     toast.present();
-  } 
-
-  setLikeBeer(beerId) {
-
-    this.db.setLikeBeer(beerId).subscribe((value) => {
-      //console.log(value);
-    }, (error) => {
-      console.log(error);
-    },() => {
-      //console.log('success');
-      this.presentToast("You liked this beer.");
-      this.getLikeBeer(beerId);
-    });
-
-  }
-
-  getLikeBeer(beerId) {
-    this.db.getLikeBeer(beerId).subscribe((value) => {
-      //console.log('beer likes',value.data); 
-      this.beerLikes = value.data;
-    }, (error) => {
-      console.log(error);
-    },() => {
-      //console.log('success');
-
-    });
-
   }
 
   reviewBeer(beer) {

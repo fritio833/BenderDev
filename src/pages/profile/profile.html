@@ -15,7 +15,7 @@
     </ion-buttons>    
   </ion-navbar>
 </ion-header>
-<ion-content class="white-background">
+<ion-content>
 	<ion-item id="profile-avatar" color="check">
 		<div align="center">
 			<ion-avatar item-right>
@@ -29,6 +29,12 @@
 			Join Date
 		</ion-label>
 		<h2 item-right>{{joinedDate}}</h2>
+	</ion-item>
+	<ion-item>
+		<ion-label>
+			Total Points
+		</ion-label>
+		<h2 item-right>{{points}}</h2>
 	</ion-item>
 	<ion-item>
 		<ion-label>
@@ -51,5 +57,13 @@
 			Favorite Beers &amp; Locations
 		</ion-label>
 		<ion-icon name="arrow-forward" item-right></ion-icon>
-	</button>		
+	</button>
+	<div *ngIf="checkinLen">
+		<div class="card-head">
+			<p><ion-icon name="person"></ion-icon>&nbsp;Recent Check-Ins</p>
+		</div>		
+		<div *ngFor="let check of checkins | async">
+			 <checkin [checkin]="check"></checkin>
+		</div>
+	</div>		
 </ion-content>

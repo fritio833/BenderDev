@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NavController, ModalController, AlertController, LoadingController, NavParams } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { Geolocation } from 'ionic-native';
+import { AngularFire, FirebaseListObservable } from 'angularfire2';
 
 import { SingletonService } from '../../providers/singleton-service';
 import { FavoritesPage } from '../favorites/favorites';
@@ -23,9 +24,12 @@ export class ProfilePage {
   public joinedDate:any;
   public checkinCount:number;
   public loading:any;
+  public checkins:FirebaseListObservable<any>;
+  public checkinLen:number;  
   public isEmailVerified:any;
   public user:any;
   public uid:any;
+  public points:any;
 
   constructor(public navCtrl: NavController, 
               public navParams: NavParams, 
@@ -34,12 +38,13 @@ export class ProfilePage {
               public loadingCtrl:LoadingController,
               public modalCtrl:ModalController,
               public auth:AuthService,
+              public angFire:AngularFire,
               public storage:Storage) {
 
  
         //console.log('uid',uid);
         this.user = this.auth.getUser();
-        console.log('WTF user',this.user);
+        console.log('user',this.user);
         this.showLoading();
         if (this.user.uid != null) {
           this.uid = this.user.uid;
@@ -53,14 +58,28 @@ export class ProfilePage {
             this.joinedDate = date.toDateString();
             this.joinedDate = this.joinedDate.substring(4,this.joinedDate.length);
             this.checkinCount = snapshot.val().checkins;
+            this.points = snapshot.val().points;
             
             if (this.user!=null) {
               //console.log('currUser',this.user);
               this.isEmailVerified = this.user.emailVerified;
             }
+
+            this.checkins =  this.angFire.database.list('/checkin/users/'+this.user.uid,{
+              query:{
+                orderByChild:'dateCreated',
+                limitToFirst: 10
+              }
+            }).map((array) => array.reverse()) as FirebaseListObservable<any[]>;
+
+            this.checkins.subscribe(resp=>{
+              this.checkinLen = resp.length;
+              //console.log('resp',resp);   
+            });
+
             this.loading.dismiss();            
           });
-        }
+        } 
   
   }
 

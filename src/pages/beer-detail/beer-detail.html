@@ -106,7 +106,15 @@
   	 {{beer?.description}}
   </ion-card-content>
 </ion-card>
-
+<div *ngIf="checkinLen">
+	<div class="card-head">
+		<p><ion-icon name="people"></ion-icon>&nbsp;Recent Check-Ins</p>
+	</div>
+	<div *ngFor="let check of checkins | async">
+			<checkin [checkin]="check"></checkin>
+	</div>
+</div>
+<!--
 <div *ngIf="beerReviewCount">
 	<div class="card-head">
 	  <p><ion-icon name="happy"></ion-icon>&nbsp;{{beer?.name}} Reviews</p>
@@ -123,4 +131,5 @@
 	  </ion-card-content>
 	</ion-card>
 </div>
+-->
 </ion-content>

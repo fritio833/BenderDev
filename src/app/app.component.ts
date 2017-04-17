@@ -3,7 +3,6 @@ import { Component, ViewChild } from '@angular/core';
 import { Platform, MenuController, Nav, AlertController,ToastController } from 'ionic-angular';
 import { StatusBar, Splashscreen, Geolocation } from 'ionic-native';
 
-import { HelloIonicPage } from '../pages/hello-ionic/hello-ionic';
 import { SingletonService } from '../providers/singleton-service';
 import { GoogleService } from '../providers/google-service';
 import { ConnectivityService } from '../providers/connectivity-service';
@@ -24,7 +23,6 @@ import { SearchStartPage } from '../pages/search-start/search-start';
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
-  // make HelloIonicPage the root (or first) page
   rootPage: any;
   pages: Array<{title: string, component: any}>;
   login:any;

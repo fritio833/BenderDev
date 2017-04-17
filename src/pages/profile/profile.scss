@@ -1,6 +1,6 @@
 page-profile {
 
-  ion-avatar img {     
+  #profile-avatar ion-avatar img {     
     width:100% !important;  
     height : 100% !important;  
     max-width: 80px !important;  //any size
@@ -31,4 +31,9 @@ page-profile {
   #avatar-nav item-innter {
     text-align:center !important;
   }
+
+  .card-head {
+    font-size: 20px;
+    padding-left: 10px;
+  }  
 }

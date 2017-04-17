@@ -1,0 +1,69 @@
+
+
+<!-- {{check.beerDisplayName}} -->
+
+<ion-card>
+  <ion-item *ngIf="check.img" class="botton-border-item background-checkin" [ngStyle]="getBackgroundImg(check.img)">
+    <ion-avatar item-left *ngIf="check.userIMG">
+      <img [src]="check.userIMG">
+    </ion-avatar>
+    <ion-avatar item-left *ngIf="!check.userIMG">
+      <img src="images/default-profile.png">
+    </ion-avatar>
+    <span item-left>
+      <p class="check-name">
+          <span>
+            {{check.userName}}
+          </span>						 
+      </p>
+      <p class="check-place" *ngIf="check.name">
+        <ion-icon name="at"></ion-icon>&nbsp;{{check.name}}	
+      </p>	
+    </span>
+    <span item-right>
+      <p class="check-timestamp">{{getTimestamp(check.dateCreated)}}</p>
+    </span>
+  </ion-item>
+
+  <ion-item *ngIf="!check.img" class="botton-border-item">
+    <ion-avatar item-left *ngIf="check.userIMG">
+      <img [src]="check.userIMG">
+    </ion-avatar>
+    <ion-avatar item-left *ngIf="!check.userIMG">
+      <img src="images/default-profile.png">
+    </ion-avatar>
+    <span item-left>
+      <p>	
+          <span>
+            {{check.userName}}
+          </span>
+      </p>
+      <p *ngIf="check.name">
+        <ion-icon name="at"></ion-icon>&nbsp;{{check.name}}	
+      </p>						
+    </span>
+    <span item-right><p>{{getTimestamp(check.dateCreated)}}</p></span>
+  </ion-item>
+
+  <ion-item class="botton-border-item">
+    <ion-thumbnail item-left>
+      <img [src]="check.beerIMG">
+    </ion-thumbnail>
+    <span item-left>
+      <h3>{{check.beerName}}</h3>
+      <p>{{check.breweryShortName}}</p>
+      <p>{{check.beerStyleShortName}}</p>
+      <p *ngIf="check.servingStyleName!=''">
+        <ion-icon name="beer"></ion-icon>&nbsp;{{check.servingStyleName}}
+      </p>						
+    </span>
+    <ion-icon item-right name="more"></ion-icon>
+  </ion-item>
+  <ion-item *ngIf="check.comments!=''" text-wrap class="botton-border-item">
+    <ion-icon color="check" item-left name="quote"></ion-icon>
+    <p>{{check.comments}}</p>
+  </ion-item>
+  <ion-item class="botton-border-item" *ngIf="check.beerRating">
+    <rating item-left class="check-rating" item-right [(ngModel)]="check.beerRating" readOnly="true" max="5"></rating>
+  </ion-item>
+</ion-card>

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, ModalController, LoadingController, Platform } from 'ionic-angular';
 import { GoogleService } from '../../providers/google-service';
+import { AngularFire, FirebaseListObservable } from 'angularfire2';
 
 import { BeerDetailPage } from '../beer-detail/beer-detail';
 import { LocationMapPage } from '../location-map/location-map';
@@ -29,12 +30,15 @@ export class BreweryDetailPage {
   public locationPhotosArray = new Array();
   public showPhotos:boolean = false;  
   public locationRating:any;
+  public checkins:FirebaseListObservable<any>;
+  public checkinLen:number;  
 
   constructor(public navCtrl: NavController, 
               public params: NavParams,
               public geo: GoogleService,
-              public loadingCtrl:LoadingController,
+              public loadingCtrl: LoadingController,
               public platform: Platform,
+              public angFire: AngularFire,
               public modalCtrl:ModalController) {
 
   	this.brewery = params.get('brewery');
@@ -71,9 +75,18 @@ export class BreweryDetailPage {
     } else {
     	this.breweryBeers = new Array();
     }
-  
-  	//console.log('brewery',this.brewery);
-  	//console.log('beers',this.breweryBeers);
+    //console.log('brewery',this.brewery);
+
+    this.checkins =  this.angFire.database.list('/checkin/brewery/'+this.brewery.id,{
+      query:{
+        orderByChild:'dateCreated'
+      }
+    }).map((array) => array.reverse()) as FirebaseListObservable<any[]>;;
+
+    this.checkins.subscribe(resp=>{
+      this.checkinLen = resp.length;
+    });
+
   }
 
   fixBreweryBeers() {
@@ -199,7 +212,7 @@ export class BreweryDetailPage {
   }
 
   showDrinkMenu() {
-    this.navCtrl.push(DrinkMenuPage,{beers:this.breweryBeers,brewery:this.brewery});
+    this.navCtrl.push(DrinkMenuPage,{beers:this.breweryBeers,brewery:this.brewery,location:this.location});
   }
 
   getBeerDetail(beer) {

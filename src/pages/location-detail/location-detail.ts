@@ -2,14 +2,19 @@ import { Component, ViewChild } from '@angular/core';
 import { NavController, NavParams, LoadingController, ModalController, Platform } from 'ionic-angular';
 import { Geolocation } from 'ionic-native';
 import { Ionic2RatingModule } from 'ionic2-rating';
+import { AngularFire, FirebaseListObservable } from 'angularfire2';
 
 import { LocationService } from '../../providers/location-service';
 import { GoogleService } from '../../providers/google-service';
 import { BreweryService } from '../../providers/brewery-service';
+import { SingletonService } from '../../providers/singleton-service';
 
 import { LocationMapPage } from '../location-map/location-map';
 import { LocationDetailsMorePage } from '../location-details-more/location-details-more';
 import { CheckinPage } from '../checkin/checkin';
+import { DrinkMenuPage } from '../drink-menu/drink-menu';
+
+import firebase from 'firebase';
 
 declare var window;
 
@@ -33,6 +38,8 @@ export class LocationDetailPage {
   public locationLng:any;
   public locationReviews:any;
   public loading:any;
+  public checkins:FirebaseListObservable<any>;
+  public checkinLen:number;
   public breweryBeers = new Array();
   public locationPhotosArray = new Array();
   public showPhotos:boolean = false;
@@ -43,15 +50,24 @@ export class LocationDetailPage {
   	          public loc:LocationService,
               public modalCtrl:ModalController,
               public beerAPI:BreweryService,
+              public sing:SingletonService,
               public platform:Platform,
+              public angFire:AngularFire,
   	          public geo:GoogleService) {
 
-    //this.placeId = params.get("placeId");
     this.location = params.get("location");
-    //this.showLoading('Loading. Please wait...');
+    this.checkins =  this.angFire.database.list('/checkin/locations/'+this.location.place_id,{
+      query:{
+        orderByChild:'dateCreated'
+      }
+    }).map((array) => array.reverse()) as FirebaseListObservable<any[]>;;
+
+    // sort by date
+    this.checkins.subscribe(resp=>{
+      this.checkinLen = resp.length;
+      //console.log('resp',resp);   
+    });
   }
-
-
 
   showLoading(msg) {
     this.loading = this.loadingCtrl.create({
@@ -72,8 +88,7 @@ export class LocationDetailPage {
   getBackgroundImg(pic) {
     let img:any;
     img = {backgroundImage:''};
-   
-    if(pic == null)
+    if(pic == null || pic == '')
       return;
     else {
       img.backgroundImage = 'url('+pic+')';
@@ -96,6 +111,10 @@ export class LocationDetailPage {
   viewMore() {
      this.navCtrl.push(LocationDetailsMorePage,{location:this.location,
                                                 photo:this.locationPhoto}); 
+  }
+
+  showDrinkMenu() {
+    this.navCtrl.push(DrinkMenuPage,{location:this.location});
   }
 
   isBrewery() {
@@ -191,6 +210,10 @@ export class LocationDetailPage {
     });
   }
 
+  getTimestamp(prevTime) {
+    return this.sing.timeDifference(new Date().getTime(),prevTime,true);
+  }
+
   ionViewDidLoad() {
 
     console.log('ionViewDidLoad LocationDetailPage');
@@ -206,6 +229,19 @@ export class LocationDetailPage {
       // this.locationPhoto = '../images/bar3.jpg';
       this.locationPhoto = null;
     }
+
+    if (this.location.hasOwnProperty('opening_hours')) {
+      //this.locationHours = this.location.opening_hours.weekday_text;
+      let dayOfWeek = this.location.opening_hours.periods[new Date().getDay()];
+      this.locationOpen = this.location.opening_hours.open_now;
+      this.locationHours = this.sing.getFormattedTime(dayOfWeek.open.time) 
+                          + ' - ' + this.sing.getFormattedTime(dayOfWeek.close.time);
+
+    }
+    else {
+      this.locationHours = null;
+      this.locationOpen = null;
+    }    
 
     // get lat, lng
     if (this.location.hasOwnProperty('geometry')) {
@@ -231,14 +267,14 @@ export class LocationDetailPage {
             || this.location.types[i] == 'night_club'
             || this.location.types[i] == 'convenience_store'
             || this.location.types[i] == 'liquor_store'
+            || this.location.types[i] == 'gas_station'
             || this.location.types[i] == 'grocery_or_supermarket') {
-          ptypes += this.location.types[i] + ', ';
+          ptypes += this.fixPlaceType(this.location.types[i]) +', ';
         }
     }
 
     this.location.place_types = ptypes.replace(/,\s*$/, "").replace(/_/g, " ");
-    console.log('location',this.location);
-
+    //console.log('location',this.location);
   }
 
 }

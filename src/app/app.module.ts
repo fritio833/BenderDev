@@ -13,6 +13,9 @@ import { DbService } from '../providers/db-service';
 import { LocationService } from '../providers/location-service';
 import { GoogleService } from '../providers/google-service';
 import { ConnectivityService } from '../providers/connectivity-service';
+import { DemoService } from '../providers/demo-service';
+
+import { CheckinComponent } from '../components/checkin/checkin';
 
 import { HelloIonicPage } from '../pages/hello-ionic/hello-ionic';
 import { ItemDetailsPage } from '../pages/item-details/item-details';
@@ -106,8 +109,8 @@ export const firebaseConfig = {
     BreweryDetailPage,
     BreweryDetailMorePage,
     SelectLocationPage,
-    DrinkMenuPage
-
+    DrinkMenuPage,
+    CheckinComponent
   ],
   imports: [
     IonicModule.forRoot(MyApp),
@@ -167,6 +170,7 @@ export const firebaseConfig = {
               AuthService,
               DbService,
               LocationService,
+              DemoService,
               GoogleService,
               ConnectivityService]
 })

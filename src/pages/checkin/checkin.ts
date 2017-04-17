@@ -10,9 +10,9 @@ import firebase from 'firebase';
 
 import { GoogleService } from '../../providers/google-service';
 import { BreweryService } from '../../providers/brewery-service';
-import { DbService } from '../../providers/db-service';
 import { SingletonService } from '../../providers/singleton-service';
 import { AuthService } from '../../providers/auth-service';
+import { DemoService } from '../../providers/demo-service';
 
 import { CheckinSelectBeerPage } from '../checkin-select-beer/checkin-select-beer';
 
@@ -50,13 +50,17 @@ export class CheckinPage {
   public lastImage: string = null;
   public showPager:boolean = true; 
   public checkin: FirebaseListObservable<any>;
+  public checkinLocationRF:any;
+  public checkinUserRF:any;
+  public checkinBeerRF:any;
+  public checkinBreweryRF:any;
   public checkinPictureRef: firebase.storage.Reference;
-  public firebase:any;
   public checkinPicSeqRef:any;
   public checkinPicSeq:number;
   public brewery:any;
   public beers:any;
   public user:any;
+  public checkinScore:number;
 
   constructor(public navCtrl: NavController, 
   	          public params: NavParams,
@@ -65,22 +69,28 @@ export class CheckinPage {
               public toastCtrl:ToastController,
               public alertCtrl:AlertController,
               public modalCtrl:ModalController,
-              public db:DbService,
               public platform:Platform,
               public sing:SingletonService,
               public beerAPI:BreweryService,
               public auth:AuthService,
               public actionCtrl:ActionSheetController,
               public angFire:AngularFire,
+              public demo:DemoService,
               public loadingCtrl:LoadingController) {
 
     this.beer = params.get('beer');
     this.checkinType = params.get('checkinType');  //beer,brewery,place
     this.price = 0;
-    this.checkin = angFire.database.list('/checkin');
-    this.firebase = angFire.database;
+    this.checkinScore = 0;
+    this.checkin = angFire.database.list('/checkin/feeds');
+    
     this.checkinPictureRef = firebase.storage().ref('/checkins/');
     this.checkinPicSeqRef = firebase.database().ref('/sequences/checkinIMG/');
+
+    this.checkinLocationRF = firebase.database();
+    this.checkinUserRF = firebase.database();
+    this.checkinBeerRF = firebase.database();
+    this.checkinBreweryRF = firebase.database();  
 
     if (this.checkinType == 'place') {
       this.locations = new Array();
@@ -201,9 +211,6 @@ export class CheckinPage {
   fixLocations(lat,lng) {
 
    let ptypes = '';
-   let locPoint:any;
-   let userPoint:any;
-
   
    for (var i = 0; i < this.locations.length; i++ ) {
 
@@ -235,8 +242,6 @@ export class CheckinPage {
   }
 
   compare(a,b) {
-    //console.log(a);
-    //console.log(b);
     if (a.dist < b.dist)
       return -1;
     if (a.dist > b.dist)
@@ -263,8 +268,6 @@ export class CheckinPage {
         this.beer = beer;
         this.fixBeer();
       }
-
-
     });
     modal.present();     
   }
@@ -425,8 +428,6 @@ export class CheckinPage {
 
   shareOnFacebook() {
 
-    let image:string = this.beer.labels.large;
-
     SocialSharing.shareViaFacebook('message me',null,'http://benderapp.com').then((success)=>{
        //Enter bender points here
     }).catch((error) => {
@@ -492,7 +493,6 @@ export class CheckinPage {
     }
 
     let locationData:any = {};
-    let beerData:any = {};
 
     this.showLoading();
 
@@ -502,16 +502,32 @@ export class CheckinPage {
     } else
       this.location = null;
 
-    console.log('checkin',this.location);
+    //console.log('checkin',this.location);
 
     if (this.location!=null) {
 
       this.geo.reverseGeocodeLookup(this.location.geometry.location.lat,this.location.geometry.location.lng)
       .subscribe((success)=> {
 
+        this.checkinScore += 25;  // base checkin point 
+        if (this.base64Image != null) // picture taken. Plus 10 points
+          this.checkinScore += 10;        
+
+        if (this.socialMessage.length > 10)
+          this.checkinScore += 10;
+
+        if (this.beerRating!=0 && this.beerRating!=null)
+            this.checkinScore += 5; // gave rating +5
+
+        if (this.servingStyleName != null)
+          this.checkinScore += 5; // set beer container. +5  
+      
+
         let timestamp = firebase.database.ServerValue.TIMESTAMP;
         locationData = {
-          uid:this.user,
+          uid:this.user.uid,
+          userIMG:this.user.photoURL,
+          userName:this.user.displayName,
           breweryId:'',
           placeId:this.location.place_id,
           name:this.location.name,
@@ -536,11 +552,12 @@ export class CheckinPage {
         }
 
         if (this.beer != null) {
+
           locationData['beerId'] = this.beer.id;
           locationData['beerName'] = this.beer.name;
           locationData['beerDisplayName'] = this.beer.nameDisplay;
-          locationData['beerStyleName'] = this.beer.style.name;
-          locationData['beerStyleShortName'] = this.beer.style.shortName;
+          locationData['beerStyleName'] = '';
+          locationData['beerStyleShortName'] = '';
 
           if (this.beer.hasOwnProperty('labels')) {
             locationData['beerLabels'] = this.beer.labels;
@@ -574,9 +591,9 @@ export class CheckinPage {
           else
             locationData['beerIBU'] = '';        
 
-          if (this.beerRating!=0 && this.beerRating!=null)
+          if (this.beerRating!=0 && this.beerRating!=null) {
             locationData['beerRating'] = this.beerRating;
-          else
+          } else
             locationData['beerRating'] = '';
 
           if (this.beer.hasOwnProperty('breweries')) {
@@ -588,6 +605,11 @@ export class CheckinPage {
               locationData['breweryImages'] = this.beer.breweries[0].images;              
             else
               locationData['breweryImages'] = '';
+
+          } else {
+            locationData['breweryName'] = '';
+            locationData['breweryShortName'] = '';
+            locationData['breweryImages'] = '';           
           }
           
           if (this.servingStyleName != null)
@@ -595,6 +617,14 @@ export class CheckinPage {
           else
             locationData['servingStyleName'] = '';
 
+          //set demographics for beer && set beer for locations
+          this.demo.setBeerDemo(locationData).subscribe(resp=>{});  
+          this.demo.setBeerByCityDemo(locationData).subscribe(resp=>{});
+          this.demo.setBeerByLocation(locationData).subscribe(resp=>{});
+
+          //set checkin count for user
+          this.demo.setCheckinUserCount(this.user.uid).subscribe(resp=>{});
+          this.demo.setUserScore(this.user.uid,this.checkinScore).subscribe(resp=>{});
         }
         // Upload Picture and save it to firebase storage
         if (this.base64Image != null) { 
@@ -610,7 +640,8 @@ export class CheckinPage {
                
               //console.log('resp',resp);
               locationData['img'] = resp.downloadURL;
-              this.checkin.push(locationData);
+              this.setCheckinData(locationData);
+
               this.view.dismiss();
               this.presentToast("Check-in was successful");
               this.loading.dismiss(); 
@@ -619,23 +650,38 @@ export class CheckinPage {
           
         } else {
 
-          this.checkin.push(locationData);
+          this.setCheckinData(locationData);
+
           this.view.dismiss();
           this.presentToast("Check-in was successful");
           this.loading.dismiss();
         }
 
         //console.log('loc',success);
-
-
       });
     }
-
-
-    if (this.beer != null) {
-
-    }
       
+  }
+
+  setCheckinData(locationData) {
+      this.checkin.push(locationData);
+       
+      var newCheckRef = this.checkinLocationRF.ref('/checkin/locations/'+this.location.place_id).push();
+      newCheckRef.set(locationData);
+
+      var newCheckUserRef = this.checkinUserRF.ref('/checkin/users/'+this.user.uid).push();
+      newCheckUserRef.set(locationData);
+
+      if (this.beer != null){
+        var newCheckBeerRef = this.checkinBeerRF.ref('/checkin/beers/'+this.beer.id).push();
+        newCheckBeerRef.set(locationData);  
+      }
+
+      if (this.checkinType == 'brewery' && this.brewery != null) {
+        var newCheckBreweryRef = this.checkinBreweryRF.ref('/checkin/brewery/'+ this.brewery.id).push();
+        newCheckBreweryRef.set(locationData); 
+      }
+        
   }
 
   firstToUpperCase( str ) {

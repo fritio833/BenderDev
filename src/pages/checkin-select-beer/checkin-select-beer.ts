@@ -46,11 +46,14 @@ export class CheckinSelectBeerPage {
   findBeer() {
     console.log('beer',this.beerName);
 
-  	 if (this.beerName.length) {
+  	 if (this.beerName!=null) {
 
 	      this.beerAPI.loadBeerByName(this.beerName).subscribe(beer => {
 	         this.beers = beer.data;
-	         this.fixBeers(); 
+           if (this.beers!=null)
+	           this.fixBeers();
+           else
+             this.beers = new Array(); 
 	         console.log('beers',this.beers);         
 	      }); 
 

@@ -13,7 +13,13 @@
 				    <p id="loc-rating" [hidden]="!locationRating">
 				      <rating [(ngModel)]="locationRating" readOnly="true" max="5"></rating>
 				    </p>
-				    <p id="ptype">{{fixPlaceType(location?.place_types)}}</p>
+				    <p id="ptype">{{location?.place_types}}</p>
+						<p class="hours" [hidden]="locationOpen || locationOpen==null">
+							Closed. {{locationHours}}
+						</p>
+						<p class="hours" [hidden]="!locationOpen || locationOpen==null">
+							Open from {{locationHours}}
+						</p>						
 			    </div>
 			  </div>
 			  <div align="right">
@@ -23,7 +29,7 @@
 				<p [hidden]="!locationOpen || locationOpen==null">
 					<ion-badge color="dark">Currently Open</ion-badge>
 				</p>			  	
-			  </div>
+			  </div>				
 			</ion-col>
 		</ion-row>
     </ion-grid>
@@ -37,11 +43,11 @@
 		  </ion-col>		  
 		  <ion-col class="loc-btns border-right" color="light" full ion-button (click)='viewMap()'>
 		    <div> 
-			    <ion-icon name="heart"></ion-icon>
-			    <label>Save</label>
+			    <ion-icon name="people"></ion-icon>
+			    <label>Review</label>
 		    </div>              
 		  </ion-col>
-		  <ion-col class="loc-btns border-right" color="light" full ion-button (click)='viewDrinks()'>	            		  	
+		  <ion-col class="loc-btns border-right" color="light" full ion-button (click)='showDrinkMenu()'>	            		  	
 		    <div> 
 			    <ion-icon name="book"></ion-icon>
 			    <label>Menu</label>
@@ -108,6 +114,15 @@
     	</div>
 	  </ion-card>
 	</div>
+	<div *ngIf="checkinLen">
+		<div class="card-head">
+			<p><ion-icon name="people"></ion-icon>&nbsp;Recent Check-Ins</p>
+		</div>
+		<div *ngFor="let check of checkins | async">
+			 <checkin [checkin]="check"></checkin>
+		</div>
+	</div>
+	<!--
 	<div [hidden]="locationReviews == null">
 	  <ion-card>
         <ion-item>
@@ -124,5 +139,6 @@
 		    </div>          
         </ion-item> 
 	  </ion-card>		
-	</div> 
+	</div>
+	--> 
 </ion-content>

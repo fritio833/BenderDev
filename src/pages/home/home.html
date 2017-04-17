@@ -35,7 +35,6 @@
           <img [src]="profileIMG">
         </ion-avatar>
         <p>{{displayName}}</p>
-        <p>Joined {{joinedDate}}</p>
       </div>
     </span>
     <span item-left id="profile-right">
@@ -43,6 +42,7 @@
          <ion-icon name="pin"></ion-icon>
             {{checkinCount}} Checkins
       </button>
+      <p *ngIf="userPoints">{{userPoints}} Points</p>
     </span>
   </ion-item>
 </ion-card>

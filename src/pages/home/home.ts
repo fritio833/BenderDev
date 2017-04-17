@@ -33,6 +33,7 @@ export class HomePage {
   public profileRef:any;
   public checkinCount:number;
   public joinedDate:any;
+  public userPoints:number;
   public getProfile:boolean = true;
   public loading:any;
 
@@ -49,10 +50,9 @@ export class HomePage {
 
     this.storage.ready().then(()=>{
       this.storage.get('uid').then(uid=>{
-        console.log('uid',uid);
         this.showLoading();
         if (uid != null) {
-          this.profileRef = firebase.database().ref('users/'+uid).once('value').then(snapshot => {
+          this.profileRef = firebase.database().ref('users/'+uid).on('value',snapshot => {
             //console.log('snap',snapshot.val());
            
             this.checkinCount = snapshot.val().checkins;
@@ -61,7 +61,7 @@ export class HomePage {
             this.joinedDate = date.toDateString();
             this.joinedDate = this.joinedDate.substring(4,this.joinedDate.length);
             this.displayName = snapshot.val().name;
-
+            this.userPoints = snapshot.val().points;
             if (snapshot.val().photo!=null && snapshot.val().photo !='')
               this.profileIMG = snapshot.val().photo;
             
