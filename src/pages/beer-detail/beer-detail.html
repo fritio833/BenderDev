@@ -4,14 +4,16 @@
   </ion-navbar>
 </ion-header>
 <ion-content>
-<ion-card>
-  <ion-grid>
-	<ion-row>
-	  <ion-col width-33>
+
+<ion-item class="beer-info" text-wrap>
+	<div *ngIf="!beerLoaded" align="center">
+		<ion-spinner></ion-spinner>
+	</div>
+  <ion-thumbnail item-left *ngIf="beerLoaded">
 	    <img [src]="beer?.labels.medium" />
-	  </ion-col>
-	  <ion-col width-67>
-	    <ion-card-title>{{beer?.name}}</ion-card-title>
+  </ion-thumbnail>
+	<span item-left *ngIf="beerLoaded">
+	    <b>{{beer?.name}}</b>
 	    <p>{{beer?.breweries[0].name}}</p>
 	    <p>{{beer?.style.shortName}}</p>
 	    <p>
@@ -20,50 +22,27 @@
 	      <span *ngIf="beer?.ibu!=null">{{beer?.ibu}} IBU</span>
 	    </p>
 	    <p>{{beer?.available.description}}</p>
-	  </ion-col>
-	</ion-row>
-  </ion-grid>
-  <ion-grid>
-    <ion-row>
-        <ion-col>
-	      <button outline block ion-button icon-left>
-	        <ion-icon name="pin"></ion-icon>
-	        LOCATE
-	      </button>
-	    </ion-col>
-	    <ion-col>
-	      <button outline block ion-button icon-left (click)='saveBeerToFavorites(beer?.id)'>
-	        <ion-icon name="heart"></ion-icon>
-	        SAVE
-	      </button>
-	    </ion-col>
-	    <ion-col>
-	      <button outline block ion-button icon-left (click)='reviewBeer(beer)'>
-	        <ion-icon name="create"></ion-icon>
-	        REVIEW
-	      </button>
-	    </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-		<button color="secondary" ion-button block full (click)='checkIn(beer)'>
-		    CHECK-IN
-		</button>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-	    <ion-list [hidden]="!overallBeerRating">
-	      <ion-item>
-	        {{beerReviewCount}} ratings
-	        <rating item-right [(ngModel)]="overallBeerRating" readOnly="true" max="5"></rating>
-	      </ion-item>
-	    </ion-list>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-</ion-card>
-
+	</span>
+</ion-item>
+<ion-grid>
+  <ion-row>
+    <ion-col>
+			<button class="btn" item-left block ion-button icon-left>
+				<ion-icon name="pin"></ion-icon>
+				LOCATE
+			</button>
+    </ion-col>
+		<ion-col>
+			<button class="btn" item-right block ion-button icon-left (click)='saveBeerToFavorites(beer?.id)'>
+				<ion-icon name="heart"></ion-icon>
+				SAVE
+			</button>
+		</ion-col>
+  </ion-row>
+</ion-grid>	
+<button id="checkin-button" color="check" ion-button block full (click)='checkIn(beer)'>
+	CHECK-IN
+</button>
 <ion-card>
   <ion-card-header>
     BREWERY
@@ -80,20 +59,6 @@
         <button ion-button>View More</button>      
       </ion-col>
     </ion-row>
-    <!----
-    <ion-row>
-      <ion-col>
-        <ion-list>
-	      <ion-item *ngFor="let location of brewery.locations" item-right>
-	        <h2>{{location.name}}</h2>
-	        <p>{{location.locationTypeDisplay}}</p>
-	        <p>{{location.streetAddress}}</p>
-            <p>{{location.locality}}, {{location.region}} {{location.country.displayName}}</p>
-	      </ion-item>
-        </ion-list>
-      </ion-col>
-    </ion-row>
-    ---->
   </ion-grid>
   </ion-card-content>
 </ion-card>
