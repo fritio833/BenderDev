@@ -33,6 +33,7 @@ export class BeerDetailPage {
   public checkins:FirebaseListObservable<any>;
   public checkinLen:number;
   public uid:any;
+  public beerLoaded:boolean = false;
 
   constructor( public navCtrl: NavController, 
                public navParams: NavParams, 
@@ -76,6 +77,7 @@ export class BeerDetailPage {
       this.loadBeer(this.beer);
       //console.log(this.beer);
       this.getBeerReviews();
+      setTimeout(()=>{this.beerLoaded = true;},500);
       
     });
   }

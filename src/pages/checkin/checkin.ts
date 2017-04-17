@@ -79,7 +79,7 @@ export class CheckinPage {
               public loadingCtrl:LoadingController) {
 
     this.beer = params.get('beer');
-    this.checkinType = params.get('checkinType');  //beer,brewery,place
+    this.checkinType = params.get('checkinType');  //beer,brewery,places
     this.price = 0;
     this.checkinScore = 0;
     this.checkin = angFire.database.list('/checkin/feeds');

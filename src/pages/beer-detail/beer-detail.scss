@@ -19,6 +19,11 @@ page-beer-detail {
 	  text-align: center;
 	}
 
+	ion-spinner {
+		width:50px;
+		height:50px;
+	}
+
 	#bold-info {
 	  margin-top:5px;
 	  margin-bottom:5px;
@@ -44,6 +49,28 @@ page-beer-detail {
 	      font-size: 25px;
 	    }
 	  }
+	}
+
+  ion-col {
+    padding:0px !important;
+	}
+
+	ion-grid {
+		padding:0px !important;
+	}
+
+	#checkin-button {
+		margin:0 !important;
+		height: 4.75rem;
+	}
+
+  .beer-info {
+		height:170px;
+	}
+
+	.btn {
+		margin:0px !important;
+		border-radius: 0px !important;
 	}
 
 	.no-margin {
