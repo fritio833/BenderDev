@@ -23,6 +23,7 @@ export class SingletonService {
   public selectState = null;
   public selectLat = null;
   public selectLng = null;
+  public checkinsPerPage:number = 10;
   
   // App configuration.  API keys, webservice url, etc. 
   public breweryDbAPIKey:string = '3c7ec73417afb44ae7a4450482f99d70';

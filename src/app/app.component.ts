@@ -13,7 +13,7 @@ import { HomePage } from '../pages/home/home';
 import { FavoritesPage } from '../pages/favorites/favorites';
 import { ProfilePage } from '../pages/profile/profile';
 import { Storage } from '@ionic/storage';
-import { SearchStartPage } from '../pages/search-start/search-start';
+import { SearchMenuPage } from '../pages/search-menu/search-menu';
 
 
 
@@ -57,7 +57,7 @@ export class MyApp {
     this.pages = [
       //{ title: 'My Pub', component: MyPubPage },
       { title: 'Home', component: HomePage },
-      { title: 'Search', component: SearchStartPage },
+      { title: 'Search', component: SearchMenuPage },
       { title: 'Favorites', component: FavoritesPage },
       { title: 'Profile', component: ProfilePage },
       { title: 'Settings', component: HomePage }

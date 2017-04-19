@@ -3,6 +3,7 @@ import { NavController, NavParams, LoadingController, ModalController, Platform 
 import { Geolocation } from 'ionic-native';
 import { Ionic2RatingModule } from 'ionic2-rating';
 import { AngularFire, FirebaseListObservable } from 'angularfire2';
+import {BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import { LocationService } from '../../providers/location-service';
 import { GoogleService } from '../../providers/google-service';
@@ -38,11 +39,16 @@ export class LocationDetailPage {
   public locationLng:any;
   public locationReviews:any;
   public loading:any;
-  public checkins:FirebaseListObservable<any>;
+  public checkins:any;
   public checkinLen:number;
   public breweryBeers = new Array();
   public locationPhotosArray = new Array();
   public showPhotos:boolean = false;
+  public checkinsPerPage:number;
+  public limit:any;
+  public lastKey:string;
+  public queryable:boolean = true;
+
 
   constructor(public navCtrl:NavController, 
   	          public params:NavParams,
@@ -56,17 +62,9 @@ export class LocationDetailPage {
   	          public geo:GoogleService) {
 
     this.location = params.get("location");
-    this.checkins =  this.angFire.database.list('/checkin/locations/'+this.location.place_id,{
-      query:{
-        orderByChild:'dateCreated'
-      }
-    }).map((array) => array.reverse()) as FirebaseListObservable<any[]>;;
-
-    // sort by date
-    this.checkins.subscribe(resp=>{
-      this.checkinLen = resp.length;
-      //console.log('resp',resp);   
-    });
+    this.checkinsPerPage = this.sing.checkinsPerPage;
+    this.limit = new BehaviorSubject(this.checkinsPerPage);
+    
   }
 
   showLoading(msg) {
@@ -74,6 +72,42 @@ export class LocationDetailPage {
       content: msg
     });
     this.loading.present();
+  }
+
+  getCheckIns() {
+    this.checkins =  this.angFire.database.list('/checkin/locations/'+this.location.place_id,{
+      query:{
+        orderByChild:'priority',
+        limitToFirst: this.limit
+      }
+    });
+  
+    this.angFire.database.list('/checkin/locations/'+this.location.place_id,{
+      query: {
+        orderByChild: 'priority',
+        limitToLast: 1
+      }
+    }).subscribe((data) => {
+      // Found the last key
+      if (data.length > 0) {
+        this.lastKey = data[0].$key;
+      } else {
+        this.lastKey = '';
+      }
+    });
+  
+    this.checkins.subscribe(resp=>{
+      this.checkinLen = resp.length;
+      //console.log('resp',resp);
+      if (resp.length > 0) {
+        // If the last key in the list equals the last key in the database
+        if (resp[resp.length - 1].$key === this.lastKey) {
+          this.queryable = false;
+        } else {
+          this.queryable = true;
+        }
+      }      
+    });
   }
 
   viewMap() {
@@ -214,9 +248,24 @@ export class LocationDetailPage {
     return this.sing.timeDifference(new Date().getTime(),prevTime,true);
   }
 
+ getMoreCheckins(infiniteScroll) {
+   //console.log('inf',infiniteScroll);
+    setTimeout(() => {
+      if (this.queryable)
+        this.limit.next(this.limit.getValue()+this.checkinsPerPage);
+
+      infiniteScroll.complete();
+
+      if (!this.queryable)
+        infiniteScroll.enable(false);
+    }, 1000);
+ }  
+
   ionViewDidLoad() {
 
     console.log('ionViewDidLoad LocationDetailPage');
+
+    this.getCheckIns();
 
     this.locationRating = this.location.rating;
 

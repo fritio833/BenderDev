@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, ToastController, ModalController } from 'ionic-angular';
+import { NavController, NavParams, LoadingController, ToastController, ModalController } from 'ionic-angular';
 import { Validators, FormBuilder } from '@angular/forms';
 
 import { BreweryService } from '../../providers/brewery-service';
@@ -14,26 +14,29 @@ import { SearchBeerFilterPage } from '../search-beer-filter/search-beer-filter';
 })
 export class SearchBeerPage {
 
-  public qSearchBeer:any;
+  public qSearchBeer:string = '';
   public alert:string;
-  public beers:Beer[];
-  public totalResults:number;
+  public beers:Beer[] =  new Array();
+  public totalResults:number = 0;
   public numberOfPages:number;
   public currentPage:number;
   public popularBeers:any;
   public filter:any;
+  public showLoader:boolean = false;
+  public showNoResults:boolean = false;
+  public loading:any;
 
   constructor(public navCtrl: NavController, 
   	          public params: NavParams,
   	          public beerAPI: BreweryService,
   	          public toastCtrl: ToastController,
   	          public modalCtrl:ModalController,
+              public loadingCtrl:LoadingController,
   	          public _form: FormBuilder) {
 
   	this.qSearchBeer = params.get("qSearchBeer");
   	this.alert = params.get("alert");
     this.currentPage = 1;
-
   }
 
   loadBeers(data) {
@@ -41,6 +44,7 @@ export class SearchBeerPage {
     this.beers = this.fixBeers(data.data);
     this.totalResults = data.totalResults;
   }
+
 
   fixBeers(beers) {
 
@@ -66,17 +70,53 @@ export class SearchBeerPage {
     });
     toast.present();
   }
-
+  
+  clearSearch(event){
+    //console.log('clear',event);
+    //console.log(this.showNoResults +'-'+this.totalResults);
+    this.showNoResults = false;
+  	this.qSearchBeer = '';
+    this.totalResults = 0;
+    this.showLoader = false;
+  	this.beers = null;
+  }
   doSearchBeer(evt) {
+    
+    this.qSearchBeer = '';
+    if (evt.type != "input")
+      return;
+
+    this.showNoResults = false;
+
     this.currentPage = 1;
-    if (evt.target.value.length > 4) {
+
+    if (evt.target.value.length > 2) {
+      this.showLoading();
 	    this.beerAPI.loadBeerByName(evt.target.value).subscribe(beer => {
 	        this.beers = beer;
 	        this.numberOfPages = beer.numberOfPages;
+          
+          if (this.beers.hasOwnProperty('totalResults'))
+            this.totalResults = beer.totalResults;
+          else {
+            this.totalResults = 0;
+            this.showNoResults = true;
+          }
 	        //console.log(this.beers);
 	        this.qSearchBeer = evt.target.value;
-	        this.loadBeers(this.beers);          
-	    });
+          if (this.totalResults)
+	          this.loadBeers(this.beers);
+          console.log('beers',this.beers);
+          this.loading.dismiss();          
+	    },error=>{
+        console.log('error',error);
+        this.loading.dismiss();
+        this.showNoResults = false;
+        this.presentToast('Could not connect. Check connection.');
+      });
+    } else {
+      this.totalResults = 0;
+      this.showLoader = false;
     }
   }
 
@@ -105,12 +145,21 @@ export class SearchBeerPage {
   }
 
   showBeerFilter() {
+    this.showNoResults = false;
     let modal = this.modalCtrl.create(SearchBeerFilterPage,{filter:this.filter});
     modal.onDidDismiss(filter => {
-      //console.log('filter',filter);      
-      if (filter!=null) {
-        this.filter = filter;
 
+      if (filter == null)
+        return;
+      //console.log('filter',filter);      
+      if (filter.styleId != null || 
+          filter.categoryId != null ||
+          filter.minABV != null ||
+          filter.minIBU != null ||
+          filter.showLabels != null ||
+          filter.isOrganic != null) {
+        this.filter = filter;
+        this.showLoading();
         this.beerAPI.loadBeerByName(this.qSearchBeer,this.currentPage,this.filter).subscribe(beer => {
             if (beer.hasOwnProperty('data')) { 
               this.beers = beer;
@@ -121,7 +170,10 @@ export class SearchBeerPage {
               this.beers = new Array();
               this.presentToast("Sorry. No beers found.")
             }
-
+            this.loading.dismiss();
+        },error=>{
+          this.loading.dismiss();
+          this.presentToast('Could not connect. Check connection.');
         });
       }
 
@@ -131,6 +183,11 @@ export class SearchBeerPage {
 
   getBeerDetail(beerDbId) {
     this.navCtrl.push(BeerDetailPage,{beerId:beerDbId});
+  }
+
+  showLoading() {
+    this.loading = this.loadingCtrl.create({});
+    this.loading.present();
   }
 
   ionViewDidLoad() {

@@ -15,7 +15,7 @@
       <ion-icon name="add-circle" color="secondary" item-right></ion-icon>
     </button>
   </div>
-  <div *ngIf="beer!=null">
+  <div class="beer-pick" *ngIf="beer!=null">
     <ion-item>
       <span item-left>
         <ion-thumbnail>
@@ -27,7 +27,11 @@
           <p>{{beer?.breweries[0].name}}</p>
           <p>{{beer?.style.shortName}}</p>
       </span>
+      <span id="remove-beer-icon" item-right (click)="removeBeer()">
+          <ion-icon name="remove-circle"></ion-icon>
+      </span>
     </ion-item>
+  </div>
     <ion-item>
       <ion-label>Rating</ion-label>
       <span item-right><rating [(ngModel)]="beerRating" max="5"></rating></span>
@@ -41,7 +45,7 @@
          
        </ion-range>    
     </ion-item>
-  </div>
+
   <div *ngIf="locationsLen">
   <ion-item>
     <label>Location</label>

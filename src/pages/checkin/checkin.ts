@@ -132,6 +132,10 @@ export class CheckinPage {
     return price.toFixed(2);
   }
 
+  removeBeer() {
+    this.beer = null;
+  }
+
   takePicture(sourceType) {
 
     var options = {
@@ -259,11 +263,11 @@ export class CheckinPage {
     let modal = this.modalCtrl.create(CheckinSelectBeerPage,{ 
                                         location:this.location,
                                         name:this.locationName,
-                                        checkinType:'brewery',
+                                        checkinType:this.checkinType,
                                         breweryBeers:this.beers
                                       });
     modal.onDidDismiss(beer => {
-      console.log('beer',beer);
+      //console.log('beer',beer);
       if (beer!=null) {
         this.beer = beer;
         this.fixBeer();
@@ -340,6 +344,8 @@ export class CheckinPage {
     this.showLocationSlide = true;
     this.showPager = false;
     this.locationName = this.locations[0].name;
+
+    this.location = this.locations[0];
 
     this.beerAPI.loadBeerGlassware().subscribe(glass=>{
       this.glassware = glass.data;
@@ -522,8 +528,6 @@ export class CheckinPage {
         if (this.servingStyleName != null)
           this.checkinScore += 5; // set beer container. +5  
       
-
-        let timestamp = firebase.database.ServerValue.TIMESTAMP;
         locationData = {
           uid:this.user.uid,
           userIMG:this.user.photoURL,
@@ -541,8 +545,7 @@ export class CheckinPage {
           zip:success.zip,
           country:success.country,
           comments:this.socialMessage,
-          img:'',
-          dateCreated: timestamp
+          img:''
         }
 
         if (this.checkinType == 'brewery') {
@@ -664,24 +667,36 @@ export class CheckinPage {
   }
 
   setCheckinData(locationData) {
-      this.checkin.push(locationData);
-       
-      var newCheckRef = this.checkinLocationRF.ref('/checkin/locations/'+this.location.place_id).push();
+
+    var offsetRef = firebase.database().ref(".info/serverTimeOffset");
+    var that = this;
+    offsetRef.on("value", function(snap) {
+      var offset = snap.val();
+      var negativeTimestamp = (new Date().getTime() + offset) * -1; // for ordering new checkins first
+      var timestamp = new Date().getTime() + offset;
+      locationData['dateCreated'] = timestamp;
+      locationData['priority'] = negativeTimestamp;
+      //console.log('locData',locationData);
+     
+      that.checkin.push(locationData);
+      
+      var newCheckRef = that.checkinLocationRF.ref('/checkin/locations/'+that.location.place_id).push();
       newCheckRef.set(locationData);
 
-      var newCheckUserRef = this.checkinUserRF.ref('/checkin/users/'+this.user.uid).push();
+      var newCheckUserRef = that.checkinUserRF.ref('/checkin/users/'+that.user.uid).push();
       newCheckUserRef.set(locationData);
 
-      if (this.beer != null){
-        var newCheckBeerRef = this.checkinBeerRF.ref('/checkin/beers/'+this.beer.id).push();
+      if (that.beer != null){
+        var newCheckBeerRef = that.checkinBeerRF.ref('/checkin/beers/'+that.beer.id).push();
         newCheckBeerRef.set(locationData);  
       }
 
-      if (this.checkinType == 'brewery' && this.brewery != null) {
-        var newCheckBreweryRef = this.checkinBreweryRF.ref('/checkin/brewery/'+ this.brewery.id).push();
+      if (that.checkinType == 'brewery' && that.brewery != null) {
+        var newCheckBreweryRef = that.checkinBreweryRF.ref('/checkin/brewery/'+ that.brewery.id).push();
         newCheckBreweryRef.set(locationData); 
       }
-        
+
+    });        
   }
 
   firstToUpperCase( str ) {

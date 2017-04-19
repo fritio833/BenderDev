@@ -1,0 +1,56 @@
+<ion-header>
+  <ion-navbar  color="primary">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Search</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content class="white-background">
+  <ion-list>          
+    <button ion-item (click)="doSearch('beers')">
+      <ion-label>
+        <ion-icon name="beer"></ion-icon>
+        Search Beers
+      </ion-label>
+       <ion-icon name="arrow-forward" item-right></ion-icon>
+    </button>
+    <button ion-item (click)="doSearch('breweries')">
+      <ion-label>
+        <ion-icon name="pint"></ion-icon>
+        Find Breweries
+      </ion-label>
+       <ion-icon name="arrow-forward" item-right></ion-icon>
+    </button>                 
+    <button ion-item (click)="doSearch('locations')">
+      <ion-label>
+        <ion-icon name="locate"></ion-icon>
+        Find Places Near Me
+      </ion-label>     
+      <ion-icon name="arrow-forward" item-right></ion-icon>
+    </button>
+    <button ion-item (click)="doSearch('bars')">
+      <ion-label>
+        <ion-icon name="happy"></ion-icon>
+        Find Bars
+      </ion-label>
+       <ion-icon name="arrow-forward" item-right></ion-icon>
+    </button>
+    <!--
+    <button ion-item (click)="doSearch('favorites')">
+      <ion-label>
+        <ion-icon name="heart"></ion-icon>
+        My Favorite Drinks
+      </ion-label>
+       <ion-icon name="arrow-forward" item-right></ion-icon>
+    </button>
+    <button ion-item (click)="doSearch('randombeers')">
+      <ion-label>
+        <ion-icon name="ionic"></ion-icon>
+        Random Beers
+      </ion-label>
+      <ion-icon name="arrow-forward" item-right></ion-icon>
+    </button>
+    -->          
+  </ion-list>
+</ion-content>

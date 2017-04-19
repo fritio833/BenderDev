@@ -2,6 +2,7 @@
   <ion-navbar color="primary">
     <ion-toolbar>
     	<ion-searchbar [hidden]="showMap"
+                      debounce="500"
     	               (ionInput)="autoLocationSearch($event)" 
     	               placeholder="Place Name"
     	               (ionClear)="autoSearchCancel($event)">

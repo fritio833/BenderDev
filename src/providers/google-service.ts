@@ -37,13 +37,6 @@ export class GoogleService {
       this.googleGeocodeURL = 'maps/api/geocode/json?';
     }
 
-
-    
-
-    //
-    //https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522,151.1957362&radius=500&type=restaurant&keyword=cruise&key=AIzaSyA4dIwMeqXekFajK1uIesJn53LzkyZ_kU4
-    //https://maps.googleapis.com/maps/api/place/nearbysearch/json/location=?30.464081,-84.298049&radius=100&key=AIzaSyA4dIwMeqXekFajK1uIesJn53LzkyZ_kU4
-    // works => https://maps.googleapis.com/maps/api/place/search/json?location=34.0522222,-118.2427778&radius=500&types=museum|art_gallery&sensor=false&key=AIzaSyA4dIwMeqXekFajK1uIesJn53LzkyZ_kU4
   }
 
   reverseGeocodeLookup(lat,lng) {

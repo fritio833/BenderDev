@@ -65,5 +65,8 @@
 		<div *ngFor="let check of checkins | async">
 			 <checkin [checkin]="check"></checkin>
 		</div>
-	</div>		
+	</div>
+	<ion-infinite-scroll (ionInfinite)="getMoreCheckins($event)">
+		<ion-infinite-scroll-content></ion-infinite-scroll-content>
+	</ion-infinite-scroll> 		
 </ion-content>

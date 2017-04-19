@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavController, LoadingController, PopoverController, AlertController, NavParams, ModalController } from 'ionic-angular';
+import { NavController, LoadingController, ToastController, PopoverController, AlertController, NavParams, ModalController } from 'ionic-angular';
 import { Geolocation } from 'ionic-native';
 
 import { BreweryService } from '../../providers/brewery-service';
@@ -42,7 +42,8 @@ export class SearchBreweriesPage {
   	          public modalCtrl: ModalController,
   	          public alertCtrl:AlertController,
   	          public popCtrl:PopoverController,
-  	          public conn:ConnectivityService, 
+  	          public conn:ConnectivityService,
+              public toastCtrl: ToastController,
   	          public beerAPI:BreweryService) {}
 
   getMoreBreweries(evt) {
@@ -61,6 +62,15 @@ export class SearchBreweriesPage {
     });
     modal.present();
 
+  }
+
+  presentToast(msg) {
+    let toast = this.toastCtrl.create({
+      message: msg,
+      position: 'top',
+      duration: 3000
+    });
+    toast.present();
   }
 
   getDetail(brewery) {
@@ -155,7 +165,8 @@ export class SearchBreweriesPage {
 	  	      this.brewerySearch = new Array();
 	  	      this.brewerySearchLen = 0;  	      	
   	      }
-
+        },error=>{
+          this.presentToast('Could not connect. Check connection.');
         });
   	} else {
   	    this.brewerySearch = new Array();
@@ -170,17 +181,7 @@ export class SearchBreweriesPage {
     if (this.sing.getLocation().geo){
 
 	    let options = {timeout: 5000, enableHighAccuracy: true, maximumAge:3000};
-	    Geolocation.getCurrentPosition(options).then((resp) => {
-
-        this.sing.geoLat = resp.coords.latitude;
-        this.sing.geoLng = resp.coords.longitude;
-
-	      this.geo.reverseGeocodeLookup(resp.coords.latitude,resp.coords.longitude)
-			    .subscribe((success)=>{
-			    this.sing.geoCity = success.city;
-			    this.sing.geoState = success.state;
-			    console.log('Geolocation with high accuracy.');
-		    });            
+	    Geolocation.getCurrentPosition(options).then((resp) => {          
 
 	      this.beerAPI.findBreweriesByGeo(resp.coords.latitude,resp.coords.longitude)
 	      .subscribe((breweries)=>{
@@ -193,8 +194,11 @@ export class SearchBreweriesPage {
             this.numPages = 0;
             this.showNoBreweries();
           }
-          this.loading.dismiss();        
-	      });
+          this.loading.dismiss();      
+	      },error=>{
+          this.loading.dismiss();
+          this.presentToast('Could not connect. Check connection.');
+        });
 
 	    }).catch((error) => {
 	        console.log('Error getting location using high accuracy', error);
@@ -212,7 +216,10 @@ export class SearchBreweriesPage {
             this.showNoBreweries();
           }
           this.loading.dismiss();         
-	      });    	
+	      },error=>{
+          this.loading.dismiss();
+          this.presentToast('Could not connect. Check connection.');          
+        });    	
     }
   }
 

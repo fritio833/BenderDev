@@ -15,6 +15,7 @@ import { SearchBeerPage } from '../search-beer/search-beer';
 import { SearchLocationPage } from '../search-location/search-location';
 import { SearchBreweriesPage } from '../search-breweries/search-breweries';
 import { ProfilePage } from '../profile/profile';
+import { SearchMenuPage } from '../search-menu/search-menu';
 
 import firebase from 'firebase';
 
@@ -77,10 +78,6 @@ export class HomePage {
     this.getProfileData();
   }
 
-  doSearch() {
-  	this.navCtrl.push(HelloIonicPage); 
-  }
-
   presentToast(msg) {
     let toast = this.toastCtrl.create({
       message: msg,
@@ -99,28 +96,7 @@ export class HomePage {
   }
 
   startSearch() {
-
-    let modal = this.modalCtrl.create(SearchStartPage);
-    modal.onDidDismiss(data => {
-      //console.log('page',data);
-      switch(data) {
-
-        case 'beers':
-          this.navCtrl.push(SearchBeerPage); 
-          break;
-        case 'locations':
-          this.navCtrl.push(SearchLocationPage,{searchType:'nearbysearch'});
-          break;
-        case 'breweries':
-          this.navCtrl.push(SearchBreweriesPage);
-          break;
-        case 'bars':
-          this.navCtrl.push(SearchLocationPage,{placeType:'bar',searchType:'textsearch'});
-          break;                  
-        default: console.log('not valid search');
-      }      
-    });
-    modal.present();
+    this.navCtrl.push(SearchMenuPage);
   }
 
   showLoading() {

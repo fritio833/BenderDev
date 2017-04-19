@@ -2,16 +2,18 @@ import { Component } from '@angular/core';
 import { NavController, NavParams, ToastController, ModalController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { AngularFire, FirebaseListObservable } from 'angularfire2';
+import {BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import { BreweryService } from '../../providers/brewery-service';
 import { SingletonService } from '../../providers/singleton-service';
-import { DbService } from '../../providers/db-service';
 import { Beer } from '../../models/beer';
 
 import { LoginPage } from '../login/login';
 import { ReviewBeerPage } from '../review-beer/review-beer';
 import { CheckinPage } from '../checkin/checkin';
 import { Ionic2RatingModule } from 'ionic2-rating';
+
+
 
 import firebase from 'firebase';
 
@@ -34,6 +36,10 @@ export class BeerDetailPage {
   public checkinLen:number;
   public uid:any;
   public beerLoaded:boolean = false;
+  public checkinsPerPage:number;
+  public limit:any;
+  public lastKey:string;
+  public queryable:boolean = true;  
 
   constructor( public navCtrl: NavController, 
                public navParams: NavParams, 
@@ -41,11 +47,12 @@ export class BeerDetailPage {
                public storage:Storage, 
                public toastCtrl:ToastController, 
                public sing:SingletonService,
-               public db:DbService,
                public angFire:AngularFire,
                public modalCtrl:ModalController) {
 
     this.beerId = navParams.get('beerId');
+    this.checkinsPerPage = this.sing.checkinsPerPage;
+    this.limit = new BehaviorSubject(this.checkinsPerPage);    
     //this.getLikeBeer(this.beerId);
 
     this.storage.ready().then(()=>{
@@ -54,7 +61,7 @@ export class BeerDetailPage {
         this.favBeerRef = firebase.database();        
       });
     });
-
+    /*
     this.checkins =  this.angFire.database.list('/checkin/beers/'+this.beerId,{
       query:{
         orderByChild:'dateCreated'
@@ -66,11 +73,63 @@ export class BeerDetailPage {
       this.checkinLen = resp.length;
       //console.log('resp',resp);   
     });
+    */
   }
+
+  getCheckIns() {
+    this.checkins =  this.angFire.database.list('/checkin/beers/'+this.beerId,{
+      query:{
+        orderByChild:'priority',
+        limitToFirst: this.limit
+      }
+    });
+  
+    this.angFire.database.list('/checkin/beers/'+this.beerId,{
+      query: {
+        orderByChild: 'priority',
+        limitToLast: 1
+      }
+    }).subscribe((data) => {
+      // Found the last key
+      if (data.length > 0) {
+        this.lastKey = data[0].$key;
+      } else {
+        this.lastKey = '';
+      }
+    });
+  
+    this.checkins.subscribe(resp=>{
+      this.checkinLen = resp.length;
+      //console.log('resp',resp);
+      if (resp.length > 0) {
+        // If the last key in the list equals the last key in the database
+        if (resp[resp.length - 1].$key === this.lastKey) {
+          this.queryable = false;
+        } else {
+          this.queryable = true;
+        }
+      }      
+    });
+  }
+
+ getMoreCheckins(infiniteScroll) {
+   //console.log('inf',infiniteScroll);
+    setTimeout(() => {
+      if (this.queryable)
+        this.limit.next(this.limit.getValue()+this.checkinsPerPage);
+
+      infiniteScroll.complete();
+
+      if (!this.queryable)
+        infiniteScroll.enable(false);
+    }, 1000);
+ }     
 
   ionViewDidLoad() {
 
-    // console.log('ionViewDidLoad BeerDetailPage');
+    console.log('ionViewDidLoad BeerDetailPage');
+
+    this.getCheckIns();
 
     this.beerAPI.loadBeerById(this.beerId).subscribe(beer => {
       this.beer = beer;

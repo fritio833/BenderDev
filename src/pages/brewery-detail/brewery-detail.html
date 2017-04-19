@@ -53,8 +53,8 @@
 		  </ion-col>
 		  <ion-col class="loc-btns border-right" color="light" full ion-button (click)='showDrinkMenu()'>
 		    <div> 
-			    <ion-icon name="book"></ion-icon>
-			    <label>Menu</label>
+			    <ion-icon name="beer"></ion-icon>
+			    <label>List</label>
 		    </div>              
 		  </ion-col>
 		  <ion-col class="loc-btns" color="light" full ion-button (click)='viewMore()'>	  	
@@ -138,7 +138,10 @@
 		<div *ngFor="let check of checkins | async">
 			 <checkin [checkin]="check"></checkin>
 		</div>
-	</div>	
+		<ion-infinite-scroll (ionInfinite)="getMoreCheckins($event)">
+			<ion-infinite-scroll-content></ion-infinite-scroll-content>
+		</ion-infinite-scroll> 		
+	</div>
 	<!--
 	<div [hidden]="locationReviews == null">
 	  <ion-card>

@@ -1,22 +1,36 @@
-import { Component,Input, Output } from '@angular/core';
+import { Component,Input, Output, ChangeDetectorRef  } from '@angular/core';
 import { SingletonService } from '../../providers/singleton-service';
+
 
 @Component({
   selector: 'checkin',
   templateUrl: 'checkin.html'
 })
+//,  changeDetection: ChangeDetectionStrategy.OnPush
+
 export class CheckinComponent {
 
-  @Input ('checkin') check;
+  @Input ('checkin') checkToUse;
+  public check:any;
+  public beerRating:any;
+  public checkinTime:string;
 
-
-  constructor(public sing:SingletonService) {
-    console.log('Hello Checkin Component');
+  constructor(public sing:SingletonService, public cdRef:ChangeDetectorRef) {
+    //console.log('Hello Checkin Component');
+    this.check = {};
   }
 
-  ngAfterViewInit() {
-    //console.log('checkin',this.check);
-    //this.check = this.checkin;
+  ngOnInit() {
+
+    this.check = this.checkToUse;
+
+    if (this.check.beerRating == '')
+      this.beerRating = 0;
+    else
+      this.beerRating = this.check.beerRating;
+
+     this.checkinTime = this.getTimestamp(this.check.dateCreated);
+     //this.cdRef.detectChanges();
   }
 
   getBackgroundImg(pic) {

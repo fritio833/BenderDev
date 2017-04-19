@@ -3,4 +3,16 @@ page-search-beer {
   .white-background {
     background-color: #ffffff;
   }
+
+	ion-spinner {
+		width:50px;
+		height:50px;
+	}
+
+  .no-border-item {
+    .item-inner {
+      border-bottom: 0px !important;
+    }
+  }  
+
 }

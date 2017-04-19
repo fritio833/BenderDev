@@ -143,15 +143,17 @@ export class SearchLocationPage {
   }
 
   autoLocationSearch(event) {
-    //console.log(event);
+    
     
   	if (event.type == "input") {
+      setTimeout(()=>{
+        console.log(event.target.value);
   	    this.geo.placesAutocomplete(event.target.value).subscribe((success)=>{
   	      this.predictions = success.predictions;
   	      this.predictionsLen = success.predictions.length;
   	      //console.log(this.predictions);
-
         });
+      },1000);
   	}
   }
 

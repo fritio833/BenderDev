@@ -4,6 +4,7 @@
     	<ion-searchbar [hidden]="showMap"
     	               (ionInput)="autoBrewerySearch($event)" 
     	               placeholder="Brewery Name"
+                     debounce="1000"
     	               (ionClear)="autoSearchCancel($event)">
     	</ion-searchbar>
     	<ion-buttons left>

@@ -1,7 +1,11 @@
 <ion-header>
   <ion-navbar color="primary">
     <ion-toolbar>
-    	<ion-searchbar (input)="doSearchBeer($event)" placeholder="Enter Beer Name"></ion-searchbar>
+    	<ion-searchbar (ionInput)="doSearchBeer($event)"
+                     debounce="1000"
+                     (ionClear)="clearSearch($event)"
+                     placeholder="Enter Beer Name">
+      </ion-searchbar>
     	<ion-buttons end>
 	      <button id="filter-button" ion-button icon-only (click)="showBeerFilter()">
 	        <ion-icon name="options"></ion-icon>
@@ -10,16 +14,34 @@
     </ion-toolbar>
   </ion-navbar>
 </ion-header>
-
-
 <ion-content class="white-background">
-  <ion-list>
+	<div *ngIf="showLoader" align="center">
+		<ion-spinner></ion-spinner>
+	</div>
+  <div *ngIf="showNoResults && !showLoader">
+    <ion-item class="no-border-item" text-wrap>
+      <ion-icon item-left name="alert"></ion-icon>
+      <p>
+        Sorry! We couldn't find your beer: <b>{{qSearchBeer}}</b>.<br />  
+        Our data is crowdsourced by people like you. Please help us stay current by
+        clicking the button below and tell us the name of the beer, brewery (optional), 
+        and brewery location (optional).
+      </p>
+    </ion-item>
+    <ion-item>
+      <div align="center">
+        <button ion-button>Submit New Beer</button>
+      </div>
+    </ion-item>
+  </div>
+  <ion-list *ngIf="totalResults > 0">
     <button ion-item *ngFor="let beer of beers" (click) = "getBeerDetail(beer.id)">
       <ion-avatar item-left>
       	<img [src]="beer.labels.icon" />
       </ion-avatar>
       <h2>{{ beer.name }}</h2>
       <p>{{ beer.breweries[0].name }}</p>
+      <p>{{ beer.style.shortName}}</p>
       <ion-icon name="arrow-forward" item-right></ion-icon>
     </button>
     <button ion-item>

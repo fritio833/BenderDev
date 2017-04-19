@@ -57,6 +57,7 @@ import { BreweryDetailMorePage } from '../pages/brewery-detail-more/brewery-deta
 import { SelectLocationPage } from '../pages/select-location/select-location';
 import { LocationDetailsMorePage } from '../pages/location-details-more/location-details-more';
 import { DrinkMenuPage } from '../pages/drink-menu/drink-menu';
+import { SearchMenuPage } from '../pages/search-menu/search-menu';
 
 export const firebaseConfig = {
     apiKey: "AIzaSyCd-WZs4O8gNx9qVlwwyRdK6_qY60WuQl0",
@@ -110,7 +111,8 @@ export const firebaseConfig = {
     BreweryDetailMorePage,
     SelectLocationPage,
     DrinkMenuPage,
-    CheckinComponent
+    CheckinComponent,
+    SearchMenuPage
   ],
   imports: [
     IonicModule.forRoot(MyApp),
@@ -159,7 +161,8 @@ export const firebaseConfig = {
     BreweryDetailPage,
     BreweryDetailMorePage,
     SelectLocationPage,
-    DrinkMenuPage
+    DrinkMenuPage,
+    SearchMenuPage
   ],
   providers: [{provide: ErrorHandler, 
               useClass: IonicErrorHandler},

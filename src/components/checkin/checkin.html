@@ -1,7 +1,3 @@
-
-
-<!-- {{check.beerDisplayName}} -->
-
 <ion-card>
   <ion-item *ngIf="check.img" class="botton-border-item background-checkin" [ngStyle]="getBackgroundImg(check.img)">
     <ion-avatar item-left *ngIf="check.userIMG">
@@ -21,7 +17,7 @@
       </p>	
     </span>
     <span item-right>
-      <p class="check-timestamp">{{getTimestamp(check.dateCreated)}}</p>
+      <p class="check-timestamp">{{checkinTime}}</p>
     </span>
   </ion-item>
 
@@ -63,7 +59,7 @@
     <ion-icon color="check" item-left name="quote"></ion-icon>
     <p>{{check.comments}}</p>
   </ion-item>
-  <ion-item class="botton-border-item" *ngIf="check.beerRating">
-    <rating item-left class="check-rating" item-right [(ngModel)]="check.beerRating" readOnly="true" max="5"></rating>
+  <ion-item class="botton-border-item" *ngIf="beerRating">
+    <rating item-left class="check-rating" [(ngModel)]="beerRating" readOnly="true" max="5"></rating>
   </ion-item>
 </ion-card>

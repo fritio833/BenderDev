@@ -2,6 +2,9 @@ import { Component } from '@angular/core';
 import { NavController, NavParams, ModalController, LoadingController, Platform } from 'ionic-angular';
 import { GoogleService } from '../../providers/google-service';
 import { AngularFire, FirebaseListObservable } from 'angularfire2';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+
+import { SingletonService } from '../../providers/singleton-service';
 
 import { BeerDetailPage } from '../beer-detail/beer-detail';
 import { LocationMapPage } from '../location-map/location-map';
@@ -31,7 +34,11 @@ export class BreweryDetailPage {
   public showPhotos:boolean = false;  
   public locationRating:any;
   public checkins:FirebaseListObservable<any>;
-  public checkinLen:number;  
+  public checkinLen:number;
+  public checkinsPerPage:number;
+  public limit:any;
+  public lastKey:string;
+  public queryable:boolean = true;  
 
   constructor(public navCtrl: NavController, 
               public params: NavParams,
@@ -39,14 +46,17 @@ export class BreweryDetailPage {
               public loadingCtrl: LoadingController,
               public platform: Platform,
               public angFire: AngularFire,
+              public sing: SingletonService,
               public modalCtrl:ModalController) {
 
   	this.brewery = params.get('brewery');
     this.breweryBeers = params.get('beers');
     this.location = params.get('place');
     //console.log('place',this.location);
-
     //console.log('brewery',this.brewery);
+
+    this.checkinsPerPage = sing.checkinsPerPage;
+    this.limit = new BehaviorSubject(this.checkinsPerPage);    
 
     if (this.brewery.hasOwnProperty('brewery')) {
       this.breweryDescription = this.brewery.brewery.description;
@@ -88,6 +98,57 @@ export class BreweryDetailPage {
     });
 
   }
+
+  getCheckIns() {
+    this.checkins =  this.angFire.database.list('/checkin/brewery/'+this.brewery.id,{
+      query:{
+        orderByChild:'priority',
+        limitToFirst: this.limit
+      }
+    });
+  
+    this.angFire.database.list('/checkin/brewery/'+this.brewery.id,{
+      query: {
+        orderByChild: 'priority',
+        limitToLast: 1
+      }
+    }).subscribe((data) => {
+      // Found the last key
+      if (data.length > 0) {
+        this.lastKey = data[0].$key;
+      } else {
+        this.lastKey = '';
+      }
+    });
+  
+    this.checkins.subscribe(resp=>{
+      this.checkinLen = resp.length;
+      //console.log('resp',resp);
+      if (resp.length > 0) {
+        // If the last key in the list equals the last key in the database
+        if (resp[resp.length - 1].$key === this.lastKey) {
+          this.queryable = false;
+        } else if(resp.length < this.checkinsPerPage){
+          this.queryable = false;
+        }else {
+          this.queryable = true;
+        }
+      }      
+    });
+  }
+
+  getMoreCheckins(infiniteScroll) {
+   //console.log('inf',infiniteScroll);
+    setTimeout(() => {
+      if (this.queryable)
+        this.limit.next(this.limit.getValue()+this.checkinsPerPage);
+
+        infiniteScroll.complete();
+
+      if (!this.queryable)
+        infiniteScroll.enable(false);
+    }, 1000);
+  }  
 
   fixBreweryBeers() {
 

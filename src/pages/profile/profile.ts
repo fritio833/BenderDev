@@ -3,6 +3,7 @@ import { NavController, ModalController, AlertController, LoadingController, Nav
 import { Storage } from '@ionic/storage';
 import { Geolocation } from 'ionic-native';
 import { AngularFire, FirebaseListObservable } from 'angularfire2';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import { SingletonService } from '../../providers/singleton-service';
 import { FavoritesPage } from '../favorites/favorites';
@@ -30,6 +31,10 @@ export class ProfilePage {
   public user:any;
   public uid:any;
   public points:any;
+  public checkinsPerPage:number;
+  public limit:any;
+  public lastKey:string;
+  public queryable:boolean = true;
 
   constructor(public navCtrl: NavController, 
               public navParams: NavParams, 
@@ -41,10 +46,10 @@ export class ProfilePage {
               public angFire:AngularFire,
               public storage:Storage) {
 
- 
-        //console.log('uid',uid);
         this.user = this.auth.getUser();
-        console.log('user',this.user);
+        this.checkinsPerPage = sing.checkinsPerPage; 
+        this.limit = new BehaviorSubject(this.checkinsPerPage);
+               
         this.showLoading();
         if (this.user.uid != null) {
           this.uid = this.user.uid;
@@ -64,11 +69,10 @@ export class ProfilePage {
               //console.log('currUser',this.user);
               this.isEmailVerified = this.user.emailVerified;
             }
-
+            /*
             this.checkins =  this.angFire.database.list('/checkin/users/'+this.user.uid,{
               query:{
-                orderByChild:'dateCreated',
-                limitToFirst: 10
+                orderByChild:'dateCreated'
               }
             }).map((array) => array.reverse()) as FirebaseListObservable<any[]>;
 
@@ -76,12 +80,62 @@ export class ProfilePage {
               this.checkinLen = resp.length;
               //console.log('resp',resp);   
             });
+            */
 
             this.loading.dismiss();            
           });
         } 
   
   }
+
+  getCheckIns() {
+    this.checkins =  this.angFire.database.list('/checkin/users/'+this.user.uid,{
+      query:{
+        orderByChild:'priority',
+        limitToFirst: this.limit
+      }
+    });
+  
+    this.angFire.database.list('/checkin/users/'+this.user.uid,{
+      query: {
+        orderByChild: 'priority',
+        limitToLast: 1
+      }
+    }).subscribe((data) => {
+      // Found the last key
+      if (data.length > 0) {
+        this.lastKey = data[0].$key;
+      } else {
+        this.lastKey = '';
+      }
+    });
+  
+    this.checkins.subscribe(resp=>{
+      this.checkinLen = resp.length;
+      //console.log('resp',resp);
+      if (resp.length > 0) {
+        // If the last key in the list equals the last key in the database
+        if (resp[resp.length - 1].$key === this.lastKey) {
+          this.queryable = false;
+        } else {
+          this.queryable = true;
+        }
+      }      
+    });
+  }
+
+  getMoreCheckins(infiniteScroll) {
+   //console.log('inf',infiniteScroll);
+    setTimeout(() => {
+      if (this.queryable)
+        this.limit.next(this.limit.getValue()+this.checkinsPerPage);
+
+        infiniteScroll.complete();
+
+      if (!this.queryable)
+        infiniteScroll.enable(false);
+    }, 1000);
+  }  
 
   editProfile() {
     let modal = this.modalCtrl.create(ProfileEditPage,{uid:this.uid});
@@ -118,6 +172,7 @@ export class ProfilePage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad ProfilePage');
+    this.getCheckIns();
   }
 
 }
